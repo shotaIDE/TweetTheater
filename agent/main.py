@@ -47,25 +47,26 @@ for tweet in results['statuses']:
     extended_entities = tweet['extended_entities']
     media_list = extended_entities['media']
 
-    for media in media_list:
-        video_info = media['video_info']
-        variants = video_info['variants']
+    media = media_list[0]
 
-        minimum_bitrate = -1
-        minimum_bitrate_url = ''
+    video_info = media['video_info']
+    variants = video_info['variants']
 
-        for variant in variants:
-            if variant['content_type'] != 'video/mp4':
-                continue
+    minimum_bitrate = -1
+    minimum_bitrate_url = ''
 
-            media_bitrate = variant['bitrate']
-            media_url = variant['url']
+    for variant in variants:
+        if variant['content_type'] != 'video/mp4':
+            continue
 
-            if minimum_bitrate == -1 or minimum_bitrate > media_bitrate:
-                minimum_bitrate = minimum_bitrate = media_bitrate
-                minimum_bitrate_url = media_url
+        media_bitrate = variant['bitrate']
+        media_url = variant['url']
 
-        video_url_list.append(minimum_bitrate_url)
+        if minimum_bitrate == -1 or minimum_bitrate > media_bitrate:
+            minimum_bitrate = minimum_bitrate = media_bitrate
+            minimum_bitrate_url = media_url
+
+    video_url_list.append(minimum_bitrate_url)
 
 print(video_url_list)
 
