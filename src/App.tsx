@@ -14,6 +14,9 @@ const App = () => {
   return (
     <div className="App">
       <div>
+        {currentVideoId + 1} / {videoList.length}
+      </div>
+      <div>
         {videoList[currentVideoId].created_at}
       </div>
       <div>
