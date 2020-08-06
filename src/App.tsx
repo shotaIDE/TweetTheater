@@ -1,22 +1,20 @@
 import React, { useState } from 'react';
 import './App.css';
-import videoUrlList from './video_list.json';
+import videoList from './video_list.json';
 
 const App = () => {
   const [currentVideoId, setCurrentVideoId] = useState(0);
-  const [currentVideoUrl, setCurrentVideoUrl] = useState(videoUrlList[0]);
 
   const onEnded = () => {
     const nextVideoId = currentVideoId + 1;
     setCurrentVideoId(nextVideoId);
-    setCurrentVideoUrl(videoUrlList[nextVideoId]);
-    console.log(videoUrlList[currentVideoId]);
+    console.log(videoList[currentVideoId].video_url);
   }
-  
+
   return (
     <div className="App">
       <header className="App-header">
-        <Video src={currentVideoUrl} onEnded={onEnded} />
+        <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
       </header>
     </div>
   );

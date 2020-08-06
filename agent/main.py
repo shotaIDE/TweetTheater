@@ -44,6 +44,10 @@ for tweet in results['statuses']:
     if 'extended_entities' not in tweet:
         continue
 
+    tweet_id = tweet['id']
+    created_at = tweet['created_at']
+    text = tweet['text']
+
     extended_entities = tweet['extended_entities']
     media_list = extended_entities['media']
 
@@ -66,9 +70,14 @@ for tweet in results['statuses']:
             maximum_bitrate = media_bitrate
             maximum_bitrate_url = media_url
 
-    video_url_list.append(maximum_bitrate_url)
+    extracted_info = {
+        'id': tweet_id,
+        'created_at': created_at,
+        'text': text,
+        'video_url': maximum_bitrate_url,
+    }
 
-print(video_url_list)
+    video_url_list.append(extracted_info)
 
 with open(video_list_path, 'w') as f:
     json.dump(video_url_list, f, indent=4, ensure_ascii=True)
