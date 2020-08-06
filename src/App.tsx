@@ -13,6 +13,12 @@ const App = () => {
 
   return (
     <div className="App">
+      <div>
+        {videoList[currentVideoId].created_at}
+      </div>
+      <div>
+        {videoList[currentVideoId].text}
+      </div>
       <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
     </div>
   );
