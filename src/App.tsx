@@ -13,9 +13,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
-      </header>
+      <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
     </div>
   );
 }
