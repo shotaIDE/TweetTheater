@@ -52,8 +52,8 @@ for tweet in results['statuses']:
     video_info = media['video_info']
     variants = video_info['variants']
 
-    minimum_bitrate = -1
-    minimum_bitrate_url = ''
+    maximum_bitrate = -1
+    maximum_bitrate_url = ''
 
     for variant in variants:
         if variant['content_type'] != 'video/mp4':
@@ -62,11 +62,11 @@ for tweet in results['statuses']:
         media_bitrate = variant['bitrate']
         media_url = variant['url']
 
-        if minimum_bitrate == -1 or minimum_bitrate > media_bitrate:
-            minimum_bitrate = minimum_bitrate = media_bitrate
-            minimum_bitrate_url = media_url
+        if maximum_bitrate < media_bitrate:
+            maximum_bitrate = media_bitrate
+            maximum_bitrate_url = media_url
 
-    video_url_list.append(minimum_bitrate_url)
+    video_url_list.append(maximum_bitrate_url)
 
 print(video_url_list)
 
