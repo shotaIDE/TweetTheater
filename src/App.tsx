@@ -20,6 +20,13 @@ const App = () => {
         {videoList[currentVideoId].created_at}
       </div>
       <div>
+        <a 
+          href={videoList[currentVideoId].detail_url}
+          target="_blank">
+          {videoList[currentVideoId].detail_url}
+        </a>
+      </div>
+      <div>
         {videoList[currentVideoId].text}
       </div>
       <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
