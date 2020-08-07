@@ -119,6 +119,11 @@ def main():
 
     for tweet in results['statuses']:
         if 'extended_entities' not in tweet:
+            # メディアが含まれていないものはスキップする
+            continue
+
+        if 'retweeted_status' in tweet:
+            # リツイートはスキップする
             continue
 
         tweet_id = tweet['id']
