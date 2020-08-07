@@ -162,5 +162,16 @@ def main():
         json.dump(video_url_list, f, indent=4, ensure_ascii=True)
 
 
+def execute_post_favorite(end: int):
+    video_list_path = os.environ.get('VIDEO_LIST_PATH')
+
+    with open(video_list_path, 'r') as f:
+        video_url_list = json.load(f)
+
+    for video_info in video_url_list[:end]:
+        tweet_id = video_info['id']
+        post_favorite(id=tweet_id)
+
+
 if __name__ == "__main__":
     main()
