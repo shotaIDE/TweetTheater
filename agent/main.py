@@ -106,7 +106,7 @@ def main():
     else:
         url = 'https://api.twitter.com/1.1/search/tweets.json?q=%23%E6%B7%B1%E5%A4%9C%E3%81%AE2%E6%99%82%E9%96%93DTM&result_type=recent&count=100'
 
-        response = oauth.get(url, params=params)
+        response = oauth.get(url)
         results_text = response.text
         results = json.loads(results_text)
 
