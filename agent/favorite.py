@@ -22,7 +22,8 @@ def post_favorite(id: int):
 
 
 def main():
-    end = input('Enter the last number of the tweet you want to like...')
+    end_str = input('Enter the last number of the tweet you want to like...')
+    end = int(end_str)
 
     video_list_path = os.environ.get('VIDEO_LIST_PATH')
 
