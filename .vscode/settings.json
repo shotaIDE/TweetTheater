@@ -1,6 +1,7 @@
 {
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true,
     },
     "eslint.validate": [
         "javascript",
@@ -8,9 +9,15 @@
         "typescript",
         "typescriptreact"
     ],
+    "[python]": {
+        "editor.formatOnSave": true,
+    },
+    "python.formatting.autopep8Args": [
+        "--aggressive"
+    ],
+    "python.formatting.provider": "autopep8",
     "python.linting.enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.pycodestyleEnabled": true,
+    "python.linting.flake8Enabled": true,
     "python.linting.lintOnSave": true,
-    "python.pythonPath": "env/bin/python"
+    "python.linting.pylintEnabled": false,
 }
