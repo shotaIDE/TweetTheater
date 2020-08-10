@@ -46,6 +46,12 @@ def main():
         tweet_id = tweet['id']
         created_at = tweet['created_at']
         text = tweet['text']
+        favorited = tweet['favorited']
+
+        user_info = tweet['user']
+        user_name = user_info['name']
+        user_screen_name = user_info['screen_name']
+        user_profile_image_url_https = user_info['profile_image_url_https']
 
         extended_entities = tweet['extended_entities']
         media_list = extended_entities['media']
@@ -76,6 +82,10 @@ def main():
             'text': text,
             'detail_url': detail_url,
             'video_url': maximum_bitrate_url,
+            'user_display_name': user_name,
+            'user_name': user_screen_name,
+            'user_profile_image_url': user_profile_image_url_https,
+            'favorited': favorited,
         }
 
         video_url_list.append(extracted_info)
