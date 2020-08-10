@@ -52,6 +52,7 @@
             "django": true,
             "env": {
                 "IS_DEBUG": "true",
+                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
                 "CACHE_PATH": "${workspaceFolder}/cache.json",
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
             },
@@ -67,6 +68,7 @@
             ],
             "django": true,
             "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
                 "CACHE_PATH": "${workspaceFolder}/cache.json",
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
             },

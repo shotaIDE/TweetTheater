@@ -1,4 +1,6 @@
 
+/serviceAccountKey*.json
+
 /cache.json
 
 /src/video_list.json

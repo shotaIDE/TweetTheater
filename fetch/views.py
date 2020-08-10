@@ -3,9 +3,19 @@ from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
+import firebase_admin
+from firebase_admin import auth as firebaseauth
+from firebase_admin import credentials, firestore
 
 from fetch.agent import fetch
 from fetch.agent import auth
+
+firebase_admin_credential_path = \
+    os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+cred = credentials.Certificate(firebase_admin_credential_path)
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 
 @csrf_exempt
@@ -13,8 +23,22 @@ def index(request):
     consumer_key = os.environ.get('CONSUMER_KEY')
     consumer_secret = os.environ.get('CONSUMER_SECRET')
 
-    access_token = request.POST.get('token')
-    access_token_secret = request.POST.get('secret')
+    id_token = request.POST.get('idToken')
+
+    decoded_token = firebaseauth.verify_id_token(id_token)
+    uid = decoded_token['uid']
+
+    print(f'uid: {uid}')
+
+    user_document_ref = db.collection('credentials').document(uid)
+    user_credentials_raw = user_document_ref.get()
+    user_credentials = user_credentials_raw.to_dict()
+
+    print(f'User credentials: {user_credentials}')
+
+    access_token = user_credentials['accessToken']
+    access_token_secret = user_credentials['secret']
+
     # access_token = os.environ.get('ACCESS_TOKEN')
     # access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
 
@@ -54,3 +78,23 @@ def callback(request):
         oauth_verifier=oauth_verifier)
 
     return JsonResponse(access_token)
+
+
+@csrf_exempt
+def create(request):
+    uid = request.POST.get('uid')
+    access_token = request.POST.get('accessToken')
+    access_token_secret = request.POST.get('secret')
+
+    print(f'uid: {uid}')
+
+    user_document_ref = db.collection('credentials').document(uid)
+
+    user_credentials = {
+        'accessToken': access_token,
+        'secret': access_token_secret,
+    }
+
+    user_document_ref.set(user_credentials)
+
+    return JsonResponse({})

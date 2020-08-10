@@ -3,9 +3,6 @@ import './App.css';
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-const STORAGE_ACCESS_TOKEN_KEY = 'accessToken';
-const STORAGE_SECRET_KEY = 'secret';
-
 const firebaseConfig = {
   apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
   authDomain: "autoplayclient-dev.firebaseapp.com",
@@ -33,20 +30,19 @@ const signout = () => {
 }
 
 const App = () => {
-  const restoredAccessToken = localStorage.getItem(STORAGE_ACCESS_TOKEN_KEY);
-  const restoredSecret = localStorage.getItem(STORAGE_SECRET_KEY);
-
   const [videoList, setVideoList] = useState([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [signined, setSignined] = useState(false);
-  const [accessToken, setAccessToken] = useState(restoredAccessToken);
-  const [secret, setSecret] = useState(restoredSecret);
+  const [idToken, setIDToken] = useState(null);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log('Signined');
-        setSignined(true);
+        user.getIdToken().then(fetchedIDToken => {
+          setIDToken(fetchedIDToken);
+          setSignined(true);
+          console.log(fetchedIDToken);
+        })
         return;
       }
       setSignined(false);
@@ -54,44 +50,60 @@ const App = () => {
     });
 
     firebase.auth().getRedirectResult().then(result => {
-      const fetchedAccessToken = result.credential['accessToken']
-      const fetchedSecret = result.credential['secret']
+      const uid = result.user['uid']
+      const accessToken = result.credential['accessToken']
+      const secret = result.credential['secret']
 
-      localStorage.setItem(STORAGE_ACCESS_TOKEN_KEY, fetchedAccessToken);
-      localStorage.setItem(STORAGE_SECRET_KEY, fetchedSecret);
+      const fetchUrl = 'http://127.0.0.1:8000/fetch/create/';
+      const params = {
+        uid: uid,
+        accessToken: accessToken,
+        secret: secret,
+      }
+      console.log(params);
+      const response = fetch(
+        fetchUrl,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join('&'),
+        }
+      ).then(response => {
+        const json = response.json();
 
-      setAccessToken(fetchedAccessToken);
-      setSecret(fetchedSecret);
-
-      console.log(`Redirect results: ${result}`);
+        console.log(`Redirect results: ${result}`);
+      });
     }).catch(error => {
       console.log(`Auth failed: ${error}`);
     });
   }, []);
 
   useEffect(() => {
-    if (accessToken == null || secret == null) {
+    if (idToken == null) {
       return;
     }
 
     (async () => {
-      const fetchUrl = 'http://127.0.0.1:8000/fetch/';
+      const fetchUrl = `http://127.0.0.1:8000/fetch/`;
       const params = {
-        accessToken: accessToken,
-        secret: secret,
+        idToken: idToken,
       }
       const response = await fetch(
         fetchUrl,
         {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
           body: Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join('&'),
-        }
-      );
+        });
       const json = await response.json();
 
       setVideoList(json);
     })();
-  }, [secret]);
+  }, [idToken]);
 
   const onEnded = () => {
     const nextVideoId = currentVideoId + 1;
