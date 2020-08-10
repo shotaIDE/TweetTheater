@@ -5,6 +5,7 @@ import { Container, Grid } from "@material-ui/core";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 
+import { SigninStatusBar } from "./AppBar";
 import { Tweet, TweetCard, TweetStatus } from "./Tweet";
 
 const firebaseConfig = {
@@ -38,6 +39,7 @@ const App = () => {
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [playedList, setPlayedList] = useState([]);
   const [signined, setSignined] = useState(false);
+  const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
@@ -45,6 +47,9 @@ const App = () => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
+      const userName = user.displayName;
+      setUserName(userName);
+
       if (user) {
         user.getIdToken().then((fetchedIDToken) => {
           setIDToken(fetchedIDToken);
@@ -182,15 +187,14 @@ const App = () => {
       ? videoList[currentVideoId].video_url
       : "";
 
-  const signinButton = signined ? (
-    <button onClick={signout}>サインアウト</button>
-  ) : (
-    <button onClick={signin}>サインイン</button>
-  );
-
   return (
     <div className="App">
-      {signinButton}
+      <SigninStatusBar
+        signined={signined}
+        userName={userName}
+        handleSignin={signin}
+        handleSignout={signout}
+      />
       <Container>
         <Grid container spacing={1}>
           <Grid item xs={6}>
