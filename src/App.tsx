@@ -132,6 +132,10 @@ const App = () => {
     console.log(videoList[currentVideoId].video_url);
   }
 
+  const onClicked = (id: number) => {
+    setCurrentVideoId(id);
+  }
+
   const tweetList = videoList.map((tweet, id) => {
     const backgroundColor = id == currentVideoId ? 'red' : (playedList[id] ? 'gray' : 'white');
     const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited";
@@ -141,7 +145,8 @@ const App = () => {
         key={tweet.detail_url}
         style={{
           background: backgroundColor,
-        }}>
+        }}
+        onClick={() => onClicked(id)}>
         <div>
           <img src={tweet.user_profile_image_url} />
         </div>
