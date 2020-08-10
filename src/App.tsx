@@ -1,6 +1,7 @@
 import "firebase/auth";
 import "./App.css";
 
+import { Container, Grid } from "@material-ui/core";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 
@@ -190,26 +191,27 @@ const App = () => {
   return (
     <div className="App">
       {signinButton}
-      <div
-        style={{
-          marginLeft: 16,
-          marginRight: "51%",
-        }}
-      >
-        {tweetList}
-      </div>
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          left: "51%",
-        }}
-      >
-        <div>
-          {currentVideoId + 1} / {videoList.length}
-        </div>
-        <Video src={currentVideoUrl} onEnded={onEnded} />
-      </div>
+      <Container>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            {tweetList}
+          </Grid>
+          <Grid item xs={6}>
+            <div
+              style={{
+                position: "fixed",
+                left: "51%",
+                width: 600,
+              }}
+            >
+              <div>
+                {currentVideoId + 1} / {videoList.length}
+              </div>
+              <Video src={currentVideoUrl} onEnded={onEnded} />
+            </div>
+          </Grid>
+        </Grid>
+      </Container>
     </div>
   );
 };
@@ -221,7 +223,13 @@ interface Props {
 
 const Video = (props: Props) => {
   return (
-    <video key={props.src} autoPlay controls onEnded={props.onEnded}>
+    <video
+      key={props.src}
+      autoPlay
+      controls
+      onEnded={props.onEnded}
+      style={{ width: "100%" }}
+    >
       <source src={props.src} type="video/mp4"></source>
     </video>
   );
