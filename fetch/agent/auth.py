@@ -1,7 +1,8 @@
 # coding: utf-8
 
-from requests_oauthlib import OAuth1Session
 from urllib.parse import parse_qsl
+
+from requests_oauthlib import OAuth1Session
 
 
 def get_authenticate_request_url(consumer_key: str,

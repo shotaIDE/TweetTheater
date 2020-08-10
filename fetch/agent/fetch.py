@@ -2,8 +2,9 @@
 
 import json
 import os
-from . import auth
 import urllib.parse
+
+from . import auth
 
 
 def main(consumer_key: str,

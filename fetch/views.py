@@ -1,14 +1,13 @@
 import os
-from django.shortcuts import render
+
+import firebase_admin
 from django.http.response import JsonResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
-import firebase_admin
 from firebase_admin import auth as firebaseauth
 from firebase_admin import credentials, firestore
 
-from fetch.agent import fetch
-from fetch.agent import auth
+from fetch.agent import auth, fetch
 
 firebase_admin_credential_path = \
     os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
@@ -61,7 +60,7 @@ def request(request):
     consumer_secret = os.environ.get('CONSUMER_SECRET')
 
     authenticate_url = auth.get_authenticate_request_url(
-            consumer_key=consumer_key, consumer_secret=consumer_secret)
+        consumer_key=consumer_key, consumer_secret=consumer_secret)
 
     return redirect(authenticate_url)
 
