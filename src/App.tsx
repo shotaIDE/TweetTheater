@@ -13,6 +13,7 @@ const App = () => {
 
   const tweetList = videoList.map((tweet, id) => {
     const backgroundColor = id == currentVideoId ? 'gray' : 'white'
+    const favoriteLabel = tweet.favorited ? "♥" : "♡"
     return (
       <div style={{
         background: backgroundColor,
@@ -28,6 +29,9 @@ const App = () => {
         </div>
         <div>
           {tweet.text}
+        </div>
+        <div>
+          {favoriteLabel}
         </div>
         <div>
           <a 
