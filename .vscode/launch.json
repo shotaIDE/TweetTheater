@@ -33,7 +33,7 @@
             "name": "Agent: Post Favorites",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/fetch/agent/favorite.py",
+            "program": "${workspaceFolder}/post_favorite_debug.py",
             "console": "integratedTerminal",
             "env": {
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"

@@ -2,12 +2,19 @@
 
 import json
 import os
-from auth import get_oauth_session
+from . import auth
 
 
 # いいねを登録する
-def post_favorite(id: int):
-    oauth = get_oauth_session()
+def post_favorite(id: int,
+                  consumer_key: str,
+                  consumer_secret: str,
+                  access_token: str,
+                  access_token_secret: str):
+    oauth = auth.get_oauth_session(consumer_key=consumer_key,
+                                   consumer_secret=consumer_secret,
+                                   access_token=access_token,
+                                   access_token_secret=access_token_secret)
 
     url = 'https://api.twitter.com/1.1/favorites/create.json'
     params = {
@@ -21,7 +28,10 @@ def post_favorite(id: int):
     print(results)
 
 
-def main():
+def main(consumer_key: str,
+         consumer_secret: str,
+         access_token: str,
+         access_token_secret: str):
     end_str = input('Enter the last number of the tweet you want to like...')
     end = int(end_str)
 
@@ -32,13 +42,13 @@ def main():
 
     for video_info in video_url_list[:end]:
         tweet_id = video_info['id']
-        post_favorite(id=tweet_id)
+        post_favorite(id=tweet_id,
+                      consumer_key=consumer_key,
+                      consumer_secret=consumer_secret,
+                      access_token=access_token,
+                      access_token_secret=access_token_secret)
 
     removed_video_url_list = video_url_list[end:]
 
     with open(video_list_path, 'w') as f:
         json.dump(removed_video_url_list, f, indent=4, ensure_ascii=True)
-
-
-if __name__ == "__main__":
-    main()
