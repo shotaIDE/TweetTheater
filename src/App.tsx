@@ -121,12 +121,18 @@ const App = () => {
     })();
   }, [idToken]);
 
+  // 一つの動画の再生が完了した場合
   const onEnded = () => {
-    const nextVideoId = currentVideoId + 1;
     let updatedPlayedList = playedList;
     updatedPlayedList[currentVideoId] = true;
-
     setPlayedList(updatedPlayedList);
+
+    const nextVideoId = currentVideoId + 1;
+    if (nextVideoId >= videoList.length) {
+      setCurrentVideoId(-1);
+      return;
+    }
+
     setCurrentVideoId(nextVideoId);
 
     console.log(videoList[currentVideoId].video_url);
@@ -172,7 +178,7 @@ const App = () => {
       </div>)
   });
 
-  const currentVideoUrl = (videoList.length > currentVideoId) ? videoList[currentVideoId].video_url : ''
+  const currentVideoUrl = (currentVideoId >= 0 && currentVideoId < videoList.length) ? videoList[currentVideoId].video_url : ''
 
   const signinButton = signined ? (<button onClick={signout}>サインアウト</button>): (<button onClick={signin}>サインイン</button>);
 
