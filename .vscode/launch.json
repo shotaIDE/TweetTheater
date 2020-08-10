@@ -8,7 +8,7 @@
             "name": "Agent: Fetch Debug",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/agent/fetch.py",
+            "program": "${workspaceFolder}/fetch/agent/fetch.py",
             "console": "integratedTerminal",
             "env": {
                 "IS_DEBUG": "true",
@@ -21,7 +21,7 @@
             "name": "Agent: Fetch Production",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/agent/fetch.py",
+            "program": "${workspaceFolder}/fetch/agent/fetch.py",
             "console": "integratedTerminal",
             "env": {
                 "CACHE_PATH": "${workspaceFolder}/cache.json",
@@ -33,7 +33,7 @@
             "name": "Agent: Post Favorites",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/agent/favorite.py",
+            "program": "${workspaceFolder}/fetch/agent/favorite.py",
             "console": "integratedTerminal",
             "env": {
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"

@@ -2,7 +2,7 @@
 
 import json
 import os
-from .auth import get_oauth_session
+from fetch.agent import auth
 import urllib.parse
 
 
@@ -15,10 +15,10 @@ def main(consumer_key: str,
     cache_path = os.environ.get('CACHE_PATH')
     video_list_path = os.environ.get('VIDEO_LIST_PATH')
 
-    oauth = get_oauth_session(consumer_key=consumer_key,
-                              consumer_secret=consumer_secret,
-                              access_token=access_token,
-                              access_token_secret=access_token_secret)
+    oauth = auth.get_oauth_session(consumer_key=consumer_key,
+                                   consumer_secret=consumer_secret,
+                                   access_token=access_token,
+                                   access_token_secret=access_token_secret)
 
     if IS_DEBUG:
         with open(cache_path, 'r') as f:
