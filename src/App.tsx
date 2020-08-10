@@ -11,25 +11,54 @@ const App = () => {
     console.log(videoList[currentVideoId].video_url);
   }
 
+  const tweetList = videoList.map((tweet, id) => {
+    const backgroundColor = id == currentVideoId ? 'gray' : 'white'
+    return (
+      <div style={{
+        background: backgroundColor,
+      }}>
+        <div>
+          <img src={tweet.user_profile_image_url} />
+        </div>
+        <div>
+          {tweet.user_display_name} @{tweet.user_name}
+        </div>
+        <div>
+          {tweet.created_at}
+        </div>
+        <div>
+          {tweet.text}
+        </div>
+        <div>
+          <a 
+            href={tweet.detail_url}
+            target="_blank">
+            {tweet.detail_url}
+          </a>
+        </div>
+      </div>)
+  });
+
   return (
     <div className="App">
-      <div>
-        {currentVideoId + 1} / {videoList.length}
+      <div style={
+        {
+          marginLeft: 16,
+          marginRight: "51%",
+        }
+      }>
+      {tweetList}
       </div>
-      <div>
-        {videoList[currentVideoId].created_at}
+      <div style={{
+        position: "fixed",
+        top: 0,
+        left: "51%",
+      }}>
+        <div>
+          {currentVideoId + 1} / {videoList.length}
+        </div>
+        <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
       </div>
-      <div>
-        <a 
-          href={videoList[currentVideoId].detail_url}
-          target="_blank">
-          {videoList[currentVideoId].detail_url}
-        </a>
-      </div>
-      <div>
-        {videoList[currentVideoId].text}
-      </div>
-      <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
     </div>
   );
 }
