@@ -22,4 +22,7 @@
     "python.linting.flake8Enabled": true,
     "python.linting.lintOnSave": true,
     "python.linting.pylintEnabled": false,
+    "[typescript]": {
+        "editor.tabSize": 2,
+    }
 }
