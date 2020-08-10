@@ -1,22 +1,17 @@
 # coding: utf-8
 
-import json
-import os
 from requests_oauthlib import OAuth1Session
 from urllib.parse import parse_qsl
 
 
-def auth_application():
-    consumer_key = os.environ.get('CONSUMER_KEY')
-    consumer_secret = os.environ.get('CONSUMER_SECRET')
-
-    oauth = OAuth1Session(consumer_key,
-                          client_secret=consumer_secret)
+def get_authenticate_request_url(consumer_key: str,
+                                 consumer_secret: str) -> str:
+    oauth = OAuth1Session(consumer_key, client_secret=consumer_secret)
 
     url = 'https://api.twitter.com/oauth/request_token'
 
     params = {
-        'oauth_callback': 'https://www.google.co.jp/',
+        'oauth_callback': 'http://127.0.0.1:8000/fetch/callback/',
     }
 
     response = oauth.post(url, params=params)
@@ -27,13 +22,18 @@ def auth_application():
 
     print(f'Request token: {request_token_info}')
 
-    authenticate_url = f'https://api.twitter.com/oauth/authenticate?oauth_token={request_token}'
+    authenticate_url = 'https://api.twitter.com/oauth/authenticate' \
+        + f'?oauth_token={request_token}'
 
-    print(f'Please allow this application to access your account: {authenticate_url}')
+    print(f'Authentication URL: {authenticate_url}')
 
-    oauth_token = input('Please type OAuth token...')
-    oauth_verifier = input('Please type OAuth verifier...')
+    return authenticate_url
 
+
+def get_access_token(consumer_key: str,
+                     consumer_secret: str,
+                     oauth_token: str,
+                     oauth_verifier: str) -> dict:
     twitter = OAuth1Session(
         consumer_key,
         consumer_secret,
@@ -53,9 +53,15 @@ def auth_application():
     access_token = access_token_info['oauth_token']
     access_token_secret = access_token_info['oauth_token_secret']
 
-    print('Access Token =====')
     print(f"ACCESS_TOKEN='{access_token}'")
     print(f"ACCESS_TOKEN_SECRET='{access_token_secret}'")
+
+    result = {
+        'access_token': access_token,
+        'access_token_secret': access_token_secret,
+    }
+
+    return result
 
 
 def get_oauth_session(consumer_key: str,
