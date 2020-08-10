@@ -3,6 +3,7 @@
 import json
 import os
 from auth import get_oauth_session
+import urllib.parse
 
 
 def main():
@@ -17,7 +18,14 @@ def main():
         with open(cache_path, 'r') as f:
             results = json.load(f)
     else:
-        url = 'https://api.twitter.com/1.1/search/tweets.json?q=%23%E6%B7%B1%E5%A4%9C%E3%81%AE2%E6%99%82%E9%96%93DTM&result_type=recent&count=100'
+        search_words = '#深夜の2時間DTM'
+        search_words_with_params = search_words \
+            + ' exclude:retweets filter:videos'
+        query = urllib.parse.quote(search_words_with_params)
+
+        url = 'https://api.twitter.com/1.1/search/tweets.json?q=' \
+            + query \
+            + '&result_type=recent&count=100'
 
         response = oauth.get(url)
         results_text = response.text
@@ -32,11 +40,7 @@ def main():
 
     for tweet in results['statuses']:
         if 'extended_entities' not in tweet:
-            # メディアが含まれていないものはスキップする
-            continue
-
-        if 'retweeted_status' in tweet:
-            # リツイートはスキップする
+            # メディアを直接参照できるURLが含まれていないものはスキップする
             continue
 
         tweet_id = tweet['id']
