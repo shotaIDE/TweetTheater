@@ -2,17 +2,23 @@
 
 import json
 import os
-from auth import get_oauth_session
+from .auth import get_oauth_session
 import urllib.parse
 
 
-def main():
+def main(consumer_key: str,
+         consumer_secret: str,
+         access_token: str,
+         access_token_secret: str) -> dict:
     IS_DEBUG = os.environ.get('IS_DEBUG') == 'true'
 
     cache_path = os.environ.get('CACHE_PATH')
     video_list_path = os.environ.get('VIDEO_LIST_PATH')
 
-    oauth = get_oauth_session()
+    oauth = get_oauth_session(consumer_key=consumer_key,
+                              consumer_secret=consumer_secret,
+                              access_token=access_token,
+                              access_token_secret=access_token_secret)
 
     if IS_DEBUG:
         with open(cache_path, 'r') as f:
@@ -93,6 +99,17 @@ def main():
     with open(video_list_path, 'w') as f:
         json.dump(video_url_list, f, indent=4, ensure_ascii=True)
 
+    return video_url_list
+
 
 if __name__ == "__main__":
-    main()
+    consumer_key = os.environ.get('CONSUMER_KEY')
+    consumer_secret = os.environ.get('CONSUMER_SECRET')
+
+    access_token = os.environ.get('ACCESS_TOKEN')
+    access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
+
+    main(consumer_key=consumer_key,
+         consumer_secret=consumer_secret,
+         access_token=access_token,
+         access_token_secret=access_token_secret)

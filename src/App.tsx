@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import videoList from './video_list.json';
 
 const App = () => {
+  const [videoList, setVideoList] = useState([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
 
   useEffect(() => {
@@ -10,7 +10,8 @@ const App = () => {
       const fetchUrl = 'http://127.0.0.1:8000/fetch/';
       const response = await fetch(fetchUrl);
       const json = await response.json();
-      console.log(json);
+
+      setVideoList(json);
     })();
   }, [])
 
@@ -24,9 +25,11 @@ const App = () => {
     const backgroundColor = id == currentVideoId ? 'gray' : 'white'
     const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited"
     return (
-      <div style={{
-        background: backgroundColor,
-      }}>
+      <div
+        key={tweet.detail_url}
+        style={{
+          background: backgroundColor,
+        }}>
         <div>
           <img src={tweet.user_profile_image_url} />
         </div>
@@ -52,6 +55,8 @@ const App = () => {
       </div>)
   });
 
+  const currentVideoUrl = (videoList.length > currentVideoId) ? videoList[currentVideoId].video_url : ''
+
   return (
     <div className="App">
       <div style={
@@ -70,7 +75,7 @@ const App = () => {
         <div>
           {currentVideoId + 1} / {videoList.length}
         </div>
-        <Video src={videoList[currentVideoId].video_url} onEnded={onEnded} />
+        <Video src={currentVideoUrl} onEnded={onEnded} />
       </div>
     </div>
   );

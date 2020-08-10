@@ -49,7 +49,12 @@
                 "runserver",
                 "--noreload"
             ],
-            "django": true
+            "django": true,
+            "env": {
+                "IS_DEBUG": "true",
+                "CACHE_PATH": "${workspaceFolder}/cache.json",
+                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
+            },
         }
     ]
 }

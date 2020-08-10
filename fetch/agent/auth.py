@@ -58,15 +58,10 @@ def auth_application():
     print(f"ACCESS_TOKEN_SECRET='{access_token_secret}'")
 
 
-def get_oauth_session():
-    consumer_key = os.environ.get('CONSUMER_KEY')
-    consumer_secret = os.environ.get('CONSUMER_SECRET')
-
-    access_token = os.environ.get('ACCESS_TOKEN')
-    access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
-
-    params = {"ids": "1138505981460193280", "tweet.fields": "created_at"}
-
+def get_oauth_session(consumer_key: str,
+                      consumer_secret: str,
+                      access_token: str,
+                      access_token_secret: str):
     # Make the request
     oauth = OAuth1Session(consumer_key,
                           client_secret=consumer_secret,
