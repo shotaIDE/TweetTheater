@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import './App.css';
-import * as firebase from "firebase/app";
+import "./App.css";
 import "firebase/auth";
+
+import * as firebase from "firebase/app";
+import React, { useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
@@ -27,7 +28,7 @@ const signout = () => {
   localStorage.clear();
 
   firebase.auth().signOut();
-}
+};
 
 const App = () => {
   const [videoList, setVideoList] = useState([]);
@@ -40,86 +41,94 @@ const App = () => {
   const [secret, setSecret] = useState(null);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        user.getIdToken().then(fetchedIDToken => {
+        user.getIdToken().then((fetchedIDToken) => {
           setIDToken(fetchedIDToken);
           setSignined(true);
           console.log(fetchedIDToken);
-        })
+        });
         return;
       }
       setSignined(false);
-      console.log('Not Signined');
+      console.log("Not Signined");
     });
 
-    firebase.auth().getRedirectResult().then(result => {
-      const uid = result.user['uid']
-      const accessToken = result.credential['accessToken']
-      const secret = result.credential['secret']
+    firebase
+      .auth()
+      .getRedirectResult()
+      .then((result) => {
+        const uid = result.user["uid"];
+        const accessToken = result.credential["accessToken"];
+        const secret = result.credential["secret"];
 
-      setUid(uid);
-      setAccessToken(accessToken);
-      setSecret(secret);
+        setUid(uid);
+        setAccessToken(accessToken);
+        setSecret(secret);
 
-      const fetchUrl = 'http://127.0.0.1:8000/fetch/create/';
-      const params = {
-        uid: uid,
-        accessToken: accessToken,
-        secret: secret,
-      }
-      console.log(params);
-      const response = fetch(
-        fetchUrl,
-        {
-          method: 'POST',
+        const fetchUrl = "http://127.0.0.1:8000/fetch/create/";
+        const params = {
+          uid: uid,
+          accessToken: accessToken,
+          secret: secret,
+        };
+        console.log(params);
+        fetch(fetchUrl, {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join('&'),
-        }
-      ).then(response => {
-        const json = response.json();
+          body: Object.keys(params)
+            .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+            .join("&"),
+        }).then((response) => {
+          const json = response.json();
 
-        console.log(`Redirect results: ${result}`);
+          console.log(`Redirect results: ${json}`);
+        });
+      })
+      .catch((error) => {
+        console.log(`Auth failed: ${error}`);
       });
-    }).catch(error => {
-      console.log(`Auth failed: ${error}`);
-    });
   }, []);
 
   useEffect(() => {
-    if (idToken == null && (uid == null || accessToken == null || secret == null)) {
+    if (
+      idToken == null &&
+      (uid == null || accessToken == null || secret == null)
+    ) {
       return;
     }
 
     (async () => {
       const fetchUrl = `http://127.0.0.1:8000/fetch/`;
 
-      const params = (uid != null && accessToken != null && secret != null)
-        ? {
-          uid: uid,
-          accessToken: accessToken,
-          secret: secret,
-        } : {
-          idToken: idToken,
-        };
+      const params =
+        uid != null && accessToken != null && secret != null
+          ? {
+              uid: uid,
+              accessToken: accessToken,
+              secret: secret,
+            }
+          : {
+              idToken: idToken,
+            };
 
-      const response = await fetch(
-        fetchUrl,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: Object.keys(params).map(key => `${key}=${encodeURIComponent(params[key])}`).join('&'),
-        });
+      const response = await fetch(fetchUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: Object.keys(params)
+          .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+          .join("&"),
+      });
       const json = await response.json();
 
-      setPlayedList(new Array(json.length, false));
+      setPlayedList([json.length, false]);
       setVideoList(json);
     })();
-  }, [idToken]);
+  }, [accessToken, idToken, secret, uid]);
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {
@@ -136,14 +145,15 @@ const App = () => {
     setCurrentVideoId(nextVideoId);
 
     console.log(videoList[currentVideoId].video_url);
-  }
+  };
 
   const onClicked = (id: number) => {
     setCurrentVideoId(id);
-  }
+  };
 
   const tweetList = videoList.map((tweet, id) => {
-    const backgroundColor = id == currentVideoId ? 'red' : (playedList[id] ? 'gray' : 'white');
+    const backgroundColor =
+      id === currentVideoId ? "red" : playedList[id] ? "gray" : "white";
     const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited";
 
     return (
@@ -152,52 +162,58 @@ const App = () => {
         style={{
           background: backgroundColor,
         }}
-        onClick={() => onClicked(id)}>
+        onClick={() => onClicked(id)}
+      >
         <div>
-          <img src={tweet.user_profile_image_url} />
+          <img
+            alt={`${tweet.user_display_name} のプロフィール画像`}
+            src={tweet.user_profile_image_url}
+          />
         </div>
         <div>
           {tweet.user_display_name} @{tweet.user_name}
         </div>
+        <div>{tweet.created_at}</div>
+        <div>{tweet.text}</div>
+        <div>{favoriteLabel}</div>
         <div>
-          {tweet.created_at}
-        </div>
-        <div>
-          {tweet.text}
-        </div>
-        <div>
-          {favoriteLabel}
-        </div>
-        <div>
-          <a 
-            href={tweet.detail_url}
-            target="_blank">
+          <a href={tweet.detail_url} target="_blank" rel="noopener noreferrer">
             {tweet.detail_url}
           </a>
         </div>
-      </div>)
+      </div>
+    );
   });
 
-  const currentVideoUrl = (currentVideoId >= 0 && currentVideoId < videoList.length) ? videoList[currentVideoId].video_url : ''
+  const currentVideoUrl =
+    currentVideoId >= 0 && currentVideoId < videoList.length
+      ? videoList[currentVideoId].video_url
+      : "";
 
-  const signinButton = signined ? (<button onClick={signout}>サインアウト</button>): (<button onClick={signin}>サインイン</button>);
+  const signinButton = signined ? (
+    <button onClick={signout}>サインアウト</button>
+  ) : (
+    <button onClick={signin}>サインイン</button>
+  );
 
   return (
     <div className="App">
       {signinButton}
-      <div style={
-        {
+      <div
+        style={{
           marginLeft: 16,
           marginRight: "51%",
-        }
-      }>
-      {tweetList}
+        }}
+      >
+        {tweetList}
       </div>
-      <div style={{
-        position: "fixed",
-        top: 0,
-        left: "51%",
-      }}>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: "51%",
+        }}
+      >
         <div>
           {currentVideoId + 1} / {videoList.length}
         </div>
@@ -205,19 +221,19 @@ const App = () => {
       </div>
     </div>
   );
-}
+};
 
 interface Props {
-  src: string,
-  onEnded: any,
+  src: string;
+  onEnded: any;
 }
 
 const Video = (props: Props) => {
   return (
-  <video key={props.src} autoPlay controls onEnded={props.onEnded}>
-    <source src={props.src} type="video/mp4"></source>
-  </video>
-  )
-}
+    <video key={props.src} autoPlay controls onEnded={props.onEnded}>
+      <source src={props.src} type="video/mp4"></source>
+    </video>
+  );
+};
 
 export default App;
