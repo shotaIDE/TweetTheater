@@ -182,14 +182,20 @@ const App = () => {
     );
   });
 
+  const isPlayingVideo = currentVideoId >= 0;
   const currentVideoUrl =
-    currentVideoId >= 0 && currentVideoId < videoList.length
+    isPlayingVideo && currentVideoId < videoList.length
       ? videoList[currentVideoId].video_url
       : "";
+
+  const currentPosition = ` - [ ${
+    isPlayingVideo ? currentVideoId + 1 : "-"
+  } / ${videoList.length} ]`;
 
   return (
     <div className="App">
       <SigninStatusBar
+        titleSuffix={currentPosition}
         signined={signined}
         userName={userName}
         handleSignin={signin}
@@ -200,20 +206,29 @@ const App = () => {
           <Grid item xs={6}>
             {tweetList}
           </Grid>
-          <Grid item xs={6}>
-            <div
-              style={{
-                position: "fixed",
-                left: "51%",
-                width: 600,
-              }}
+          <Grid item xs={6}></Grid>
+          <div
+            style={{
+              position: "fixed",
+              left: "51%",
+              width: 600,
+              height: "90%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              alignItems="center"
+              justify="center"
             >
-              <div>
-                {currentVideoId + 1} / {videoList.length}
-              </div>
-              <Video src={currentVideoUrl} onEnded={onEnded} />
-            </div>
-          </Grid>
+              <Grid item xs={12}>
+                <Video src={currentVideoUrl} onEnded={onEnded} />
+              </Grid>
+            </Grid>
+          </div>
         </Grid>
       </Container>
     </div>

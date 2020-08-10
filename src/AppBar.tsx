@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  titleSuffix: string;
   signined: boolean;
   userName: string;
   handleSignin: any;
@@ -89,7 +90,7 @@ export const SigninStatusBar = (props: Props) => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          Auto Play Client
+          Auto Play Client {props.titleSuffix}
         </Typography>
         {signinStatus}
       </Toolbar>
