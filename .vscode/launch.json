@@ -55,7 +55,7 @@
                 "CACHE_PATH": "${workspaceFolder}/cache.json",
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
             },
-        }
+        },
         {
             "name": "Django: Production",
             "type": "python",

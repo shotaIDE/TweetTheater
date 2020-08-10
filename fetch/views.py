@@ -2,17 +2,21 @@ import os
 from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 
 from fetch.agent import fetch
 from fetch.agent import auth
 
 
+@csrf_exempt
 def index(request):
     consumer_key = os.environ.get('CONSUMER_KEY')
     consumer_secret = os.environ.get('CONSUMER_SECRET')
 
-    access_token = os.environ.get('ACCESS_TOKEN')
-    access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
+    access_token = request.POST.get('token')
+    access_token_secret = request.POST.get('secret')
+    # access_token = os.environ.get('ACCESS_TOKEN')
+    # access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
 
     result = fetch.main(consumer_key=consumer_key,
                         consumer_secret=consumer_secret,
