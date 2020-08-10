@@ -87,7 +87,7 @@ export const SigninStatusBar = (props: Props) => {
   );
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           Auto Play Client {props.titleSuffix}
