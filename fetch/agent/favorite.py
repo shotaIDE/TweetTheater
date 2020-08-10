@@ -2,20 +2,12 @@
 
 import json
 import os
+from requests_oauthlib import OAuth1Session
 from . import auth
 
 
 # いいねを登録する
-def post_favorite(id: int,
-                  consumer_key: str,
-                  consumer_secret: str,
-                  access_token: str,
-                  access_token_secret: str):
-    oauth = auth.get_oauth_session(consumer_key=consumer_key,
-                                   consumer_secret=consumer_secret,
-                                   access_token=access_token,
-                                   access_token_secret=access_token_secret)
-
+def post_favorite(id: int, oauth: OAuth1Session):
     url = 'https://api.twitter.com/1.1/favorites/create.json'
     params = {
         'id': id,
@@ -40,13 +32,14 @@ def main(consumer_key: str,
     with open(video_list_path, 'r') as f:
         video_url_list = json.load(f)
 
+    oauth = auth.get_oauth_session(consumer_key=consumer_key,
+                                   consumer_secret=consumer_secret,
+                                   access_token=access_token,
+                                   access_token_secret=access_token_secret)
+
     for video_info in video_url_list[:end]:
         tweet_id = video_info['id']
-        post_favorite(id=tweet_id,
-                      consumer_key=consumer_key,
-                      consumer_secret=consumer_secret,
-                      access_token=access_token,
-                      access_token_secret=access_token_secret)
+        post_favorite(id=tweet_id, oauth=oauth)
 
     removed_video_url_list = video_url_list[end:]
 

@@ -61,7 +61,7 @@ def auth_application():
 def get_oauth_session(consumer_key: str,
                       consumer_secret: str,
                       access_token: str,
-                      access_token_secret: str):
+                      access_token_secret: str) -> OAuth1Session:
     # Make the request
     oauth = OAuth1Session(consumer_key,
                           client_secret=consumer_secret,
