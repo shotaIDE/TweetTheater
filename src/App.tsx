@@ -32,6 +32,7 @@ const signout = () => {
 const App = () => {
   const [videoList, setVideoList] = useState([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
+  const [playedList, setPlayedList] = useState([]);
   const [signined, setSignined] = useState(false);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
@@ -115,19 +116,25 @@ const App = () => {
         });
       const json = await response.json();
 
+      setPlayedList(new Array(json.length, false));
       setVideoList(json);
     })();
   }, [idToken]);
 
   const onEnded = () => {
     const nextVideoId = currentVideoId + 1;
+    let updatedPlayedList = playedList;
+    updatedPlayedList[currentVideoId] = true;
+
+    setPlayedList(updatedPlayedList);
     setCurrentVideoId(nextVideoId);
+
     console.log(videoList[currentVideoId].video_url);
   }
 
   const tweetList = videoList.map((tweet, id) => {
-    const backgroundColor = id == currentVideoId ? 'gray' : 'white'
-    const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited"
+    const backgroundColor = id == currentVideoId ? 'red' : (playedList[id] ? 'gray' : 'white');
+    const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited";
 
     return (
       <div
