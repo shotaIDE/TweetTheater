@@ -20,7 +20,7 @@ def main():
     else:
         search_words = '#深夜の2時間DTM'
         search_words_with_params = search_words \
-            + ' exclude:retweets filter:videos'
+            + ' exclude:retweets filter:native_video'
         query = urllib.parse.quote(search_words_with_params)
 
         url = 'https://api.twitter.com/1.1/search/tweets.json?q=' \
