@@ -34,6 +34,9 @@ const App = () => {
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [signined, setSignined] = useState(false);
   const [idToken, setIDToken] = useState(null);
+  const [uid, setUid] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
+  const [secret, setSecret] = useState(null);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
@@ -53,6 +56,10 @@ const App = () => {
       const uid = result.user['uid']
       const accessToken = result.credential['accessToken']
       const secret = result.credential['secret']
+
+      setUid(uid);
+      setAccessToken(accessToken);
+      setSecret(secret);
 
       const fetchUrl = 'http://127.0.0.1:8000/fetch/create/';
       const params = {
@@ -81,15 +88,22 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (idToken == null) {
+    if (idToken == null && (uid == null || accessToken == null || secret == null)) {
       return;
     }
 
     (async () => {
       const fetchUrl = `http://127.0.0.1:8000/fetch/`;
-      const params = {
-        idToken: idToken,
-      }
+
+      const params = (uid != null && accessToken != null && secret != null)
+        ? {
+          uid: uid,
+          accessToken: accessToken,
+          secret: secret,
+        } : {
+          idToken: idToken,
+        };
+
       const response = await fetch(
         fetchUrl,
         {

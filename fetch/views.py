@@ -23,21 +23,26 @@ def index(request):
     consumer_key = os.environ.get('CONSUMER_KEY')
     consumer_secret = os.environ.get('CONSUMER_SECRET')
 
-    id_token = request.POST.get('idToken')
+    uid = request.POST.get('uid')
+    access_token = request.POST.get('accessToken')
+    access_token_secret = request.POST.get('secret')
 
-    decoded_token = firebaseauth.verify_id_token(id_token)
-    uid = decoded_token['uid']
+    if (uid is None or access_token is None or access_token_secret is None):
+        id_token = request.POST.get('idToken')
 
-    print(f'uid: {uid}')
+        decoded_token = firebaseauth.verify_id_token(id_token)
+        uid = decoded_token['uid']
 
-    user_document_ref = db.collection('credentials').document(uid)
-    user_credentials_raw = user_document_ref.get()
-    user_credentials = user_credentials_raw.to_dict()
+        print(f'uid: {uid}')
 
-    print(f'User credentials: {user_credentials}')
+        user_document_ref = db.collection('credentials').document(uid)
+        user_credentials_raw = user_document_ref.get()
+        user_credentials = user_credentials_raw.to_dict()
 
-    access_token = user_credentials['accessToken']
-    access_token_secret = user_credentials['secret']
+        print(f'User credentials: {user_credentials}')
+
+        access_token = user_credentials['accessToken']
+        access_token_secret = user_credentials['secret']
 
     # access_token = os.environ.get('ACCESS_TOKEN')
     # access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
