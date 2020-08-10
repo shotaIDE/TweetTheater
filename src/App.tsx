@@ -1,8 +1,10 @@
-import "./App.css";
 import "firebase/auth";
+import "./App.css";
 
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
+
+import { Tweet, TweetCard, TweetStatus } from "./Tweet";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
@@ -152,36 +154,25 @@ const App = () => {
   };
 
   const tweetList = videoList.map((tweet, id) => {
-    const backgroundColor =
-      id === currentVideoId ? "red" : playedList[id] ? "gray" : "white";
-    const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited";
+    const status: TweetStatus =
+      id === currentVideoId ? "playing" : playedList[id] ? "played" : "none";
+
+    const tweet2: Tweet = {
+      userName: tweet.user_name,
+      userDisplayName: tweet.user_name,
+      userProfileImageUrl: tweet.user_profile_image_url,
+      detailUrl: tweet.detail_url,
+      text: tweet.text,
+      createdAt: tweet.created_at,
+    };
 
     return (
-      <div
+      <TweetCard
         key={tweet.detail_url}
-        style={{
-          background: backgroundColor,
-        }}
+        tweet={tweet2}
+        status={status}
         onClick={() => onClicked(id)}
-      >
-        <div>
-          <img
-            alt={`${tweet.user_display_name} のプロフィール画像`}
-            src={tweet.user_profile_image_url}
-          />
-        </div>
-        <div>
-          {tweet.user_display_name} @{tweet.user_name}
-        </div>
-        <div>{tweet.created_at}</div>
-        <div>{tweet.text}</div>
-        <div>{favoriteLabel}</div>
-        <div>
-          <a href={tweet.detail_url} target="_blank" rel="noopener noreferrer">
-            {tweet.detail_url}
-          </a>
-        </div>
-      </div>
+      />
     );
   });
 
