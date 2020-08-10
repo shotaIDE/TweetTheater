@@ -2,7 +2,7 @@
 
 import json
 import os
-from fetch.agent import auth
+from . import auth
 import urllib.parse
 
 
@@ -100,16 +100,3 @@ def main(consumer_key: str,
         json.dump(video_url_list, f, indent=4, ensure_ascii=True)
 
     return video_url_list
-
-
-if __name__ == "__main__":
-    consumer_key = os.environ.get('CONSUMER_KEY')
-    consumer_secret = os.environ.get('CONSUMER_SECRET')
-
-    access_token = os.environ.get('ACCESS_TOKEN')
-    access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
-
-    main(consumer_key=consumer_key,
-         consumer_secret=consumer_secret,
-         access_token=access_token,
-         access_token_secret=access_token_secret)

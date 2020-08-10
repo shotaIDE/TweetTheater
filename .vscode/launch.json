@@ -8,7 +8,7 @@
             "name": "Agent: Fetch Debug",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/fetch/agent/fetch.py",
+            "program": "${workspaceFolder}/fetch_debug.py",
             "console": "integratedTerminal",
             "env": {
                 "IS_DEBUG": "true",
@@ -21,7 +21,7 @@
             "name": "Agent: Fetch Production",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/fetch/agent/fetch.py",
+            "program": "${workspaceFolder}/fetch_debug.py",
             "console": "integratedTerminal",
             "env": {
                 "CACHE_PATH": "${workspaceFolder}/cache.json",
