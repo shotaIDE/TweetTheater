@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import videoList from './video_list.json';
 
 const App = () => {
   const [currentVideoId, setCurrentVideoId] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      const fetchUrl = 'http://127.0.0.1:8000/fetch/';
+      const response = await fetch(fetchUrl);
+      const json = await response.json();
+      console.log(json);
+    })();
+  }, [])
 
   const onEnded = () => {
     const nextVideoId = currentVideoId + 1;
