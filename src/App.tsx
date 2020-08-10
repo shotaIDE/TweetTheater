@@ -1,9 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import * as firebase from "firebase/app";
+import "firebase/auth";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
+  authDomain: "autoplayclient-dev.firebaseapp.com",
+  databaseURL: "https://autoplayclient-dev.firebaseio.com",
+  projectId: "autoplayclient-dev",
+  storageBucket: "autoplayclient-dev.appspot.com",
+  messagingSenderId: "793287019774",
+  appId: "1:793287019774:web:e9674fb31ca75f3d9a29af",
+  measurementId: "G-SQ81DJLTJ6",
+};
+
+firebase.initializeApp(firebaseConfig);
+// firebase.analytics();
+
+const provider = new firebase.auth.TwitterAuthProvider();
+
+const signin = () => {
+  firebase.auth().signInWithRedirect(provider);
+};
+
+firebase.auth().getRedirectResult().then(result => {
+  console.log(`Redirect results: ${result}`);
+}).catch(error => {
+  console.log(`Auth failed: ${error}`);
+});
 
 const App = () => {
   const [videoList, setVideoList] = useState([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
+  const [signined, setSignined] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -21,9 +50,20 @@ const App = () => {
     console.log(videoList[currentVideoId].video_url);
   }
 
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      setSignined(true);
+      console.log('Signined');
+      return;
+    }
+    setSignined(false);
+    console.log('Not Signined');
+  })
+  
   const tweetList = videoList.map((tweet, id) => {
     const backgroundColor = id == currentVideoId ? 'gray' : 'white'
     const favoriteLabel = tweet.favorited ? "Favorited" : "NOT Favorited"
+
     return (
       <div
         key={tweet.detail_url}
@@ -57,8 +97,11 @@ const App = () => {
 
   const currentVideoUrl = (videoList.length > currentVideoId) ? videoList[currentVideoId].video_url : ''
 
+  const signinButton = signined ? "" : (<button onClick={signin}>サインイン</button>);
+
   return (
     <div className="App">
+      {signinButton}
       <div style={
         {
           marginLeft: 16,
