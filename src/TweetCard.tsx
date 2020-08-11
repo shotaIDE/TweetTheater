@@ -5,6 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 
+import { Tweet } from "./TweetCardList";
+
 const useStyles = makeStyles(() => ({
   root: {
     maxWidth: 600,
@@ -21,15 +23,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 export type TweetStatus = "none" | "playing" | "played";
-
-export interface Tweet {
-  userName: string;
-  userDisplayName: string;
-  userProfileImageUrl: string;
-  detailUrl: string;
-  text: string;
-  createdAt: string;
-}
 
 interface Props {
   tweet: Tweet;

@@ -8,8 +8,8 @@ import React, { useEffect, useState } from "react";
 import { SigninStatusBar } from "./AppBar";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
-import { Tweet, TweetCard, TweetStatus } from "./TweetCard";
-import { TweetSkeletonCard } from "./TweetSkeletonCard";
+import { TweetStatus } from "./TweetCard";
+import { Tweet, TweetCardInfo, TweetCardList } from "./TweetCardList";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
@@ -162,43 +162,30 @@ const App = () => {
     console.log(videoList[currentVideoId].video_url);
   };
 
-  const onClicked = (id: number) => {
+  const onClick = (id: number) => {
     setCurrentVideoId(id);
   };
 
-  const tweetList =
-    videoList.length > 0
-      ? videoList.map((video, id) => {
-          const status: TweetStatus =
-            id === currentVideoId
-              ? "playing"
-              : playedList[id]
-              ? "played"
-              : "none";
+  const tweetCardInfoList = videoList.map(
+    (video, id): TweetCardInfo => {
+      const status: TweetStatus =
+        id === currentVideoId ? "playing" : playedList[id] ? "played" : "none";
 
-          const tweet: Tweet = {
-            userName: video.user_name,
-            userDisplayName: video.user_name,
-            userProfileImageUrl: video.user_profile_image_url,
-            detailUrl: video.detail_url,
-            text: video.text,
-            createdAt: video.created_at,
-          };
+      const tweet: Tweet = {
+        userName: video.user_name,
+        userDisplayName: video.user_name,
+        userProfileImageUrl: video.user_profile_image_url,
+        detailUrl: video.detail_url,
+        text: video.text,
+        createdAt: video.created_at,
+      };
 
-          return (
-            <TweetCard
-              key={video.detail_url}
-              tweet={tweet}
-              status={status}
-              onClick={() => onClicked(id)}
-            />
-          );
-        })
-      : Array(5)
-          .fill(0)
-          .map((_, id) => {
-            return <TweetSkeletonCard key={`${id}`} />;
-          });
+      return {
+        tweet: tweet,
+        status: status,
+      };
+    }
+  );
 
   const isPlayingVideo = currentVideoId >= 0;
   const currentVideoUrl =
@@ -215,7 +202,7 @@ const App = () => {
       <Container>
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            {tweetList}
+            <TweetCardList tweetList={tweetCardInfoList} onClick={onClick} />
           </Grid>
           <Grid item xs={6}></Grid>
           <div

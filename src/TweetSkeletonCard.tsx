@@ -12,18 +12,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export type TweetStatus = "none" | "playing" | "played";
-
-interface Props {
-  key: string;
-}
-export const TweetSkeletonCard = (props: Props) => {
-  const classes = useStyles(props);
+export const TweetSkeletonCard = () => {
+  const classes = useStyles();
 
   const avatar = <Skeleton variant="circle" width={40} height={40} />;
 
   return (
-    <Card key={props.key} className={classes.root}>
+    <Card className={classes.root}>
       <CardHeader align="left" avatar={avatar} />
       <CardContent>
         <Skeleton variant="text" />
