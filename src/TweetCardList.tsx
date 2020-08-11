@@ -8,7 +8,6 @@ import { TweetSkeletonCard } from "./TweetSkeletonCard";
 const useStyles = makeStyles(() => ({
   root: {
     maxWidth: 600,
-    backgroundColor: "white",
   },
 }));
 

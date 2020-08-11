@@ -1,26 +1,28 @@
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
-import { makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 
 import { Tweet } from "./TweetCardList";
 
-const useStyles = makeStyles(() => ({
-  root: {
-    maxWidth: 600,
-    backgroundColor: "white",
-  },
-  rootPlaying: {
-    maxWidth: 600,
-    backgroundColor: "red",
-  },
-  rootPlayed: {
-    maxWidth: 600,
-    backgroundColor: "gray",
-  },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      maxWidth: 600,
+      backgroundColor: theme.palette.background.paper,
+    },
+    rootPlaying: {
+      maxWidth: 600,
+      backgroundColor: theme.palette.secondary.light,
+    },
+    rootPlayed: {
+      maxWidth: 600,
+      backgroundColor: theme.palette.grey[500],
+    },
+  })
+);
 
 export type TweetStatus = "none" | "playing" | "played";
 
