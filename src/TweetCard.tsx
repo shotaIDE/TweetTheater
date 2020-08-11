@@ -1,3 +1,4 @@
+import { Link } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -82,9 +83,13 @@ export const TweetCard = (props: Props) => {
           color="textSecondary"
           component="p"
         >
-          <a href={tweet.detailUrl} target="_blank" rel="noopener noreferrer">
+          <Link
+            href={tweet.detailUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {tweet.detailUrl}
-          </a>
+          </Link>
         </Typography>
       </CardContent>
     </Card>
