@@ -61,28 +61,13 @@ export const TweetCard = (props: Props) => {
         subheader={`@${tweet.userName}`}
       />
       <CardContent>
-        <Typography
-          align="left"
-          variant="body2"
-          color="textSecondary"
-          component="p"
-        >
+        <Typography align="left" variant="body2" component="p">
           {tweet.text}
         </Typography>
-        <Typography
-          align="left"
-          variant="body2"
-          color="textSecondary"
-          component="p"
-        >
+        <Typography align="left" variant="body2" component="p">
           {tweet.createdAt}
         </Typography>
-        <Typography
-          align="left"
-          variant="body2"
-          color="textSecondary"
-          component="p"
-        >
+        <Typography align="left" variant="body2" component="p">
           <Link
             href={tweet.detailUrl}
             target="_blank"

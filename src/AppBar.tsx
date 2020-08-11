@@ -34,7 +34,7 @@ interface Props {
 }
 
 export const SigninStatusBar = (props: Props) => {
-  const classes = useStyles();
+  const classes = useStyles(props);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

@@ -1,15 +1,17 @@
 import { Grid } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 
 import { TweetCard, TweetStatus } from "./TweetCard";
 import { TweetSkeletonCard } from "./TweetSkeletonCard";
 
-const useStyles = makeStyles(() => ({
-  root: {
-    maxWidth: 600,
-  },
-}));
+const useStyles = makeStyles((_: Theme) =>
+  createStyles({
+    root: {
+      maxWidth: 600,
+    },
+  })
+);
 
 export interface TweetCardInfo {
   tweet: Tweet;

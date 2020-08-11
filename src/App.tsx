@@ -1,19 +1,14 @@
 import "firebase/auth";
 import "./App.css";
 
-import {
-  Container,
-  CssBaseline,
-  Grid,
-  MuiThemeProvider,
-} from "@material-ui/core";
+import { Container, CssBaseline, Grid, ThemeProvider } from "@material-ui/core";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 
 import { SigninStatusBar } from "./AppBar";
+import { darkTheme } from "./DarkTheme";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
-import { getTheme } from "./Themes";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardInfo, TweetCardList } from "./TweetCardList";
 
@@ -55,7 +50,6 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
-  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -243,7 +237,7 @@ const App = () => {
     );
 
   return (
-    <MuiThemeProvider theme={getTheme(isDarkTheme)}>
+    <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <SigninStatusBar
         titleSuffix={currentPosition}
@@ -253,7 +247,7 @@ const App = () => {
         handleSignout={handleSignout}
       />
       {mainContainer}
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 };
 
