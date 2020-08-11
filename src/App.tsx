@@ -1,15 +1,23 @@
 import "firebase/auth";
 import "./App.css";
 
-import { Container, Grid } from "@material-ui/core";
+import {
+  Container,
+  CssBaseline,
+  Grid,
+  MuiThemeProvider,
+} from "@material-ui/core";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 
 import { SigninStatusBar } from "./AppBar";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
+import { getTheme } from "./Themes";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardInfo, TweetCardList } from "./TweetCardList";
+
+export type SigninStatus = "unknown" | "signined" | "notSignined";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
@@ -37,8 +45,6 @@ const handleSignout = () => {
   firebase.auth().signOut();
 };
 
-export type SigninStatus = "unknown" | "signined" | "notSignined";
-
 const App = () => {
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
   const [videoList, setVideoList] = useState([]);
@@ -49,6 +55,7 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -236,7 +243,8 @@ const App = () => {
     );
 
   return (
-    <div className="App">
+    <MuiThemeProvider theme={getTheme(isDarkTheme)}>
+      <CssBaseline />
       <SigninStatusBar
         titleSuffix={currentPosition}
         signinStatus={signinStatus}
@@ -245,7 +253,7 @@ const App = () => {
         handleSignout={handleSignout}
       />
       {mainContainer}
-    </div>
+    </MuiThemeProvider>
   );
 };
 
