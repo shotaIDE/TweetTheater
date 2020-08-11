@@ -165,23 +165,23 @@ const App = () => {
     setCurrentVideoId(id);
   };
 
-  const tweetList = videoList.map((tweet, id) => {
+  const tweetList = videoList.map((video, id) => {
     const status: TweetStatus =
       id === currentVideoId ? "playing" : playedList[id] ? "played" : "none";
 
-    const tweet2: Tweet = {
-      userName: tweet.user_name,
-      userDisplayName: tweet.user_name,
-      userProfileImageUrl: tweet.user_profile_image_url,
-      detailUrl: tweet.detail_url,
-      text: tweet.text,
-      createdAt: tweet.created_at,
+    const tweet: Tweet = {
+      userName: video.user_name,
+      userDisplayName: video.user_name,
+      userProfileImageUrl: video.user_profile_image_url,
+      detailUrl: video.detail_url,
+      text: video.text,
+      createdAt: video.created_at,
     };
 
     return (
       <TweetCard
-        key={tweet.detail_url}
-        tweet={tweet2}
+        key={video.detail_url}
+        tweet={tweet}
         status={status}
         onClick={() => onClicked(id)}
       />
