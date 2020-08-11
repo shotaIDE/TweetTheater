@@ -244,7 +244,7 @@ const App = () => {
 
 interface Props {
   src: string;
-  onEnded: any;
+  onEnded: () => void;
 }
 
 const Video = (props: Props) => {

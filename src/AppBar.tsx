@@ -27,8 +27,8 @@ interface Props {
   titleSuffix: string;
   signined: boolean;
   userName: string;
-  handleSignin: any;
-  handleSignout: any;
+  handleSignin: () => void;
+  handleSignout: () => void;
 }
 
 export const SigninStatusBar = (props: Props) => {

@@ -34,7 +34,7 @@ export interface Tweet {
 interface Props {
   tweet: Tweet;
   status: TweetStatus;
-  onClick: any;
+  onClick: () => void;
 }
 
 export const TweetCard = (props: Props) => {
