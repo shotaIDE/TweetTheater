@@ -6,6 +6,7 @@ import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 
 import { SigninStatusBar } from "./AppBar";
+import { NeedSignin } from "./NeedSignin";
 import { Tweet, TweetCard, TweetStatus } from "./Tweet";
 
 const firebaseConfig = {
@@ -24,11 +25,11 @@ firebase.initializeApp(firebaseConfig);
 
 const provider = new firebase.auth.TwitterAuthProvider();
 
-const signin = () => {
+const handleSignin = () => {
   firebase.auth().signInWithRedirect(provider);
 };
 
-const signout = () => {
+const handleSignout = () => {
   localStorage.clear();
 
   firebase.auth().signOut();
@@ -192,45 +193,51 @@ const App = () => {
     isPlayingVideo ? currentVideoId + 1 : "-"
   } / ${videoList.length} ]`;
 
+  const mainContainer = signined ? (
+    <Container>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          {tweetList}
+        </Grid>
+        <Grid item xs={6}></Grid>
+        <div
+          style={{
+            position: "fixed",
+            left: "51%",
+            width: 600,
+            height: "90%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Grid
+            container
+            spacing={2}
+            direction="row"
+            alignItems="center"
+            justify="center"
+          >
+            <Grid item xs={12}>
+              <Video src={currentVideoUrl} onEnded={onEnded} />
+            </Grid>
+          </Grid>
+        </div>
+      </Grid>
+    </Container>
+  ) : (
+    <NeedSignin handleSignin={handleSignin} />
+  );
+
   return (
     <div className="App">
       <SigninStatusBar
         titleSuffix={currentPosition}
         signined={signined}
         userName={userName}
-        handleSignin={signin}
-        handleSignout={signout}
+        handleSignin={handleSignin}
+        handleSignout={handleSignout}
       />
-      <Container>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            {tweetList}
-          </Grid>
-          <Grid item xs={6}></Grid>
-          <div
-            style={{
-              position: "fixed",
-              left: "51%",
-              width: 600,
-              height: "90%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <Grid
-              container
-              spacing={2}
-              direction="row"
-              alignItems="center"
-              justify="center"
-            >
-              <Grid item xs={12}>
-                <Video src={currentVideoUrl} onEnded={onEnded} />
-              </Grid>
-            </Grid>
-          </div>
-        </Grid>
-      </Container>
+      {mainContainer}
     </div>
   );
 };
