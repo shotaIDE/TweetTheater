@@ -6,6 +6,7 @@ import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 
 import { SigninStatusBar } from "./AppBar";
+import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { Tweet, TweetCard, TweetStatus } from "./Tweet";
 
@@ -35,11 +36,13 @@ const handleSignout = () => {
   firebase.auth().signOut();
 };
 
+export type SigninStatus = "unknown" | "signined" | "notSignined";
+
 const App = () => {
+  const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
   const [videoList, setVideoList] = useState([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [playedList, setPlayedList] = useState([]);
-  const [signined, setSignined] = useState(false);
   const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
@@ -48,18 +51,20 @@ const App = () => {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
-      const userName = user.displayName;
-      setUserName(userName);
-
       if (user) {
+        setSigninStatus("signined");
+
+        const userName = user.displayName;
+        setUserName(userName);
+
         user.getIdToken().then((fetchedIDToken) => {
           setIDToken(fetchedIDToken);
-          setSignined(true);
           console.log(fetchedIDToken);
         });
         return;
       }
-      setSignined(false);
+
+      setSigninStatus("notSignined");
       console.log("Not Signined");
     });
 
@@ -193,46 +198,49 @@ const App = () => {
     isPlayingVideo ? currentVideoId + 1 : "-"
   } / ${videoList.length} ]`;
 
-  const mainContainer = signined ? (
-    <Container>
-      <Grid container spacing={1}>
-        <Grid item xs={6}>
-          {tweetList}
-        </Grid>
-        <Grid item xs={6}></Grid>
-        <div
-          style={{
-            position: "fixed",
-            left: "51%",
-            width: 600,
-            height: "90%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            alignItems="center"
-            justify="center"
-          >
-            <Grid item xs={12}>
-              <Video src={currentVideoUrl} onEnded={onEnded} />
-            </Grid>
+  const mainContainer =
+    signinStatus === "signined" ? (
+      <Container>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            {tweetList}
           </Grid>
-        </div>
-      </Grid>
-    </Container>
-  ) : (
-    <NeedSignin handleSignin={handleSignin} />
-  );
+          <Grid item xs={6}></Grid>
+          <div
+            style={{
+              position: "fixed",
+              left: "51%",
+              width: 600,
+              height: "90%",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              alignItems="center"
+              justify="center"
+            >
+              <Grid item xs={12}>
+                <Video src={currentVideoUrl} onEnded={onEnded} />
+              </Grid>
+            </Grid>
+          </div>
+        </Grid>
+      </Container>
+    ) : signinStatus === "notSignined" ? (
+      <NeedSignin handleSignin={handleSignin} />
+    ) : (
+      <Loading />
+    );
 
   return (
     <div className="App">
       <SigninStatusBar
         titleSuffix={currentPosition}
-        signined={signined}
+        signinStatus={signinStatus}
         userName={userName}
         handleSignin={handleSignin}
         handleSignout={handleSignout}

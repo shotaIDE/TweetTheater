@@ -1,6 +1,3 @@
-import "firebase/auth";
-import "./App.css";
-
 import {
   Box,
   Button,

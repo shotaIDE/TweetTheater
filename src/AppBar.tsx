@@ -9,6 +9,8 @@ import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import React from "react";
 
+import { SigninStatus } from "./App";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   titleSuffix: string;
-  signined: boolean;
+  signinStatus: SigninStatus;
   userName: string;
   handleSignin: () => void;
   handleSignout: () => void;
@@ -50,41 +52,42 @@ export const SigninStatusBar = (props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const signinStatus = props.signined ? (
-    <div>
-      <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        onClick={handleMenu}
-        color="inherit"
-      >
-        <AccountCircle />
-      </IconButton>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={open}
-        onClose={handleClose}
-      >
-        <MenuItem disabled>{props.userName} さん</MenuItem>
-        <MenuItem onClick={handleSignout}>サインアウト</MenuItem>
-      </Menu>
-    </div>
-  ) : (
-    <Button color="inherit" onClick={props.handleSignin}>
-      サインイン
-    </Button>
-  );
+  const signinStatus =
+    props.signinStatus === "signined" ? (
+      <div>
+        <IconButton
+          aria-label="account of current user"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          onClick={handleMenu}
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+        <Menu
+          id="menu-appbar"
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem disabled>{props.userName} さん</MenuItem>
+          <MenuItem onClick={handleSignout}>サインアウト</MenuItem>
+        </Menu>
+      </div>
+    ) : props.signinStatus === "notSignined" ? (
+      <Button color="inherit" onClick={props.handleSignin}>
+        サインイン
+      </Button>
+    ) : null;
 
   return (
     <AppBar position="sticky">
