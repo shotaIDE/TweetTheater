@@ -17,11 +17,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     rootPlaying: {
       maxWidth: 600,
-      backgroundColor: theme.palette.secondary.light,
+      backgroundColor: theme.palette.secondary.dark,
     },
     rootPlayed: {
       maxWidth: 600,
-      backgroundColor: theme.palette.grey[500],
+      backgroundColor: theme.palette.action.disabled,
       cursor: "pointer",
     },
   })
