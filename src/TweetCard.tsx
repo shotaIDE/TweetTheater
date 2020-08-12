@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       maxWidth: 600,
       backgroundColor: theme.palette.background.paper,
+      cursor: "pointer",
     },
     rootPlaying: {
       maxWidth: 600,
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     rootPlayed: {
       maxWidth: 600,
       backgroundColor: theme.palette.grey[500],
+      cursor: "pointer",
     },
   })
 );
