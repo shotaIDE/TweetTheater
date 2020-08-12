@@ -42,6 +42,26 @@ const handleSignout = () => {
   firebase.auth().signOut();
 };
 
+const getAuthParams = (
+  uid: string,
+  idToken: string,
+  accessToken: string,
+  secret: string
+) => {
+  const params =
+    uid != null && accessToken != null && secret != null
+      ? {
+          uid: uid,
+          accessToken: accessToken,
+          secret: secret,
+        }
+      : {
+          idToken: idToken,
+        };
+
+  return params;
+};
+
 const App = () => {
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
   const [tweetList, setTweetList] = useState<Tweet[]>([]);
@@ -122,16 +142,7 @@ const App = () => {
     (async () => {
       const fetchUrl = `http://127.0.0.1:8000/fetch/`;
 
-      const params =
-        uid != null && accessToken != null && secret != null
-          ? {
-              uid: uid,
-              accessToken: accessToken,
-              secret: secret,
-            }
-          : {
-              idToken: idToken,
-            };
+      const params = getAuthParams(uid, idToken, accessToken, secret);
 
       const response = await fetch(fetchUrl, {
         method: "POST",
@@ -170,10 +181,30 @@ const App = () => {
   };
 
   const onFavorited = () => {
-    let updatedFavoriteList = favoritedList;
-    updatedFavoriteList[currentVideoId] = true;
+    const targetId = tweetList[currentVideoId].id;
 
-    setFavoritedList(updatedFavoriteList);
+    const postUrl = `http://127.0.0.1:8000/fetch/favorite/`;
+
+    const params = getAuthParams(uid, idToken, accessToken, secret);
+    params["id"] = targetId;
+
+    fetch(postUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: Object.keys(params)
+        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+        .join("&"),
+    }).then((response) => {
+      const json = response.json();
+      console.log(json);
+
+      let updatedFavoriteList = favoritedList;
+      updatedFavoriteList[currentVideoId] = true;
+
+      setFavoritedList(updatedFavoriteList);
+    });
   };
 
   const onClick = (id: number) => {

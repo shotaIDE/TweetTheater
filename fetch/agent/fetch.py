@@ -50,7 +50,7 @@ def main(consumer_key: str,
             # メディアを直接参照できるURLが含まれていないものはスキップする
             continue
 
-        tweet_id = tweet['id']
+        tweet_id = tweet['id_str']  # 桁の丸め誤差が生じないように文字列のIDを扱う
         created_at = tweet['created_at']
         text = tweet['text']
         favorited = tweet['favorited']

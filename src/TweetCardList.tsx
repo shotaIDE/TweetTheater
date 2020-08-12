@@ -14,7 +14,7 @@ const useStyles = makeStyles((_: Theme) =>
 );
 
 export interface Tweet {
-  id: number;
+  id: string;
   userName: string;
   userDisplayName: string;
   userProfileImageUrl: string;

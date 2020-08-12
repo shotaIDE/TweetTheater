@@ -22,7 +22,7 @@ def __post_favorite(id: int, oauth: OAuth1Session):
     print(results)
 
 
-def post(id: int,
+def post(id: str,
          consumer_key: str,
          consumer_secret: str,
          access_token: str,

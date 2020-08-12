@@ -121,13 +121,13 @@ def post_favorite(request):
     consumer_key = os.environ.get('CONSUMER_KEY')
     consumer_secret = os.environ.get('CONSUMER_SECRET')
 
-    target_id = int(request.POST.get('id'))
+    target_id = request.POST.get('id')
 
     user_secret = _get_user_secret(request)
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
 
-    favorite.post_at_once(
+    favorite.post(
         id=target_id,
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
