@@ -188,6 +188,11 @@ const App = () => {
     const params = getAuthParams(uid, idToken, accessToken, secret);
     params["id"] = targetId;
 
+    // いいねボタンを無効化し、多重にリクエストするのを防ぐ
+    let updatedFavoriteList = favoritedList.slice(); // コピー
+    updatedFavoriteList[currentVideoId] = true;
+    setFavoritedList(updatedFavoriteList);
+
     fetch(postUrl, {
       method: "POST",
       headers: {
@@ -199,11 +204,6 @@ const App = () => {
     }).then((response) => {
       const json = response.json();
       console.log(json);
-
-      let updatedFavoriteList = favoritedList;
-      updatedFavoriteList[currentVideoId] = true;
-
-      setFavoritedList(updatedFavoriteList);
     });
   };
 
