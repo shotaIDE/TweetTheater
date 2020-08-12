@@ -93,7 +93,7 @@ export const SigninStatusBar = (props: Props) => {
     <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          Auto Play Client {props.titleSuffix}
+          {process.env.REACT_APP_SITE_TITLE} {props.titleSuffix}
         </Typography>
         {signinStatus}
       </Toolbar>
