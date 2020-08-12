@@ -9,6 +9,7 @@ import { SigninStatusBar } from "./AppBar";
 import { darkTheme } from "./DarkTheme";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
+import { PlayingMedia } from "./PlayingMedia";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardInfo, TweetCardList } from "./TweetCardList";
 
@@ -216,17 +217,7 @@ const App = () => {
               justifyContent: "center",
             }}
           >
-            <Grid
-              container
-              spacing={2}
-              direction="row"
-              alignItems="center"
-              justify="center"
-            >
-              <Grid item xs={12}>
-                <Video src={currentVideoUrl} onEnded={onEnded} />
-              </Grid>
-            </Grid>
+            <PlayingMedia currentUrl={currentVideoUrl} onEnded={onEnded} />
           </div>
         </Grid>
       </Container>
@@ -248,25 +239,6 @@ const App = () => {
       />
       {mainContainer}
     </ThemeProvider>
-  );
-};
-
-interface Props {
-  src: string;
-  onEnded: () => void;
-}
-
-const Video = (props: Props) => {
-  return (
-    <video
-      key={props.src}
-      autoPlay
-      controls
-      onEnded={props.onEnded}
-      style={{ width: "100%" }}
-    >
-      <source src={props.src} type="video/mp4"></source>
-    </video>
   );
 };
 
