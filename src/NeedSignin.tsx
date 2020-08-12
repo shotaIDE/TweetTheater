@@ -2,7 +2,7 @@ import { Box, Button, Container, Paper, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 
-const useStyles = makeStyles((_: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
@@ -11,16 +11,16 @@ const useStyles = makeStyles((_: Theme) =>
     },
     messagePaper: {
       maxWidth: 600,
-      padding: 16,
+      padding: theme.spacing(2),
     },
     title: {
-      margin: 16,
+      margin: theme.spacing(2),
     },
     body: {
-      margin: 16,
+      margin: theme.spacing(2),
     },
     button: {
-      margin: 16,
+      margin: theme.spacing(2),
     },
   })
 );
@@ -35,28 +35,25 @@ export const NeedSignin = (props: Props) => {
   return (
     <Container className={classes.root}>
       <Box display="flex" alignItems="center">
-        <Box>
-          <Paper className={classes.messagePaper}>
-            <Typography className={classes.title} variant="h5" align="center">
-              ご利用にはTwitterでのサインインが必要です
-            </Typography>
-            <Typography
-              className={classes.body}
-              variant="subtitle1"
-              align="left"
-            >
-              本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントへのアクセスを許可してください。
-            </Typography>
+        <Paper className={classes.messagePaper}>
+          <Typography className={classes.title} variant="h5" align="center">
+            ご利用にはTwitterでのサインインが必要です
+          </Typography>
+          <Typography className={classes.body} variant="subtitle1" align="left">
+            本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントへのアクセスを許可してください。
+          </Typography>
+          <Box display="flex" justifyContent="center">
             <Button
               className={classes.button}
               variant="contained"
+              size="large"
               color="primary"
               onClick={props.handleSignin}
             >
               サインイン
             </Button>
-          </Paper>
-        </Box>
+          </Box>
+        </Paper>
       </Box>
     </Container>
   );
