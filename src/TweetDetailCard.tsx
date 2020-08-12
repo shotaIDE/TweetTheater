@@ -1,3 +1,4 @@
+import { Link } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -12,39 +13,25 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       maxWidth: 600,
       backgroundColor: theme.palette.background.paper,
-      cursor: "pointer",
     },
-    rootPlaying: {
-      maxWidth: 600,
-      backgroundColor: theme.palette.secondary.dark,
+    datetime: {
+      paddingTop: theme.spacing(1),
+      color: theme.palette.text.secondary,
     },
-    rootPlayed: {
-      maxWidth: 600,
-      backgroundColor: theme.palette.action.disabled,
-      cursor: "pointer",
+    link: {
+      paddingTop: theme.spacing(1),
     },
   })
 );
 
-export type TweetStatus = "none" | "playing" | "played";
-
 interface Props {
   tweet: Tweet;
-  status: TweetStatus;
-  onClick: () => void;
 }
 
-export const TweetCard = (props: Props) => {
+export const TweetDetailCard = (props: Props) => {
   const classes = useStyles(props);
 
   const tweet = props.tweet;
-
-  const rootStyle =
-    props.status === "none"
-      ? classes.root
-      : props.status === "playing"
-      ? classes.rootPlaying
-      : classes.rootPlayed;
 
   const profileImage = (
     <img
@@ -54,7 +41,7 @@ export const TweetCard = (props: Props) => {
   );
 
   return (
-    <Card key={tweet.detailUrl} className={rootStyle} onClick={props.onClick}>
+    <Card key={tweet.detailUrl} className={classes.root}>
       <CardHeader
         align="left"
         avatar={profileImage}
@@ -64,6 +51,28 @@ export const TweetCard = (props: Props) => {
       <CardContent>
         <Typography align="left" variant="body2" component="p">
           {tweet.text}
+        </Typography>
+        <Typography
+          className={classes.datetime}
+          align="left"
+          variant="body2"
+          component="p"
+        >
+          {tweet.createdAt}
+        </Typography>
+        <Typography
+          className={classes.link}
+          align="left"
+          variant="body2"
+          component="p"
+        >
+          <Link
+            href={tweet.detailUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {tweet.detailUrl}
+          </Link>
         </Typography>
       </CardContent>
     </Card>

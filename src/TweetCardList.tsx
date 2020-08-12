@@ -13,11 +13,6 @@ const useStyles = makeStyles((_: Theme) =>
   })
 );
 
-export interface TweetCardInfo {
-  tweet: Tweet;
-  status: TweetStatus;
-}
-
 export interface Tweet {
   userName: string;
   userDisplayName: string;
@@ -25,10 +20,12 @@ export interface Tweet {
   detailUrl: string;
   text: string;
   createdAt: string;
+  videoUrl: string;
 }
 
 interface Props {
-  tweetList: TweetCardInfo[];
+  tweetList: Tweet[];
+  statusList: TweetStatus[];
   onClick: (_: number) => void;
 }
 
@@ -37,12 +34,12 @@ export const TweetCardList = (props: Props) => {
 
   const result =
     props.tweetList.length > 0
-      ? props.tweetList.map((info, id) => {
+      ? props.tweetList.map((tweet, id) => {
           return (
-            <Grid item key={info.tweet.detailUrl} sm={12}>
+            <Grid item key={tweet.detailUrl} sm={12}>
               <TweetCard
-                tweet={info.tweet}
-                status={info.status}
+                tweet={tweet}
+                status={props.statusList[id]}
                 onClick={() => props.onClick(id)}
               />
             </Grid>

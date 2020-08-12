@@ -11,7 +11,8 @@ import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMedia } from "./PlayingMedia";
 import { TweetStatus } from "./TweetCard";
-import { Tweet, TweetCardInfo, TweetCardList } from "./TweetCardList";
+import { Tweet, TweetCardList } from "./TweetCardList";
+import { getTweetList } from "./TweetList";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
@@ -43,7 +44,7 @@ const handleSignout = () => {
 
 const App = () => {
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
-  const [videoList, setVideoList] = useState([]);
+  const [tweetList, setTweetList] = useState<Tweet[]>([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [playedList, setPlayedList] = useState([]);
   const [userName, setUserName] = useState(null);
@@ -142,8 +143,10 @@ const App = () => {
       });
       const json = await response.json();
 
+      const fetchedTweetList = getTweetList(json);
+
       setPlayedList([json.length, false]);
-      setVideoList(json);
+      setTweetList(fetchedTweetList);
     })();
   }, [accessToken, idToken, secret, uid]);
 
@@ -154,57 +157,45 @@ const App = () => {
     setPlayedList(updatedPlayedList);
 
     const nextVideoId = currentVideoId + 1;
-    if (nextVideoId >= videoList.length) {
+    if (nextVideoId >= tweetList.length) {
       setCurrentVideoId(-1);
       return;
     }
 
     setCurrentVideoId(nextVideoId);
 
-    console.log(videoList[currentVideoId].video_url);
+    console.log(tweetList[currentVideoId].videoUrl);
   };
 
   const onClick = (id: number) => {
     setCurrentVideoId(id);
   };
 
-  const tweetCardInfoList = videoList.map(
-    (video, id): TweetCardInfo => {
-      const status: TweetStatus =
-        id === currentVideoId ? "playing" : playedList[id] ? "played" : "none";
-
-      const tweet: Tweet = {
-        userName: video.user_name,
-        userDisplayName: video.user_name,
-        userProfileImageUrl: video.user_profile_image_url,
-        detailUrl: video.detail_url,
-        text: video.text,
-        createdAt: video.created_at,
-      };
-
-      return {
-        tweet: tweet,
-        status: status,
-      };
-    }
+  const tweetCardInfoList = tweetList.map(
+    (_, id): TweetStatus =>
+      id === currentVideoId ? "playing" : playedList[id] ? "played" : "none"
   );
 
   const isPlayingVideo = currentVideoId >= 0;
-  const currentVideoUrl =
-    isPlayingVideo && currentVideoId < videoList.length
-      ? videoList[currentVideoId].video_url
-      : "";
+  const currentTweet =
+    isPlayingVideo && currentVideoId < tweetList.length
+      ? tweetList[currentVideoId]
+      : null;
 
   const currentPosition = ` - [ ${
     isPlayingVideo ? currentVideoId + 1 : "-"
-  } / ${videoList.length} ]`;
+  } / ${tweetList.length} ]`;
 
   const mainContainer =
     signinStatus === "signined" ? (
       <Container>
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            <TweetCardList tweetList={tweetCardInfoList} onClick={onClick} />
+            <TweetCardList
+              tweetList={tweetList}
+              statusList={tweetCardInfoList}
+              onClick={onClick}
+            />
           </Grid>
           <Grid item xs={6}></Grid>
           <div
@@ -217,7 +208,7 @@ const App = () => {
               justifyContent: "center",
             }}
           >
-            <PlayingMedia currentUrl={currentVideoUrl} onEnded={onEnded} />
+            <PlayingMedia tweet={currentTweet} onEnded={onEnded} />
           </div>
         </Grid>
       </Container>
