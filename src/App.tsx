@@ -45,6 +45,7 @@ const handleSignout = () => {
 const App = () => {
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
   const [tweetList, setTweetList] = useState<Tweet[]>([]);
+  const [favoritedList, setFavoritedList] = useState<boolean[]>([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [playedList, setPlayedList] = useState([]);
   const [userName, setUserName] = useState(null);
@@ -145,8 +146,9 @@ const App = () => {
 
       const fetchedTweetList = getTweetList(json);
 
-      setPlayedList([json.length, false]);
+      setPlayedList(Array(fetchedTweetList.length).fill(false));
       setTweetList(fetchedTweetList);
+      setFavoritedList(Array(fetchedTweetList.length).fill(false));
     })();
   }, [accessToken, idToken, secret, uid]);
 
@@ -167,6 +169,13 @@ const App = () => {
     console.log(tweetList[currentVideoId].videoUrl);
   };
 
+  const onFavorited = () => {
+    let updatedFavoriteList = favoritedList;
+    updatedFavoriteList[currentVideoId] = true;
+
+    setFavoritedList(updatedFavoriteList);
+  };
+
   const onClick = (id: number) => {
     setCurrentVideoId(id);
   };
@@ -176,11 +185,12 @@ const App = () => {
       id === currentVideoId ? "playing" : playedList[id] ? "played" : "none"
   );
 
-  const isPlayingVideo = currentVideoId >= 0;
-  const currentTweet =
-    isPlayingVideo && currentVideoId < tweetList.length
-      ? tweetList[currentVideoId]
-      : null;
+  const isPlayingVideo =
+    currentVideoId >= 0 && currentVideoId < tweetList.length;
+  const currentTweet = isPlayingVideo ? tweetList[currentVideoId] : null;
+  const currentFavorited = isPlayingVideo
+    ? favoritedList[currentVideoId]
+    : false;
 
   const currentPosition = ` - [ ${
     isPlayingVideo ? currentVideoId + 1 : "-"
@@ -208,7 +218,12 @@ const App = () => {
               justifyContent: "center",
             }}
           >
-            <PlayingMedia tweet={currentTweet} onEnded={onEnded} />
+            <PlayingMedia
+              tweet={currentTweet}
+              favorited={currentFavorited}
+              onEnded={onEnded}
+              onFavorited={onFavorited}
+            />
           </div>
         </Grid>
       </Container>

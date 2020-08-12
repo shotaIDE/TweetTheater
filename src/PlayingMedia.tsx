@@ -8,13 +8,19 @@ import { Video } from "./Video";
 
 interface Props {
   tweet: Tweet;
+  favorited: boolean;
   onEnded: () => void;
+  onFavorited: () => void;
 }
 
 export const PlayingMedia = (props: Props) => {
   const videoUrl = props.tweet ? props.tweet.videoUrl : "";
   const tweetDetailCard = props.tweet ? (
-    <TweetDetailCard tweet={props.tweet} />
+    <TweetDetailCard
+      tweet={props.tweet}
+      favorited={props.favorited}
+      onClick={props.onFavorited}
+    />
   ) : (
     <TweetSkeletonCard />
   );
