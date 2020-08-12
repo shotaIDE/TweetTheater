@@ -41,6 +41,24 @@
             "envFile": "${workspaceFolder}/.env"
         },
         {
+            "name": "Django: Emulator",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "--noreload"
+            ],
+            "django": true,
+            "env": {
+                "IS_DEBUG": "true",
+                "FIRESTORE_EMULATOR_HOST": "localhost:8080",
+                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
+                "CACHE_PATH": "${workspaceFolder}/cache.json",
+                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
+            },
+        },
+        {
             "name": "Django: Debug",
             "type": "python",
             "request": "launch",
