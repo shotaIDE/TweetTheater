@@ -1,7 +1,7 @@
 import os
 
 import firebase_admin
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from firebase_admin import auth as firebaseauth
@@ -127,11 +127,21 @@ def post_favorite(request):
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
 
-    favorite.post(
+    result = favorite.post(
         id=target_id,
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
         access_token=access_token,
         access_secret=access_secret)
 
-    return JsonResponse({})
+    if result == favorite.PostResult.SUCCEED:
+        return JsonResponse({})
+
+    if result == favorite.PostResult.ALREADY_FAVORITED:
+        return JsonResponse(
+            {
+                'code': 139,
+                'message': 'already favorited'
+            })
+
+    return HttpResponse(status=403)

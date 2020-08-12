@@ -2,37 +2,53 @@
 
 import json
 import os
+from enum import Enum
 
 from requests_oauthlib import OAuth1Session
 
 from . import auth
 
 
+class PostResult(Enum):
+    SUCCEED = "Succeed"
+    UNKNOWN_ERROR = "Unknown error"
+    ALREADY_FAVORITED = "Already favorited"
+
+
 # いいねを登録する
-def __post_favorite(id: int, oauth: OAuth1Session):
+def __post_favorite(id: int, oauth: OAuth1Session) -> PostResult:
     url = 'https://api.twitter.com/1.1/favorites/create.json'
     params = {
         'id': id,
     }
 
     response = oauth.post(url, params=params)
+    response_code = response.status_code
     results_text = response.text
     results = json.loads(results_text)
 
-    print(results)
+    print(f'Code: {response_code}, result: {results}')
+
+    if response_code == 200:
+        return PostResult.SUCCEED
+
+    if response_code == 403 and results['errors'][0]['code'] == 139:
+        return PostResult.ALREADY_FAVORITED
+
+    return PostResult.UNKNOWN_ERROR
 
 
 def post(id: str,
          consumer_key: str,
          consumer_secret: str,
          access_token: str,
-         access_secret: str):
+         access_secret: str) -> PostResult:
     oauth = auth.get_oauth_session(consumer_key=consumer_key,
                                    consumer_secret=consumer_secret,
                                    access_token=access_token,
                                    access_secret=access_secret)
 
-    __post_favorite(id=id, oauth=oauth)
+    return __post_favorite(id=id, oauth=oauth)
 
 
 def post_at_once(consumer_key: str,

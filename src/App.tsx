@@ -10,6 +10,10 @@ import { darkTheme } from "./DarkTheme";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMedia } from "./PlayingMedia";
+import {
+  PostFavoriteResult,
+  PostFavoriteSnackbars,
+} from "./PostFavoriteSnackbars";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
@@ -73,6 +77,7 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState<PostFavoriteResult>(null);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -180,6 +185,10 @@ const App = () => {
     console.log(tweetList[currentVideoId].videoUrl);
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(null);
+  };
+
   const onFavorited = () => {
     const targetId = tweetList[currentVideoId].id;
 
@@ -193,18 +202,38 @@ const App = () => {
     updatedFavoriteList[currentVideoId] = true;
     setFavoritedList(updatedFavoriteList);
 
-    fetch(postUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: Object.keys(params)
-        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-        .join("&"),
-    }).then((response) => {
-      const json = response.json();
-      console.log(json);
-    });
+    (async () => {
+      const response = await fetch(postUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: Object.keys(params)
+          .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+          .join("&"),
+      });
+
+      const responseOk = await response.ok;
+
+      if (!responseOk) {
+        setSnackbarOpen("unknown error");
+
+        // 再度クリックできるようにする
+        let updatedFavoriteList = favoritedList.slice(); // コピー
+        updatedFavoriteList[currentVideoId] = false;
+        setFavoritedList(updatedFavoriteList);
+        return;
+      }
+
+      const json = await response.json();
+
+      if (json["code"] === 139) {
+        setSnackbarOpen("already favorited");
+        return;
+      }
+
+      setSnackbarOpen("succeed");
+    })();
   };
 
   const onClick = (id: number) => {
@@ -275,6 +304,10 @@ const App = () => {
         handleSignout={handleSignout}
       />
       {mainContainer}
+      <PostFavoriteSnackbars
+        open={snackbarOpen}
+        handleClose={handleSnackbarClose}
+      />
     </ThemeProvider>
   );
 };
