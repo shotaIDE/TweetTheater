@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from firebase_admin import auth as firebaseauth
 from firebase_admin import credentials, firestore
 
-from fetch.agent import auth, fetch
+from fetch.agent import auth, favorite, fetch
 
 firebase_admin_credential_path = \
     os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
@@ -16,17 +16,16 @@ firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
+ACCESS_TOKEN_KEY = 'access_token'
+ACCESS_SECRET_KEY = 'secret'
 
-@csrf_exempt
-def index(request):
-    consumer_key = os.environ.get('CONSUMER_KEY')
-    consumer_secret = os.environ.get('CONSUMER_SECRET')
 
+def _get_user_secret(request) -> dict:
     uid = request.POST.get('uid')
     access_token = request.POST.get('accessToken')
-    access_token_secret = request.POST.get('secret')
+    secret = request.POST.get('secret')
 
-    if (uid is None or access_token is None or access_token_secret is None):
+    if (uid is None or access_token is None or secret is None):
         id_token = request.POST.get('idToken')
 
         decoded_token = firebaseauth.verify_id_token(id_token)
@@ -41,15 +40,28 @@ def index(request):
         print(f'User credentials: {user_credentials}')
 
         access_token = user_credentials['accessToken']
-        access_token_secret = user_credentials['secret']
+        secret = user_credentials['secret']
 
-    # access_token = os.environ.get('ACCESS_TOKEN')
-    # access_token_secret = os.environ.get('ACCESS_TOKEN_SECRET')
+    return {
+        ACCESS_TOKEN_KEY: access_token,
+        ACCESS_SECRET_KEY: secret
+    }
 
-    result = fetch.main(consumer_key=consumer_key,
-                        consumer_secret=consumer_secret,
-                        access_token=access_token,
-                        access_token_secret=access_token_secret)
+
+@csrf_exempt
+def index(request):
+    consumer_key = os.environ.get('CONSUMER_KEY')
+    consumer_secret = os.environ.get('CONSUMER_SECRET')
+
+    user_secret = _get_user_secret(request)
+    access_token = user_secret[ACCESS_TOKEN_KEY]
+    access_secret = user_secret[ACCESS_SECRET_KEY]
+
+    result = fetch.main(
+        consumer_key=consumer_key,
+        consumer_secret=consumer_secret,
+        access_token=access_token,
+        access_secret=access_secret)
 
     # 配列をJSONに変換するために、safe を False にしておく
     return JsonResponse(result, safe=False)
@@ -88,7 +100,7 @@ def callback(request):
 def create(request):
     uid = request.POST.get('uid')
     access_token = request.POST.get('accessToken')
-    access_token_secret = request.POST.get('secret')
+    access_secret = request.POST.get('secret')
 
     print(f'uid: {uid}')
 
@@ -96,9 +108,30 @@ def create(request):
 
     user_credentials = {
         'accessToken': access_token,
-        'secret': access_token_secret,
+        'secret': access_secret,
     }
 
     user_document_ref.set(user_credentials)
+
+    return JsonResponse({})
+
+
+@csrf_exempt
+def post_favorite(request):
+    consumer_key = os.environ.get('CONSUMER_KEY')
+    consumer_secret = os.environ.get('CONSUMER_SECRET')
+
+    target_id = int(request.POST.get('id'))
+
+    user_secret = _get_user_secret(request)
+    access_token = user_secret[ACCESS_TOKEN_KEY]
+    access_secret = user_secret[ACCESS_SECRET_KEY]
+
+    favorite.post_at_once(
+        id=target_id,
+        consumer_key=consumer_key,
+        consumer_secret=consumer_secret,
+        access_token=access_token,
+        access_secret=access_secret)
 
     return JsonResponse({})

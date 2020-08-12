@@ -9,7 +9,7 @@ from . import auth
 
 
 # いいねを登録する
-def post_favorite(id: int, oauth: OAuth1Session):
+def __post_favorite(id: int, oauth: OAuth1Session):
     url = 'https://api.twitter.com/1.1/favorites/create.json'
     params = {
         'id': id,
@@ -22,10 +22,23 @@ def post_favorite(id: int, oauth: OAuth1Session):
     print(results)
 
 
-def main(consumer_key: str,
+def post(id: int,
+         consumer_key: str,
          consumer_secret: str,
          access_token: str,
-         access_token_secret: str):
+         access_secret: str):
+    oauth = auth.get_oauth_session(consumer_key=consumer_key,
+                                   consumer_secret=consumer_secret,
+                                   access_token=access_token,
+                                   access_secret=access_secret)
+
+    __post_favorite(id=id, oauth=oauth)
+
+
+def post_at_once(consumer_key: str,
+                 consumer_secret: str,
+                 access_token: str,
+                 access_secret: str):
     end_str = input('Enter the last number of the tweet you want to like...')
     end = int(end_str)
 
@@ -37,11 +50,11 @@ def main(consumer_key: str,
     oauth = auth.get_oauth_session(consumer_key=consumer_key,
                                    consumer_secret=consumer_secret,
                                    access_token=access_token,
-                                   access_token_secret=access_token_secret)
+                                   access_secret=access_secret)
 
     for video_info in video_url_list[:end]:
         tweet_id = video_info['id']
-        post_favorite(id=tweet_id, oauth=oauth)
+        __post_favorite(id=tweet_id, oauth=oauth)
 
     removed_video_url_list = video_url_list[end:]
 

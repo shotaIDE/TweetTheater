@@ -68,11 +68,11 @@ def get_access_token(consumer_key: str,
 def get_oauth_session(consumer_key: str,
                       consumer_secret: str,
                       access_token: str,
-                      access_token_secret: str) -> OAuth1Session:
+                      access_secret: str) -> OAuth1Session:
     # Make the request
     oauth = OAuth1Session(consumer_key,
                           client_secret=consumer_secret,
                           resource_owner_key=access_token,
-                          resource_owner_secret=access_token_secret)
+                          resource_owner_secret=access_secret)
 
     return oauth

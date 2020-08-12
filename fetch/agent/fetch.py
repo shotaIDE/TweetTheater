@@ -10,7 +10,7 @@ from . import auth
 def main(consumer_key: str,
          consumer_secret: str,
          access_token: str,
-         access_token_secret: str) -> dict:
+         access_secret: str) -> dict:
     IS_DEBUG = os.environ.get('IS_DEBUG') == 'true'
 
     cache_path = os.environ.get('CACHE_PATH')
@@ -19,7 +19,7 @@ def main(consumer_key: str,
     oauth = auth.get_oauth_session(consumer_key=consumer_key,
                                    consumer_secret=consumer_secret,
                                    access_token=access_token,
-                                   access_token_secret=access_token_secret)
+                                   access_secret=access_secret)
 
     if IS_DEBUG:
         with open(cache_path, 'r') as f:
