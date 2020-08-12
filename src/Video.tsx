@@ -12,7 +12,7 @@ export const Video = (props: Props) => {
       autoPlay
       controls
       onEnded={props.onEnded}
-      style={{ width: "100%" }}
+      style={{ width: "100%", maxHeight: 500 }}
     >
       <source src={props.src} type="video/mp4"></source>
     </video>
