@@ -55,6 +55,9 @@ def post_at_once(consumer_key: str,
                  consumer_secret: str,
                  access_token: str,
                  access_secret: str):
+    start_str = input('Enter the first number of the tweet you want to like...')
+    start = int(start_str) - 1
+
     end_str = input('Enter the last number of the tweet you want to like...')
     end = int(end_str)
 
@@ -68,11 +71,6 @@ def post_at_once(consumer_key: str,
                                    access_token=access_token,
                                    access_secret=access_secret)
 
-    for video_info in video_url_list[:end]:
+    for video_info in video_url_list[start:end]:
         tweet_id = video_info['id']
         __post_favorite(id=tweet_id, oauth=oauth)
-
-    removed_video_url_list = video_url_list[end:]
-
-    with open(video_list_path, 'w') as f:
-        json.dump(removed_video_url_list, f, indent=4, ensure_ascii=True)
