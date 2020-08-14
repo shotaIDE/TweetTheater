@@ -76,6 +76,24 @@
             },
         },
         {
+            "name": "Django: CloudSQL",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "--noreload",
+                "--settings=autoplayclient.settings.development"
+            ],
+            "django": true,
+            "env": {
+                "IS_DEBUG": "true",
+                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
+                "CACHE_PATH": "${workspaceFolder}/cache.json",
+                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
+            },
+        },
+        {
             "name": "Django: Production",
             "type": "python",
             "request": "launch",
