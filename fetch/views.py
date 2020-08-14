@@ -2,12 +2,11 @@ import os
 
 import firebase_admin
 from django.http.response import JsonResponse, HttpResponse
-from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from firebase_admin import auth as firebaseauth
 from firebase_admin import credentials, firestore
 
-from fetch.agent import auth, favorite, fetch
+from fetch.agent import favorite, fetch
 
 firebase_admin_credential_path = \
     os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
@@ -65,35 +64,6 @@ def index(request):
 
     # 配列をJSONに変換するために、safe を False にしておく
     return JsonResponse(result, safe=False)
-
-
-def request(request):
-    consumer_key = os.environ.get('CONSUMER_KEY')
-    consumer_secret = os.environ.get('CONSUMER_SECRET')
-
-    authenticate_url = auth.get_authenticate_request_url(
-        consumer_key=consumer_key, consumer_secret=consumer_secret)
-
-    return redirect(authenticate_url)
-
-
-def callback(request):
-    consumer_key = os.environ.get('CONSUMER_KEY')
-    consumer_secret = os.environ.get('CONSUMER_SECRET')
-
-    oauth_token = request.GET.get('oauth_token')
-    oauth_verifier = request.GET.get('oauth_verifier')
-
-    print(f'OAuth Token: {oauth_token}')
-    print(f'OAuth Verifier: {oauth_verifier}')
-
-    access_token = auth.get_access_token(
-        consumer_key=consumer_key,
-        consumer_secret=consumer_secret,
-        oauth_token=oauth_token,
-        oauth_verifier=oauth_verifier)
-
-    return JsonResponse(access_token)
 
 
 @csrf_exempt
