@@ -6,7 +6,7 @@ export const getTweetList = (fetchedList): Tweet[] => {
       const tweet: Tweet = {
         id: video.id,
         userName: video.user_name,
-        userDisplayName: video.user_name,
+        userDisplayName: video.user_display_name,
         userProfileImageUrl: video.user_profile_image_url,
         detailUrl: video.detail_url,
         text: video.text,
