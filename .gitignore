@@ -1,4 +1,6 @@
 
+/static
+
 /serviceAccountKey*.json
 
 /cache.json

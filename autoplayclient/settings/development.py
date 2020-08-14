@@ -12,13 +12,26 @@ ALLOWED_HOSTS = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'NAME': os.environ.get('DJANGO_DATABASE_NAME'),
-        'USER': os.environ.get('DJANGO_DATABASE_USER_NAME'),
-        'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD'),
+if os.environ.get('GAE_APPLICATION'):
+    # GAE 環境
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '/cloudsql/autoplayclient-dev:asia-northeast1:polls-instance',
+            'NAME': os.environ.get('DJANGO_DATABASE_NAME'),
+            'USER': os.environ.get('DJANGO_DATABASE_USER_NAME'),
+            'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD'),
+        }
     }
-}
+else:
+    # ローカル環境
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+            'NAME': os.environ.get('DJANGO_DATABASE_NAME'),
+            'USER': os.environ.get('DJANGO_DATABASE_USER_NAME'),
+            'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD'),
+        }
+    }

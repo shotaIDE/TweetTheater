@@ -1,0 +1,10 @@
+__pycache__/
+
+/*
+!/autoplayclient
+!/fetch
+!/static
+!/.env
+!/main.py
+!/requirements.txt
+!/serviceAccountKey*.json
