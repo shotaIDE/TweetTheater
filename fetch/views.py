@@ -1,20 +1,13 @@
 import os
 
-import firebase_admin
 from django.conf import settings
 from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from firebase_admin import auth as firebaseauth
-from firebase_admin import credentials, firestore
+from firebase_admin import auth
 
 from fetch.agent import favorite, fetch
+from fetch.models import UserCredential
 
-firebase_admin_credential_path = \
-    os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-cred = credentials.Certificate(firebase_admin_credential_path)
-firebase_admin.initialize_app(cred)
-
-db = firestore.client()
 
 ACCESS_TOKEN_KEY = 'access_token'
 ACCESS_SECRET_KEY = 'secret'
@@ -28,19 +21,16 @@ def _get_user_secret(request) -> dict:
     if (uid is None or access_token is None or secret is None):
         id_token = request.POST.get('idToken')
 
-        decoded_token = firebaseauth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token)
         uid = decoded_token['uid']
 
         print(f'uid: {uid}')
 
-        user_document_ref = db.collection('credentials').document(uid)
-        user_credentials_raw = user_document_ref.get()
-        user_credentials = user_credentials_raw.to_dict()
+        user_credential = UserCredential.objects.get(uid=uid)
+        access_token = user_credential.access_token
+        secret = user_credential.secret
 
-        print(f'User credentials: {user_credentials}')
-
-        access_token = user_credentials['accessToken']
-        secret = user_credentials['secret']
+        print(f'User credentials: AccessToken={access_token}, Secret={secret}')
 
     return {
         ACCESS_TOKEN_KEY: access_token,
@@ -71,18 +61,20 @@ def index(request):
 def create(request):
     uid = request.POST.get('uid')
     access_token = request.POST.get('accessToken')
-    access_secret = request.POST.get('secret')
+    secret = request.POST.get('secret')
 
-    print(f'uid: {uid}')
+    print(
+        'User accound was created: '
+        f'UID={uid}, AccessToken={access_token}, Secret={secret}')
 
-    user_document_ref = db.collection('credentials').document(uid)
+    user_credential = UserCredential(
+        uid=uid, access_token=access_token, secret=secret)
 
-    user_credentials = {
-        'accessToken': access_token,
-        'secret': access_secret,
-    }
+    user_credential.save()
 
-    user_document_ref.set(user_credentials)
+    user_credential_id = user_credential.id
+
+    print(f'User credential was stored: ID={user_credential_id}')
 
     return JsonResponse({})
 
