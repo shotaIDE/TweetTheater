@@ -64,17 +64,18 @@ def create(request):
     secret = request.POST.get('secret')
 
     print(
-        'User accound was created: '
+        'User accound was received: '
         f'UID={uid}, AccessToken={access_token}, Secret={secret}')
 
-    user_credential = UserCredential(
-        uid=uid, access_token=access_token, secret=secret)
+    user_credential, created = UserCredential.objects.update_or_create(
+        uid=uid,
+        access_token=access_token,
+        secret=secret)
 
-    user_credential.save()
-
-    user_credential_id = user_credential.id
-
-    print(f'User credential was stored: ID={user_credential_id}')
+    if created:
+        print('User credential was created')
+    else:
+        print('User credential was updated')
 
     return JsonResponse({})
 
