@@ -243,20 +243,32 @@ const App = () => {
       firebase.analytics().logEvent("favorite");
     }
 
-    (async () => {
-      const response = await fetch(postUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: Object.keys(params)
-          .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-          .join("&"),
-      });
+    fetch(postUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: Object.keys(params)
+        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+        .join("&"),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // catch 節に制御を移す
+          throw new Error();
+        }
 
-      const responseOk = await response.ok;
+        return response.json();
+      })
+      .then((json) => {
+        if (json["code"] === 139) {
+          setFavoriteSnackbarOpen("already favorited");
+          return;
+        }
 
-      if (!responseOk) {
+        setFavoriteSnackbarOpen("succeed");
+      })
+      .catch((_) => {
         setFavoriteSnackbarOpen("unknown error");
 
         // 再度クリックできるようにする
@@ -264,17 +276,7 @@ const App = () => {
         updatedFavoriteList[currentVideoId] = false;
         setFavoritedList(updatedFavoriteList);
         return;
-      }
-
-      const json = await response.json();
-
-      if (json["code"] === 139) {
-        setFavoriteSnackbarOpen("already favorited");
-        return;
-      }
-
-      setFavoriteSnackbarOpen("succeed");
-    })();
+      });
   };
 
   const onClick = (id: number) => {
