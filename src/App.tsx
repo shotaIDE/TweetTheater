@@ -36,16 +36,6 @@ firebase.initializeApp(firebaseConfig);
 
 const provider = new firebase.auth.TwitterAuthProvider();
 
-const handleSignin = () => {
-  firebase.auth().signInWithRedirect(provider);
-};
-
-const handleSignout = () => {
-  localStorage.clear();
-
-  firebase.auth().signOut();
-};
-
 const getAuthParams = (
   uid: string,
   idToken: string,
@@ -67,6 +57,7 @@ const getAuthParams = (
 };
 
 const App = () => {
+  const [inSignin, setInSignin] = useState(false);
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
   const [tweetList, setTweetList] = useState<Tweet[]>([]);
   const [favoritedList, setFavoritedList] = useState<boolean[]>([]);
@@ -176,6 +167,18 @@ const App = () => {
       setFavoritedList(Array(fetchedTweetList.length).fill(false));
     })();
   }, [accessToken, fetchRequested, idToken, secret, uid]);
+
+  const handleSignin = () => {
+    // ボタンクリック後にページ遷移まで時間がかかる場合があるため、
+    // 多重にクリックされないようにボタンを無効化する
+    setInSignin(true);
+
+    firebase.auth().signInWithRedirect(provider);
+  };
+
+  const handleSignout = () => {
+    firebase.auth().signOut();
+  };
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {
@@ -297,7 +300,7 @@ const App = () => {
         </Grid>
       </Container>
     ) : signinStatus === "notSignined" ? (
-      <NeedSignin handleSignin={handleSignin} />
+      <NeedSignin inSignin={inSignin} handleSignin={handleSignin} />
     ) : (
       <Loading />
     );
@@ -307,6 +310,7 @@ const App = () => {
       <CssBaseline />
       <SigninStatusBar
         titleSuffix={currentPosition}
+        inSignin={inSignin}
         signinStatus={signinStatus}
         userName={userName}
         handleSignin={handleSignin}

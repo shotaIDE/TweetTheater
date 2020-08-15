@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  inSignin: boolean;
   handleSignin: () => void;
 }
 
@@ -48,6 +49,7 @@ export const NeedSignin = (props: Props) => {
               variant="contained"
               size="large"
               color="primary"
+              disabled={props.inSignin}
               onClick={props.handleSignin}
             >
               サインイン

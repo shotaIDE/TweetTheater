@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   titleSuffix: string;
+  inSignin: boolean;
   signinStatus: SigninStatus;
   userName: string;
   handleSignin: () => void;
@@ -84,7 +85,11 @@ export const SigninStatusBar = (props: Props) => {
         </Menu>
       </div>
     ) : props.signinStatus === "notSignined" ? (
-      <Button color="inherit" onClick={props.handleSignin}>
+      <Button
+        color="inherit"
+        disabled={props.inSignin}
+        onClick={props.handleSignin}
+      >
         サインイン
       </Button>
     ) : null;
