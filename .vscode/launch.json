@@ -5,35 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Agent: Fetch Debug",
+            "name": "API: Post Favorites",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/fetch_debug.py",
-            "console": "integratedTerminal",
-            "env": {
-                "IS_DEBUG": "true",
-                "CACHE_PATH": "${workspaceFolder}/cache.json",
-                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
-            },
-            "envFile": "${workspaceFolder}/.env"
-        },
-        {
-            "name": "Agent: Fetch Production",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/fetch_debug.py",
-            "console": "integratedTerminal",
-            "env": {
-                "CACHE_PATH": "${workspaceFolder}/cache.json",
-                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
-            },
-            "envFile": "${workspaceFolder}/.env"
-        },
-        {
-            "name": "Agent: Post Favorites",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/post_favorite_debug.py",
+            "program": "${workspaceFolder}/create_favorites.py",
             "console": "integratedTerminal",
             "env": {
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"

@@ -51,10 +51,10 @@ def create(id: str,
     return __post_favorite(id=id, oauth=oauth)
 
 
-def post_at_once(consumer_key: str,
-                 consumer_secret: str,
-                 access_token: str,
-                 access_secret: str):
+def create_at_once(consumer_key: str,
+                   consumer_secret: str,
+                   access_token: str,
+                   access_secret: str):
     start_str = input(
         'Enter the first number of the tweet you want to like...')
     start = int(start_str) - 1
