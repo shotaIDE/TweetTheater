@@ -8,13 +8,11 @@ import React, { useEffect, useState } from "react";
 
 import { SigninStatusBar } from "./AppBar";
 import { darkTheme } from "./DarkTheme";
+import { ErrorSnackbar } from "./ErrorSnackbar";
+import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMedia } from "./PlayingMedia";
-import {
-  PostFavoriteResult,
-  PostFavoriteSnackbars,
-} from "./PostFavoriteSnackbars";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
@@ -67,13 +65,17 @@ const App = () => {
   const [favoritedList, setFavoritedList] = useState<boolean[]>([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
   const [fetchRequested, setFetchRequested] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
   const [playedList, setPlayedList] = useState([]);
   const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
-  const [snackbarOpen, setSnackbarOpen] = useState<PostFavoriteResult>(null);
+  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
+  const [favoriteSnackbarOpen, setFavoriteSnackbarOpen] = useState<
+    FavoriteResult
+  >(null);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -160,28 +162,33 @@ const App = () => {
 
     setFetchRequested(true);
 
-    (async () => {
-      const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/`;
+    const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/`;
 
-      const params = getAuthParams(uid, idToken, accessToken, secret);
+    const params = getAuthParams(uid, idToken, accessToken, secret);
 
-      const response = await fetch(fetchUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: Object.keys(params)
-          .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-          .join("&"),
+    fetch(fetchUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: Object.keys(params)
+        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+        .join("&"),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        const fetchedTweetList = getTweetList(json);
+
+        setPlayedList(Array(fetchedTweetList.length).fill(false));
+        setTweetList(fetchedTweetList);
+        setFavoritedList(Array(fetchedTweetList.length).fill(false));
+      })
+      .catch((_) => {
+        setFetchError(true);
+        setErrorSnackbarOpen(true);
       });
-      const json = await response.json();
-
-      const fetchedTweetList = getTweetList(json);
-
-      setPlayedList(Array(fetchedTweetList.length).fill(false));
-      setTweetList(fetchedTweetList);
-      setFavoritedList(Array(fetchedTweetList.length).fill(false));
-    })();
   }, [accessToken, fetchRequested, idToken, secret, uid]);
 
   const handleSignin = () => {
@@ -211,8 +218,12 @@ const App = () => {
     setCurrentVideoId(nextVideoId);
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(null);
+  const handleErrorSnackbarClose = () => {
+    setErrorSnackbarOpen(false);
+  };
+
+  const handleFavoriteSnackbarsClose = () => {
+    setFavoriteSnackbarOpen(null);
   };
 
   const onFavorited = () => {
@@ -246,7 +257,7 @@ const App = () => {
       const responseOk = await response.ok;
 
       if (!responseOk) {
-        setSnackbarOpen("unknown error");
+        setFavoriteSnackbarOpen("unknown error");
 
         // 再度クリックできるようにする
         let updatedFavoriteList = favoritedList.slice(); // コピー
@@ -258,11 +269,11 @@ const App = () => {
       const json = await response.json();
 
       if (json["code"] === 139) {
-        setSnackbarOpen("already favorited");
+        setFavoriteSnackbarOpen("already favorited");
         return;
       }
 
-      setSnackbarOpen("succeed");
+      setFavoriteSnackbarOpen("succeed");
     })();
   };
 
@@ -294,6 +305,7 @@ const App = () => {
             <TweetCardList
               tweetList={tweetList}
               statusList={tweetCardInfoList}
+              fetchError={fetchError}
               onClick={onClick}
             />
           </Grid>
@@ -335,9 +347,13 @@ const App = () => {
         handleSignout={handleSignout}
       />
       {mainContainer}
-      <PostFavoriteSnackbars
-        open={snackbarOpen}
-        handleClose={handleSnackbarClose}
+      <ErrorSnackbar
+        open={errorSnackbarOpen}
+        handleClose={handleErrorSnackbarClose}
+      />
+      <FavoriteSnackbars
+        open={favoriteSnackbarOpen}
+        handleClose={handleFavoriteSnackbarsClose}
       />
     </ThemeProvider>
   );

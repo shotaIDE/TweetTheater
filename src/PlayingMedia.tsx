@@ -3,7 +3,7 @@ import React from "react";
 
 import { Tweet } from "./TweetCardList";
 import { TweetDetailCard } from "./TweetDetailCard";
-import { TweetSkeletonCard } from "./TweetSkeletonCard";
+import { TweetDetailEmptyCard } from "./TweetDetailEmptyCard";
 import { Video } from "./Video";
 
 interface Props {
@@ -22,7 +22,7 @@ export const PlayingMedia = (props: Props) => {
       onClick={props.onFavorited}
     />
   ) : (
-    <TweetSkeletonCard />
+    <TweetDetailEmptyCard />
   );
 
   return (

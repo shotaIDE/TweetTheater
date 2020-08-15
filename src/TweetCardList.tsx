@@ -27,11 +27,16 @@ export interface Tweet {
 interface Props {
   tweetList: Tweet[];
   statusList: TweetStatus[];
+  fetchError: boolean;
   onClick: (_: number) => void;
 }
 
 export const TweetCardList = (props: Props) => {
   const classes = useStyles(props);
+
+  if (props.fetchError) {
+    return null;
+  }
 
   const result =
     props.tweetList.length > 0

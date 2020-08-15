@@ -18,18 +18,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export type PostFavoriteResult =
+export type FavoriteResult =
   | "succeed"
   | "already favorited"
   | "unknown error"
   | null;
 
 interface Props {
-  open: PostFavoriteResult;
+  open: FavoriteResult;
   handleClose: () => void;
 }
 
-export const PostFavoriteSnackbars = (props: Props) => {
+export const FavoriteSnackbars = (props: Props) => {
   const classes = useStyles();
 
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
