@@ -33,7 +33,10 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+
+if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
+  firebase.analytics();
+}
 
 const provider = new firebase.auth.TwitterAuthProvider();
 
@@ -108,8 +111,10 @@ const App = () => {
         setAccessToken(accessToken);
         setSecret(secret);
 
-        // 推奨イベントとしてパラメータの指定が強制されているので、固定値だが指定
-        firebase.analytics().logEvent("login", { method: "Twitter" });
+        if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
+          // 推奨イベントとしてパラメータの指定が強制されているので、固定値だが指定
+          firebase.analytics().logEvent("login", { method: "Twitter" });
+        }
 
         console.log(
           `Signined: UID=${uid.substring(0, 5)}... ` +
@@ -223,7 +228,9 @@ const App = () => {
     updatedFavoriteList[currentVideoId] = true;
     setFavoritedList(updatedFavoriteList);
 
-    firebase.analytics().logEvent("favorite");
+    if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
+      firebase.analytics().logEvent("favorite");
+    }
 
     (async () => {
       const response = await fetch(postUrl, {
