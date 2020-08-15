@@ -71,6 +71,7 @@ const App = () => {
   const [tweetList, setTweetList] = useState<Tweet[]>([]);
   const [favoritedList, setFavoritedList] = useState<boolean[]>([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
+  const [fetchRequested, setFetchRequested] = useState(false);
   const [playedList, setPlayedList] = useState([]);
   const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
@@ -144,6 +145,14 @@ const App = () => {
       return;
     }
 
+    if (fetchRequested) {
+      // サインインのリダイレクト後に、idToken と accessToken 等が別々に更新されるため、
+      // その際に二重にフェッチが実行されることを防止する
+      return;
+    }
+
+    setFetchRequested(true);
+
     (async () => {
       const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/`;
 
@@ -166,7 +175,7 @@ const App = () => {
       setTweetList(fetchedTweetList);
       setFavoritedList(Array(fetchedTweetList.length).fill(false));
     })();
-  }, [accessToken, idToken, secret, uid]);
+  }, [accessToken, fetchRequested, idToken, secret, uid]);
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {
