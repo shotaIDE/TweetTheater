@@ -5,7 +5,7 @@ from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from firebase_admin import auth
 
-from api.agent import favorite, fetch
+from api.agent import favorite, search
 from api.models import UserCredential
 
 
@@ -39,7 +39,7 @@ def _get_user_secret(request) -> dict:
 
 
 @csrf_exempt
-def search(request):
+def search_2hDTM(request):
     consumer_key = settings.TWITTER_CONSUMER_KEY
     consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
@@ -47,7 +47,7 @@ def search(request):
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
 
-    result = fetch.main(
+    result = search.hashtag_2hDTM(
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
         access_token=access_token,

@@ -7,11 +7,11 @@ import urllib.parse
 from . import auth
 
 
-def main(consumer_key: str,
-         consumer_secret: str,
-         access_token: str,
-         access_secret: str,
-         gae_hosting: bool = False) -> dict:
+def hashtag_2hDTM(consumer_key: str,
+                  consumer_secret: str,
+                  access_token: str,
+                  access_secret: str,
+                  gae_hosting: bool = False) -> dict:
     IS_DEBUG = os.environ.get('IS_DEBUG') == 'true'
 
     cache_path = os.environ.get('CACHE_PATH')
