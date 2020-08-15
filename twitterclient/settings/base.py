@@ -48,7 +48,7 @@ GAE_HOSTING = os.environ.get('GAE_APPLICATION') is not None
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&_+#si@iuf1kks1q1u(4hf=t=!nrjfl&bpefwdi3f)g2zi2q%l'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 
 # Application definition
