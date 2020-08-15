@@ -110,7 +110,7 @@ const App = () => {
         setAccessToken(accessToken);
         setSecret(secret);
 
-        const fetchUrl = "http://127.0.0.1:8000/fetch/create/";
+        const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/create/`;
         const params = {
           uid: uid,
           accessToken: accessToken,
@@ -145,7 +145,7 @@ const App = () => {
     }
 
     (async () => {
-      const fetchUrl = `http://127.0.0.1:8000/fetch/`;
+      const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/`;
 
       const params = getAuthParams(uid, idToken, accessToken, secret);
 
@@ -192,7 +192,7 @@ const App = () => {
   const onFavorited = () => {
     const targetId = tweetList[currentVideoId].id;
 
-    const postUrl = `http://127.0.0.1:8000/fetch/favorite/`;
+    const postUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/favorite/`;
 
     const params = getAuthParams(uid, idToken, accessToken, secret);
     params["id"] = targetId;
