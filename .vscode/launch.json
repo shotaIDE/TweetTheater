@@ -40,7 +40,7 @@
             "args": [
                 "runserver",
                 "--noreload",
-                "--settings=autoplayclient.settings.development"
+                "--settings=twitterclient.settings.development"
             ],
             "django": true,
             "env": {
