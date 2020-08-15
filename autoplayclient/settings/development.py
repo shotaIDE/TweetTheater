@@ -12,7 +12,7 @@ ALLOWED_HOSTS = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-if os.environ.get('GAE_APPLICATION'):
+if GAE_HOSTING:
     # GAE 環境
     DATABASES = {
         'default': {

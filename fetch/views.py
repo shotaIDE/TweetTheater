@@ -51,7 +51,8 @@ def index(request):
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
         access_token=access_token,
-        access_secret=access_secret)
+        access_secret=access_secret,
+        gae_hosting=settings.GAE_HOSTING)
 
     # 配列をJSONに変換するために、safe を False にしておく
     return JsonResponse(result, safe=False)

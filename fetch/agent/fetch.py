@@ -10,7 +10,8 @@ from . import auth
 def main(consumer_key: str,
          consumer_secret: str,
          access_token: str,
-         access_secret: str) -> dict:
+         access_secret: str,
+         gae_hosting: bool = False) -> dict:
     IS_DEBUG = os.environ.get('IS_DEBUG') == 'true'
 
     cache_path = os.environ.get('CACHE_PATH')
@@ -40,8 +41,9 @@ def main(consumer_key: str,
 
         print("Response: %s" % results)
 
-        with open(cache_path, 'w') as f:
-            json.dump(results, f, indent=4, ensure_ascii=True)
+        if not gae_hosting:
+            with open(cache_path, 'w') as f:
+                json.dump(results, f, indent=4, ensure_ascii=True)
 
     video_url_list = []
 
@@ -97,7 +99,8 @@ def main(consumer_key: str,
 
         video_url_list.append(extracted_info)
 
-    with open(video_list_path, 'w') as f:
-        json.dump(video_url_list, f, indent=4, ensure_ascii=True)
+    if not gae_hosting:
+        with open(video_list_path, 'w') as f:
+            json.dump(video_url_list, f, indent=4, ensure_ascii=True)
 
     return video_url_list
