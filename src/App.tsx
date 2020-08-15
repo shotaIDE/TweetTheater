@@ -81,12 +81,17 @@ const App = () => {
 
         user.getIdToken().then((fetchedIDToken) => {
           setIDToken(fetchedIDToken);
-          console.log(fetchedIDToken);
+
+          console.log(
+            `Signined: IDToken=${fetchedIDToken.substring(0, 20)}...`
+          );
         });
+
         return;
       }
 
       setSigninStatus("notSignined");
+
       console.log("Not Signined");
     });
 
@@ -102,13 +107,19 @@ const App = () => {
         setAccessToken(accessToken);
         setSecret(secret);
 
+        console.log(
+          `Signined: UID=${uid.substring(0, 5)}... ` +
+            `AccessToken=${accessToken.substring(0, 5)}... ` +
+            `Secret=${secret.substring(0, 5)}`
+        );
+
         const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/fetch/create/`;
         const params = {
           uid: uid,
           accessToken: accessToken,
           secret: secret,
         };
-        console.log(params);
+
         fetch(fetchUrl, {
           method: "POST",
           headers: {
@@ -117,14 +128,10 @@ const App = () => {
           body: Object.keys(params)
             .map((key) => `${key}=${encodeURIComponent(params[key])}`)
             .join("&"),
-        }).then((response) => {
-          const json = response.json();
-
-          console.log(`Redirect results: ${json}`);
         });
       })
       .catch((error) => {
-        console.log(`Auth failed: ${error}`);
+        console.log("Not redirected");
       });
   }, []);
 
@@ -193,8 +200,6 @@ const App = () => {
     }
 
     setCurrentVideoId(nextVideoId);
-
-    console.log(tweetList[currentVideoId].videoUrl);
   };
 
   const handleSnackbarClose = () => {
