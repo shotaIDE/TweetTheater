@@ -5,8 +5,8 @@ from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from firebase_admin import auth
 
-from fetch.agent import favorite, fetch
-from fetch.models import UserCredential
+from api.agent import favorite, fetch
+from api.models import UserCredential
 
 
 ACCESS_TOKEN_KEY = 'access_token'
@@ -39,7 +39,7 @@ def _get_user_secret(request) -> dict:
 
 
 @csrf_exempt
-def index(request):
+def search(request):
     consumer_key = settings.TWITTER_CONSUMER_KEY
     consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
@@ -59,7 +59,7 @@ def index(request):
 
 
 @csrf_exempt
-def create(request):
+def create_user(request):
     uid = request.POST.get('uid')
     access_token = request.POST.get('accessToken')
     secret = request.POST.get('secret')
@@ -82,7 +82,7 @@ def create(request):
 
 
 @csrf_exempt
-def post_favorite(request):
+def create_favorite(request):
     consumer_key = settings.TWITTER_CONSUMER_KEY
     consumer_secret = settings.TWITTER_CONSUMER_SECRET
 

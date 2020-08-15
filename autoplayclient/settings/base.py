@@ -54,7 +54,7 @@ SECRET_KEY = '&_+#si@iuf1kks1q1u(4hf=t=!nrjfl&bpefwdi3f)g2zi2q%l'
 # Application definition
 
 INSTALLED_APPS = [
-    'fetch.apps.FetchConfig',
+    'api.apps.APIConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
