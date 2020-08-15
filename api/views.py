@@ -92,7 +92,7 @@ def create_favorite(request):
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
 
-    result = favorite.post(
+    result = favorite.create(
         id=target_id,
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,

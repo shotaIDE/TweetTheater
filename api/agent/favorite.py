@@ -38,11 +38,11 @@ def __post_favorite(id: int, oauth: OAuth1Session) -> PostResult:
     return PostResult.UNKNOWN_ERROR
 
 
-def post(id: str,
-         consumer_key: str,
-         consumer_secret: str,
-         access_token: str,
-         access_secret: str) -> PostResult:
+def create(id: str,
+           consumer_key: str,
+           consumer_secret: str,
+           access_token: str,
+           access_secret: str) -> PostResult:
     oauth = auth.get_oauth_session(consumer_key=consumer_key,
                                    consumer_secret=consumer_secret,
                                    access_token=access_token,
@@ -55,7 +55,8 @@ def post_at_once(consumer_key: str,
                  consumer_secret: str,
                  access_token: str,
                  access_secret: str):
-    start_str = input('Enter the first number of the tweet you want to like...')
+    start_str = input(
+        'Enter the first number of the tweet you want to like...')
     start = int(start_str) - 1
 
     end_str = input('Enter the last number of the tweet you want to like...')
