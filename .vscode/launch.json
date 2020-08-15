@@ -16,7 +16,7 @@
             "envFile": "${workspaceFolder}/.env"
         },
         {
-            "name": "API: Local-SQLite",
+            "name": "API: Local",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
@@ -32,6 +32,22 @@
                 "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
             },
         },
+        {
+            "name": "API: Dev-Twitter",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "--noreload"
+            ],
+            "django": true,
+            "env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
+                "CACHE_PATH": "${workspaceFolder}/cache.json",
+                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
+            },
+        }
         {
             "name": "API: Dev-CloudSQL",
             "type": "python",
@@ -51,13 +67,14 @@
             },
         },
         {
-            "name": "API: Dev-CloudSQL Prod-Twitter",
+            "name": "API: Dev-CloudSQL Dev-Twitter",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runserver",
-                "--noreload"
+                "--noreload",
+                "--settings=twitterclient.settings.development"
             ],
             "django": true,
             "env": {
