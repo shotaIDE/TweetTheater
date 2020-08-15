@@ -5,7 +5,7 @@ from django.http.response import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from firebase_admin import auth
 
-from api.agent import favorite, search
+from api.twitter import favorite, search
 from api.models import UserCredential
 
 

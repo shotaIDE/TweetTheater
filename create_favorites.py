@@ -2,7 +2,7 @@
 
 import os
 
-from api.agent import favorite
+from api.twitter import favorite
 
 if __name__ == "__main__":
     consumer_key = os.environ.get('CONSUMER_KEY')
