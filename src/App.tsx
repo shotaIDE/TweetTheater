@@ -1,4 +1,5 @@
 import "firebase/auth";
+import "firebase/analytics";
 import "./App.css";
 
 import { Container, CssBaseline, Grid, ThemeProvider } from "@material-ui/core";
@@ -32,7 +33,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-// firebase.analytics();
+firebase.analytics();
 
 const provider = new firebase.auth.TwitterAuthProvider();
 
@@ -106,6 +107,9 @@ const App = () => {
         setUid(uid);
         setAccessToken(accessToken);
         setSecret(secret);
+
+        // 推奨イベントとしてパラメータの指定が強制されているので、固定値だが指定
+        firebase.analytics().logEvent("login", { method: "Twitter" });
 
         console.log(
           `Signined: UID=${uid.substring(0, 5)}... ` +
@@ -218,6 +222,8 @@ const App = () => {
     let updatedFavoriteList = favoritedList.slice(); // コピー
     updatedFavoriteList[currentVideoId] = true;
     setFavoritedList(updatedFavoriteList);
+
+    firebase.analytics().logEvent("favorite");
 
     (async () => {
       const response = await fetch(postUrl, {
