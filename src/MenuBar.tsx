@@ -55,6 +55,12 @@ export const MenuBar = withRouter((props: Props) => {
     props.history.push("/");
   };
 
+  const handleTermsOfUse = () => {
+    handleClose();
+
+    props.history.push("/termsofuse/");
+  };
+
   const handlePrivacyPolicy = () => {
     handleClose();
 
@@ -98,7 +104,7 @@ export const MenuBar = withRouter((props: Props) => {
           <MenuItem disabled>{props.userName} さん</MenuItem>
           <MenuItem onClick={handleSignout}>サインアウト</MenuItem>
           <Divider />
-          <MenuItem>利用規約</MenuItem>
+          <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
           <MenuItem onClick={handlePrivacyPolicy}>
             プライバシーポリシー
           </MenuItem>

@@ -13,6 +13,7 @@ import { GoogleAnalytics } from "./GoogleAnalytics";
 import { MenuBar } from "./MenuBar";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
+import { TermsOfUse } from "./TermsOfUse";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
@@ -138,17 +139,8 @@ const App = () => {
               />
             )}
           />
-          <Route
-            exact
-            path="/privacy/"
-            render={(props) => (
-              <PrivacyPolicy
-                signinStatus={signinStatus}
-                userName={userName}
-                {...props}
-              />
-            )}
-          />
+          <Route exact path="/privacy/" component={PrivacyPolicy} />
+          <Route exact path="/termsofuse/" component={TermsOfUse} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
