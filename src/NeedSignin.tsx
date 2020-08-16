@@ -1,6 +1,15 @@
-import { Box, Button, Container, Paper, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import * as History from "history";
 import React, { useState } from "react";
+import { withRouter } from "react-router";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,17 +36,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   favoriteEnabled: boolean;
+  history: History.history;
   handleSignin: () => void;
 }
 
-export const NeedSignin = (props: Props) => {
+export const NeedSignin = withRouter((props: Props) => {
   const [inSignin, setInSignin] = useState(false);
 
   const classes = useStyles(props);
 
   const message = props.favoriteEnabled
-    ? "本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントへのアクセスを許可してください。"
-    : "本ウェブサイトで、Twitterの検索結果の表示するために、Twitterアカウントへのアクセスを許可してください。";
+    ? "本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントでサインインしてください。"
+    : "本ウェブサイトで、Twitterの検索結果の表示するために、Twitterアカウントでサインインしてください。";
 
   const handleSignin = () => {
     // ボタンクリック後にページ遷移まで時間がかかる場合があるため、
@@ -45,6 +55,14 @@ export const NeedSignin = (props: Props) => {
     setInSignin(true);
 
     props.handleSignin();
+  };
+
+  const handleTermsOfUse = () => {
+    props.history.push("/termsofuse/");
+  };
+
+  const handlePrivacyPolicy = () => {
+    props.history.push("/privacypolicy/");
   };
 
   return (
@@ -56,6 +74,17 @@ export const NeedSignin = (props: Props) => {
           </Typography>
           <Typography className={classes.body} variant="subtitle1" align="left">
             {message}
+          </Typography>
+          <Typography className={classes.body} variant="subtitle2" align="left">
+            サインインすることで、
+            <Link href="" onClick={handleTermsOfUse}>
+              利用規約
+            </Link>
+            と
+            <Link href="" onClick={handlePrivacyPolicy}>
+              プライバシーポリシー
+            </Link>
+            に同意することになります。
           </Typography>
           <Box display="flex" justifyContent="center">
             <Button
@@ -73,4 +102,4 @@ export const NeedSignin = (props: Props) => {
       </Box>
     </Container>
   );
-};
+});

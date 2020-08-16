@@ -65,7 +65,7 @@ export const MenuBar = withRouter((props: Props) => {
   const handlePrivacyPolicy = () => {
     handleClose();
 
-    props.history.push("/privacy/");
+    props.history.push("/privacypolicy/");
   };
 
   const handleClose = () => {

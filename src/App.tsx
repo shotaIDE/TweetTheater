@@ -139,7 +139,7 @@ const App = () => {
               />
             )}
           />
-          <Route exact path="/privacy/" component={PrivacyPolicy} />
+          <Route exact path="/privacypolicy/" component={PrivacyPolicy} />
           <Route exact path="/termsofuse/" component={TermsOfUse} />
         </Switch>
       </BrowserRouter>
