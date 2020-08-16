@@ -7,6 +7,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import * as History from "history";
 import React from "react";
 import { withRouter } from "react-router";
@@ -74,44 +75,57 @@ export const MenuBar = withRouter((props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const menu =
+  const generalMenuItems = (
+    <div>
+      <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
+      <MenuItem onClick={handlePrivacyPolicy}>プライバシーポリシー</MenuItem>
+      <MenuItem>公式Twitterアカウント</MenuItem>
+    </div>
+  );
+
+  const userMenuItems =
     props.signinStatus === "signined" ? (
       <div>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={handleMenu}
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <Menu
-          id="menu-appbar"
-          anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
-          open={open}
-          onClose={handleClose}
-        >
-          <MenuItem disabled>{props.userName} さん</MenuItem>
-          <MenuItem onClick={handleSignout}>サインアウト</MenuItem>
-          <Divider />
-          <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
-          <MenuItem onClick={handlePrivacyPolicy}>
-            プライバシーポリシー
-          </MenuItem>
-          <MenuItem>公式Twitterアカウント</MenuItem>
-        </Menu>
+        <MenuItem disabled>{props.userName} さん</MenuItem>
+        <MenuItem onClick={handleSignout}>サインアウト</MenuItem>
+        <Divider />
       </div>
-    ) : props.signinStatus === "notSignined" ? null : null;
+    ) : null;
+
+  const menuIcon =
+    props.signinStatus === "signined" ? <AccountCircle /> : <MoreVertIcon />;
+
+  const menu = (
+    <div>
+      <IconButton
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleMenu}
+        color="inherit"
+      >
+        {menuIcon}
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={open}
+        onClose={handleClose}
+      >
+        {userMenuItems}
+        {generalMenuItems}
+      </Menu>
+    </div>
+  );
 
   return (
     <AppBar position="sticky">
