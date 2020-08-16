@@ -1,4 +1,4 @@
-import { Button } from "@material-ui/core";
+import { Divider, Link } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
@@ -7,7 +7,9 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import * as History from "history";
 import React from "react";
+import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
 
@@ -16,25 +18,28 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
     title: {
       flexGrow: 1,
+    },
+    titleLink: {
+      color: theme.palette.text.primary,
+      cursor: "pointer",
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
     },
   })
 );
 
 interface Props {
   titleSuffix: string;
-  inSignin: boolean;
   signinStatus: SigninStatus;
   userName: string;
-  handleSignin: () => void;
+  history: History.history;
   handleSignout: () => void;
 }
 
-export const SigninStatusBar = (props: Props) => {
+export const MenuBar = withRouter((props: Props) => {
   const classes = useStyles(props);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,6 +51,16 @@ export const SigninStatusBar = (props: Props) => {
     props.handleSignout();
   };
 
+  const handlePlayerPage = () => {
+    props.history.push("/");
+  };
+
+  const handlePrivacyPolicy = () => {
+    handleClose();
+
+    props.history.push("/privacy/");
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -53,7 +68,7 @@ export const SigninStatusBar = (props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const signinStatus =
+  const menu =
     props.signinStatus === "signined" ? (
       <div>
         <IconButton
@@ -82,26 +97,31 @@ export const SigninStatusBar = (props: Props) => {
         >
           <MenuItem disabled>{props.userName} さん</MenuItem>
           <MenuItem onClick={handleSignout}>サインアウト</MenuItem>
+          <Divider />
+          <MenuItem>利用規約</MenuItem>
+          <MenuItem onClick={handlePrivacyPolicy}>
+            プライバシーポリシー
+          </MenuItem>
+          <MenuItem>公式Twitterアカウント</MenuItem>
         </Menu>
       </div>
-    ) : props.signinStatus === "notSignined" ? (
-      <Button
-        color="inherit"
-        disabled={props.inSignin}
-        onClick={props.handleSignin}
-      >
-        サインイン
-      </Button>
-    ) : null;
+    ) : props.signinStatus === "notSignined" ? null : null;
 
   return (
     <AppBar position="sticky">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-          {process.env.REACT_APP_SITE_TITLE} {props.titleSuffix}
+          <Link
+            className={classes.titleLink}
+            underline="none"
+            onClick={handlePlayerPage}
+          >
+            {process.env.REACT_APP_SITE_TITLE}
+          </Link>
+          {props.titleSuffix}
         </Typography>
-        {signinStatus}
+        {menu}
       </Toolbar>
     </AppBar>
   );
-};
+});

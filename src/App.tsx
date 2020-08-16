@@ -2,72 +2,29 @@ import "firebase/auth";
 import "firebase/analytics";
 import "./App.css";
 
-import { Container, CssBaseline, Grid, ThemeProvider } from "@material-ui/core";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-import { SigninStatusBar } from "./AppBar";
 import { darkTheme } from "./DarkTheme";
-import { ErrorSnackbar } from "./ErrorSnackbar";
-import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
 import { firebaseConfig } from "./FirebaseConfig";
-import { Loading } from "./Loading";
-import { NeedSignin } from "./NeedSignin";
-import { PlayingMedia } from "./PlayingMedia";
-import { TweetStatus } from "./TweetCard";
-import { Tweet, TweetCardList } from "./TweetCardList";
-import { getTweetList } from "./TweetList";
+import { MenuBar } from "./MenuBar";
+import { Player } from "./Player";
+import { PrivacyPolicy } from "./PrivacyPolicy";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
 firebase.initializeApp(firebaseConfig);
 
-if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
-  firebase.analytics();
-}
-
-const provider = new firebase.auth.TwitterAuthProvider();
-
-const favoriteEnabled = true;
-
-const getAuthParams = (
-  uid: string,
-  idToken: string,
-  accessToken: string,
-  secret: string
-) => {
-  const params =
-    uid != null && accessToken != null && secret != null
-      ? {
-          uid: uid,
-          accessToken: accessToken,
-          secret: secret,
-        }
-      : {
-          idToken: idToken,
-        };
-
-  return params;
-};
-
 const App = () => {
-  const [inSignin, setInSignin] = useState(false);
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
-  const [tweetList, setTweetList] = useState<Tweet[]>([]);
-  const [favoritedList, setFavoritedList] = useState<boolean[]>([]);
-  const [currentVideoId, setCurrentVideoId] = useState(0);
-  const [fetchRequested, setFetchRequested] = useState(false);
-  const [fetchError, setFetchError] = useState(false);
-  const [playedList, setPlayedList] = useState([]);
   const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
-  const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
-  const [favoriteSnackbarOpen, setFavoriteSnackbarOpen] = useState<
-    FavoriteResult
-  >(null);
+  const [titleSuffix, setTitleSuffix] = useState("");
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -133,61 +90,13 @@ const App = () => {
             .join("&"),
         });
       })
-      .catch((error) => {
+      .catch((_) => {
         console.log("Not redirected");
       });
   }, []);
 
-  useEffect(() => {
-    if (
-      idToken == null &&
-      (uid == null || accessToken == null || secret == null)
-    ) {
-      return;
-    }
-
-    if (fetchRequested) {
-      // サインインのリダイレクト後に、idToken と accessToken 等が別々に更新されるため、
-      // その際に二重にフェッチが実行されることを防止する
-      return;
-    }
-
-    setFetchRequested(true);
-
-    const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
-
-    const params = getAuthParams(uid, idToken, accessToken, secret);
-
-    fetch(fetchUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: Object.keys(params)
-        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-        .join("&"),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((json) => {
-        const fetchedTweetList = getTweetList(json);
-
-        setPlayedList(Array(fetchedTweetList.length).fill(false));
-        setTweetList(fetchedTweetList);
-        setFavoritedList(Array(fetchedTweetList.length).fill(false));
-      })
-      .catch((_) => {
-        setFetchError(true);
-        setErrorSnackbarOpen(true);
-      });
-  }, [accessToken, fetchRequested, idToken, secret, uid]);
-
   const handleSignin = () => {
-    // ボタンクリック後にページ遷移まで時間がかかる場合があるため、
-    // 多重にクリックされないようにボタンを無効化する
-    setInSignin(true);
-
+    const provider = new firebase.auth.TwitterAuthProvider();
     firebase.auth().signInWithRedirect(provider);
   };
 
@@ -195,165 +104,51 @@ const App = () => {
     firebase.auth().signOut();
   };
 
-  // 一つの動画の再生が完了した場合
-  const onEnded = () => {
-    let updatedPlayedList = playedList;
-    updatedPlayedList[currentVideoId] = true;
-    setPlayedList(updatedPlayedList);
-
-    const nextVideoId = currentVideoId + 1;
-    if (nextVideoId >= tweetList.length) {
-      setCurrentVideoId(-1);
-      return;
-    }
-
-    setCurrentVideoId(nextVideoId);
+  const titleSuffixDidChange = (title: string) => {
+    setTitleSuffix(title);
   };
-
-  const handleErrorSnackbarClose = () => {
-    setErrorSnackbarOpen(false);
-  };
-
-  const handleFavoriteSnackbarsClose = () => {
-    setFavoriteSnackbarOpen(null);
-  };
-
-  const onFavorited = () => {
-    const targetId = tweetList[currentVideoId].id;
-
-    const postUrl = `${process.env.REACT_APP_API_ORIGIN}/api/favorite/create`;
-
-    const params = getAuthParams(uid, idToken, accessToken, secret);
-    params["id"] = targetId;
-
-    // いいねボタンを無効化し、多重にリクエストするのを防ぐ
-    let updatedFavoriteList = favoritedList.slice(); // コピー
-    updatedFavoriteList[currentVideoId] = true;
-    setFavoritedList(updatedFavoriteList);
-
-    if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
-      firebase.analytics().logEvent("favorite");
-    }
-
-    fetch(postUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: Object.keys(params)
-        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-        .join("&"),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          // catch 節に制御を移す
-          throw new Error();
-        }
-
-        return response.json();
-      })
-      .then((json) => {
-        if (json["code"] === 139) {
-          setFavoriteSnackbarOpen("already favorited");
-          return;
-        }
-
-        setFavoriteSnackbarOpen("succeed");
-      })
-      .catch((_) => {
-        setFavoriteSnackbarOpen("unknown error");
-
-        // 再度クリックできるようにする
-        let updatedFavoriteList = favoritedList.slice(); // コピー
-        updatedFavoriteList[currentVideoId] = false;
-        setFavoritedList(updatedFavoriteList);
-        return;
-      });
-  };
-
-  const onClick = (id: number) => {
-    setCurrentVideoId(id);
-  };
-
-  const tweetCardInfoList = tweetList.map(
-    (_, id): TweetStatus =>
-      id === currentVideoId ? "playing" : playedList[id] ? "played" : "none"
-  );
-
-  const isPlayingVideo =
-    currentVideoId >= 0 && currentVideoId < tweetList.length;
-  const currentTweet = isPlayingVideo ? tweetList[currentVideoId] : null;
-  const currentFavorited = isPlayingVideo
-    ? favoritedList[currentVideoId]
-    : false;
-
-  const currentPosition = ` - [ ${
-    isPlayingVideo ? currentVideoId + 1 : "-"
-  } / ${tweetList.length} ]`;
-
-  const mainContainer =
-    signinStatus === "signined" ? (
-      <Container>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            <TweetCardList
-              tweetList={tweetList}
-              statusList={tweetCardInfoList}
-              fetchError={fetchError}
-              onClick={onClick}
-            />
-          </Grid>
-          <Grid item xs={6}></Grid>
-          <div
-            style={{
-              position: "fixed",
-              left: "51%",
-              width: 600,
-              height: "90%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <PlayingMedia
-              tweet={currentTweet}
-              favoriteEnabled={favoriteEnabled}
-              favorited={currentFavorited}
-              onEnded={onEnded}
-              onFavorited={onFavorited}
-            />
-          </div>
-        </Grid>
-      </Container>
-    ) : signinStatus === "notSignined" ? (
-      <NeedSignin
-        inSignin={inSignin}
-        favoriteEnabled={favoriteEnabled}
-        handleSignin={handleSignin}
-      />
-    ) : (
-      <Loading />
-    );
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <SigninStatusBar
-        titleSuffix={currentPosition}
-        inSignin={inSignin}
-        signinStatus={signinStatus}
-        userName={userName}
-        handleSignin={handleSignin}
-        handleSignout={handleSignout}
-      />
-      {mainContainer}
-      <ErrorSnackbar
-        open={errorSnackbarOpen}
-        handleClose={handleErrorSnackbarClose}
-      />
-      <FavoriteSnackbars
-        open={favoriteSnackbarOpen}
-        handleClose={handleFavoriteSnackbarsClose}
-      />
+      <BrowserRouter>
+        <MenuBar
+          titleSuffix={titleSuffix}
+          signinStatus={signinStatus}
+          userName={userName}
+          handleSignout={handleSignout}
+        />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={(props) => (
+              <Player
+                signinStatus={signinStatus}
+                userName={userName}
+                idToken={idToken}
+                uid={uid}
+                accessToken={accessToken}
+                secret={secret}
+                handleSignin={handleSignin}
+                titleSuffixDidChange={titleSuffixDidChange}
+                {...props}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/privacy/"
+            render={(props) => (
+              <PrivacyPolicy
+                signinStatus={signinStatus}
+                userName={userName}
+                {...props}
+              />
+            )}
+          />
+        </Switch>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };

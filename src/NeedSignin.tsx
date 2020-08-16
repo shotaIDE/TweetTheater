@@ -1,6 +1,6 @@
 import { Box, Button, Container, Paper, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import React from "react";
+import React, { useState } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,17 +26,26 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  inSignin: boolean;
   favoriteEnabled: boolean;
   handleSignin: () => void;
 }
 
 export const NeedSignin = (props: Props) => {
+  const [inSignin, setInSignin] = useState(false);
+
   const classes = useStyles(props);
 
   const message = props.favoriteEnabled
     ? "本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントへのアクセスを許可してください。"
     : "本ウェブサイトで、Twitterの検索結果の表示するために、Twitterアカウントへのアクセスを許可してください。";
+
+  const handleSignin = () => {
+    // ボタンクリック後にページ遷移まで時間がかかる場合があるため、
+    // 多重にクリックされないようにボタンを無効化する
+    setInSignin(true);
+
+    props.handleSignin();
+  };
 
   return (
     <Container className={classes.root}>
@@ -54,8 +63,8 @@ export const NeedSignin = (props: Props) => {
               variant="contained"
               size="large"
               color="primary"
-              disabled={props.inSignin}
-              onClick={props.handleSignin}
+              disabled={inSignin}
+              onClick={handleSignin}
             >
               サインイン
             </Button>
