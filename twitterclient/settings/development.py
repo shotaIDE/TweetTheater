@@ -17,7 +17,7 @@ if GAE_HOSTING:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/autoplayclient-dev:asia-northeast1:polls-instance',
+            'HOST': '/cloudsql/autoplayclient-dev:us-central1:auto-play-client-instance',
             'NAME': os.environ.get('DJANGO_DATABASE_NAME'),
             'USER': os.environ.get('DJANGO_DATABASE_USER_NAME'),
             'PASSWORD': os.environ.get('DJANGO_DATABASE_PASSWORD'),
