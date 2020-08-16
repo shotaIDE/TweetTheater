@@ -11,6 +11,7 @@ import { darkTheme } from "./DarkTheme";
 import { firebaseConfig } from "./FirebaseConfig";
 import { GoogleAnalytics } from "./GoogleAnalytics";
 import { MenuBar } from "./MenuBar";
+import { NotFound } from "./NotFound";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
 import { TermsOfUse } from "./TermsOfUse";
@@ -141,6 +142,7 @@ const App = () => {
           />
           <Route exact path="/privacypolicy/" component={PrivacyPolicy} />
           <Route exact path="/termsofuse/" component={TermsOfUse} />
+          <Route component={NotFound} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
