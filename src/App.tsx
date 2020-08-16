@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { darkTheme } from "./DarkTheme";
 import { firebaseConfig } from "./FirebaseConfig";
+import { GoogleAnalytics } from "./GoogleAnalytics";
 import { MenuBar } from "./MenuBar";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
@@ -112,6 +113,7 @@ const App = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
+        <GoogleAnalytics />
         <MenuBar
           titleSuffix={titleSuffix}
           signinStatus={signinStatus}

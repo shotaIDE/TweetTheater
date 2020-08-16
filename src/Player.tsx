@@ -1,9 +1,6 @@
-import "firebase/auth";
-import "firebase/analytics";
 import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
-import * as firebase from "firebase/app";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -40,11 +37,6 @@ export const Player = (props: Props) => {
   const [favoriteSnackbarOpen, setFavoriteSnackbarOpen] = useState<
     FavoriteResult
   >(null);
-  useEffect(() => {
-    if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
-      firebase.analytics();
-    }
-  }, []);
 
   const authParamerters = useMemo(() => {
     const params =
@@ -146,10 +138,6 @@ export const Player = (props: Props) => {
     let updatedFavoriteList = favoritedList.slice(); // コピー
     updatedFavoriteList[currentVideoId] = true;
     setFavoritedList(updatedFavoriteList);
-
-    if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
-      firebase.analytics().logEvent("favorite");
-    }
 
     fetch(postUrl, {
       method: "POST",
