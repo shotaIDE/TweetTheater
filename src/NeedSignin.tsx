@@ -27,11 +27,16 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   inSignin: boolean;
+  favoriteEnabled: boolean;
   handleSignin: () => void;
 }
 
 export const NeedSignin = (props: Props) => {
   const classes = useStyles(props);
+
+  const message = props.favoriteEnabled
+    ? "本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントへのアクセスを許可してください。"
+    : "本ウェブサイトで、Twitterの検索結果の表示するために、Twitterアカウントへのアクセスを許可してください。";
 
   return (
     <Container className={classes.root}>
@@ -41,7 +46,7 @@ export const NeedSignin = (props: Props) => {
             ご利用にはTwitterでのサインインが必要です
           </Typography>
           <Typography className={classes.body} variant="subtitle1" align="left">
-            本ウェブサイトで、Twitterの検索結果の表示といいねをするために、Twitterアカウントへのアクセスを許可してください。
+            {message}
           </Typography>
           <Box display="flex" justifyContent="center">
             <Button

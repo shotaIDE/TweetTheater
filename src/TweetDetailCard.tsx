@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   tweet: Tweet;
+  favoriteEnabled: boolean;
   favorited: boolean;
   onClick: () => void;
 }
@@ -44,19 +45,21 @@ export const TweetDetailCard = (props: Props) => {
     />
   );
 
-  const favoriteButton = props.favorited ? (
-    <CardActions disableSpacing>
-      <IconButton aria-label="favorited">
-        <FavoriteIcon />
-      </IconButton>
-    </CardActions>
-  ) : (
-    <CardActions disableSpacing onClick={props.onClick}>
-      <IconButton aria-label="add to favorites">
-        <FavoriteBorderIcon />
-      </IconButton>
-    </CardActions>
-  );
+  const favoriteButton = props.favoriteEnabled ? (
+    props.favorited ? (
+      <CardActions disableSpacing>
+        <IconButton aria-label="favorited">
+          <FavoriteIcon />
+        </IconButton>
+      </CardActions>
+    ) : (
+      <CardActions disableSpacing onClick={props.onClick}>
+        <IconButton aria-label="add to favorites">
+          <FavoriteBorderIcon />
+        </IconButton>
+      </CardActions>
+    )
+  ) : null;
 
   return (
     <Card key={tweet.detailUrl} className={classes.root}>

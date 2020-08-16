@@ -10,6 +10,7 @@ import { SigninStatusBar } from "./AppBar";
 import { darkTheme } from "./DarkTheme";
 import { ErrorSnackbar } from "./ErrorSnackbar";
 import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
+import { firebaseConfig } from "./FirebaseConfig";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMedia } from "./PlayingMedia";
@@ -19,17 +20,6 @@ import { getTweetList } from "./TweetList";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBnnsai_J9oEmfs4XS8H7FrVzaKmiC_KQM",
-  authDomain: "autoplayclient-dev.firebaseapp.com",
-  databaseURL: "https://autoplayclient-dev.firebaseio.com",
-  projectId: "autoplayclient-dev",
-  storageBucket: "autoplayclient-dev.appspot.com",
-  messagingSenderId: "793287019774",
-  appId: "1:793287019774:web:e9674fb31ca75f3d9a29af",
-  measurementId: "G-SQ81DJLTJ6",
-};
-
 firebase.initializeApp(firebaseConfig);
 
 if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
@@ -37,6 +27,8 @@ if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
 }
 
 const provider = new firebase.auth.TwitterAuthProvider();
+
+const favoriteEnabled = true;
 
 const getAuthParams = (
   uid: string,
@@ -324,6 +316,7 @@ const App = () => {
           >
             <PlayingMedia
               tweet={currentTweet}
+              favoriteEnabled={favoriteEnabled}
               favorited={currentFavorited}
               onEnded={onEnded}
               onFavorited={onFavorited}
@@ -332,7 +325,11 @@ const App = () => {
         </Grid>
       </Container>
     ) : signinStatus === "notSignined" ? (
-      <NeedSignin inSignin={inSignin} handleSignin={handleSignin} />
+      <NeedSignin
+        inSignin={inSignin}
+        favoriteEnabled={favoriteEnabled}
+        handleSignin={handleSignin}
+      />
     ) : (
       <Loading />
     );
