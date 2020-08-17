@@ -1,3 +1,5 @@
+import "firebase/analytics";
+
 import { Divider, Link } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
@@ -8,6 +10,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import * as firebase from "firebase/app";
 import * as History from "history";
 import React from "react";
 import { withRouter } from "react-router";
@@ -68,6 +71,14 @@ export const MenuBar = withRouter((props: Props) => {
     props.history.push("/privacypolicy/");
   };
 
+  const handleTwitterAccount = () => {
+    handleClose();
+
+    window.open("https://twitter.com/TweetTheaterApp", "_blank", "noopener");
+
+    firebase.analytics().logEvent("open_official_twitter");
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -79,7 +90,7 @@ export const MenuBar = withRouter((props: Props) => {
     <div>
       <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
       <MenuItem onClick={handlePrivacyPolicy}>プライバシーポリシー</MenuItem>
-      <MenuItem>公式Twitterアカウント</MenuItem>
+      <MenuItem onClick={handleTwitterAccount}>公式Twitterアカウント</MenuItem>
     </div>
   );
 
