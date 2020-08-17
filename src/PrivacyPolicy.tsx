@@ -29,8 +29,8 @@ export const PrivacyPolicy = (props: Props) => {
           プライバシーポリシー
         </Typography>
         <Typography variant="body1" color="textSecondary" paragraph={true}>
-          本ウェブサイト上で提供するサービス「Twitter Auto
-          Player」（以下、「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。
+          本ウェブサイト上で提供するサービス「Tweet
+          Theater」（以下、「本サービス」といいます。）における、ユーザーの個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。
         </Typography>
         <Typography component="h2" variant="h5" paragraph={true}>
           第1条（個人情報を収集・利用する目的）

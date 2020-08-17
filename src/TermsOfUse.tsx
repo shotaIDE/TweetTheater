@@ -29,9 +29,8 @@ export const TermsOfUse = (props: Props) => {
           利用規約
         </Typography>
         <Typography variant="body1" color="textSecondary" paragraph={true}>
-          この利用規約（以下、「本規約」といいます。）は、このウェブサイト上で提供するサービス「Twitter
-          Auto
-          Player」（以下、「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下、「ユーザー」といいます。）には、本規約に従って、本サービスをご利用いただきます。
+          この利用規約（以下、「本規約」といいます。）は、このウェブサイト上で提供するサービス「Tweet
+          Theater」（以下、「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下、「ユーザー」といいます。）には、本規約に従って、本サービスをご利用いただきます。
         </Typography>
         <Typography component="h2" variant="h5" paragraph={true}>
           第1条（適用）
