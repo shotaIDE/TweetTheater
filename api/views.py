@@ -68,10 +68,13 @@ def create_user(request):
         'User accound was received: '
         f'UID={uid}, AccessToken={access_token}, Secret={secret}')
 
+    defaults_params = {
+        'access_token': access_token,
+        'secret': secret,
+    }
+
     user_credential, created = UserCredential.objects.update_or_create(
-        uid=uid,
-        access_token=access_token,
-        secret=secret)
+        uid=uid, defaults=defaults_params)
 
     if created:
         print('User credential was created')
