@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "autoplayclient-dev"
+    "dev": "autoplayclient-dev",
+    "prod": "tweet-theater"
   }
 }

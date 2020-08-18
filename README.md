@@ -1,3 +1,19 @@
+# デプロイ手順
+
+Firebase Hostingのデプロイ
+
+```shell
+yarn build
+firebase deploy --project=prod
+```
+
+Google App Engineのデプロイ
+
+```shell
+gcloud app deploy app-prod.yaml
+```
+
+# Create-React-App 自動生成分
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
