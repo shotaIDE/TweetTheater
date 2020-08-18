@@ -1,16 +1,17 @@
 # デプロイ手順
 
+Google App Engineのデプロイ
+
+```shell
+gcloud config configurations activate tweet-theater-prod
+gcloud app deploy app-prod.yaml
+```
+
 Firebase Hostingのデプロイ
 
 ```shell
 yarn build
 firebase deploy --project=prod
-```
-
-Google App Engineのデプロイ
-
-```shell
-gcloud app deploy app-prod.yaml
 ```
 
 # Create-React-App 自動生成分
