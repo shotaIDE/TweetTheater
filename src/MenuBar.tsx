@@ -10,12 +10,13 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import * as firebase from "firebase/app";
 import * as History from "history";
 import React from "react";
 import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
+import { officialTwitterAccountDidClick } from "./GoogleAnalyticsEvents";
+import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,9 +75,9 @@ export const MenuBar = withRouter((props: Props) => {
   const handleTwitterAccount = () => {
     handleClose();
 
-    window.open("https://twitter.com/TweetTheaterApp", "_blank", "noopener");
+    window.open(officialTwitterAccountUrl, "_blank", "noopener");
 
-    firebase.analytics().logEvent("open_official_twitter");
+    officialTwitterAccountDidClick();
   };
 
   const handleClose = () => {

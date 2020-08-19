@@ -4,6 +4,9 @@ import { Card, Container, Link, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 
+import { officialTwitterAccountDidClick } from "./GoogleAnalyticsEvents";
+import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -21,6 +24,10 @@ interface Props {}
 
 export const PrivacyPolicy = (props: Props) => {
   const classes = useStyles(props);
+
+  const handleTwitterAccount = () => {
+    officialTwitterAccountDidClick();
+  };
 
   return (
     <Container className={classes.root}>
@@ -78,7 +85,15 @@ export const PrivacyPolicy = (props: Props) => {
           第5条（お問い合わせ窓口）
         </Typography>
         <Typography variant="body1" color="textSecondary" paragraph={true}>
-          本ポリシーに関するお問い合わせは、<Link href="#">公式Twitter</Link>
+          本ポリシーに関するお問い合わせは、
+          <Link
+            href={officialTwitterAccountUrl}
+            target="_blank"
+            referrerPolicy="noopener"
+            onClick={handleTwitterAccount}
+          >
+            公式Twitter
+          </Link>
           までお願いいたします。
         </Typography>
         <Typography variant="body1" color="textSecondary" align="right">
