@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 800,
       padding: theme.spacing(2),
     },
+    link: {
+      color: theme.palette.primary.light,
+    },
   })
 );
 
@@ -72,11 +75,17 @@ export const PrivacyPolicy = (props: Props) => {
         <Typography variant="body1" color="textSecondary" paragraph={true}>
           本サービスでは、Googleによるアクセス解析ツール「Googleアナリティクス」を使用しています。このGoogleアナリティクスはデータの収集のためにCookieを使用しています。このデータは匿名で収集されており、個人を特定するものではありません。
           この規約に関しての詳細は
-          <Link href="https://marketingplatform.google.com/about/analytics/terms/jp/">
+          <Link
+            className={classes.link}
+            href="https://marketingplatform.google.com/about/analytics/terms/jp/"
+          >
             Googleアナリティクスサービス利用規約ページ
           </Link>
           や
-          <Link href="https://policies.google.com/technologies/ads?hl=ja">
+          <Link
+            className={classes.link}
+            href="https://policies.google.com/technologies/ads?hl=ja"
+          >
             Googleポリシーと規約ページ
           </Link>
           をご覧ください。
@@ -87,6 +96,7 @@ export const PrivacyPolicy = (props: Props) => {
         <Typography variant="body1" color="textSecondary" paragraph={true}>
           本ポリシーに関するお問い合わせは、
           <Link
+            className={classes.link}
             href={officialTwitterAccountUrl}
             target="_blank"
             referrerPolicy="noopener"

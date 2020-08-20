@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
     body: {
       margin: theme.spacing(2),
     },
+    link: {
+      color: theme.palette.primary.light,
+    },
     button: {
       margin: theme.spacing(2),
     },
@@ -77,11 +80,15 @@ export const NeedSignin = withRouter((props: Props) => {
           </Typography>
           <Typography className={classes.body} variant="subtitle2" align="left">
             サインインすることで、
-            <Link href="" onClick={handleTermsOfUse}>
+            <Link className={classes.link} href="" onClick={handleTermsOfUse}>
               利用規約
             </Link>
             と
-            <Link href="" onClick={handlePrivacyPolicy}>
+            <Link
+              className={classes.link}
+              href=""
+              onClick={handlePrivacyPolicy}
+            >
               プライバシーポリシー
             </Link>
             に同意することになります。

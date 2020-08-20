@@ -20,8 +20,11 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(1),
       color: theme.palette.text.secondary,
     },
-    link: {
+    linkContainer: {
       paddingTop: theme.spacing(1),
+    },
+    link: {
+      color: theme.palette.primary.light,
     },
   })
 );
@@ -82,12 +85,13 @@ export const TweetDetailCard = (props: Props) => {
           {tweet.createdAt}
         </Typography>
         <Typography
-          className={classes.link}
+          className={classes.linkContainer}
           align="left"
           variant="body2"
           component="p"
         >
           <Link
+            className={classes.link}
             href={tweet.detailUrl}
             target="_blank"
             rel="noopener noreferrer"
