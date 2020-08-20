@@ -19,7 +19,7 @@ def _get_uid(request) -> dict:
     decoded_token = auth.verify_id_token(id_token)
     uid = decoded_token['uid']
 
-    print(f'uid: {uid}')
+    print(f'UID: {uid}')
 
     return uid
 
