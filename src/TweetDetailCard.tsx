@@ -94,7 +94,7 @@ export const TweetDetailCard = (props: Props) => {
             className={classes.link}
             href={tweet.detailUrl}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="noopener"
           >
             {tweet.detailUrl}
           </Link>
