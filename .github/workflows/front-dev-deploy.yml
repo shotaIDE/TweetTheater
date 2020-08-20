@@ -5,6 +5,7 @@ on:
     paths:
       - 'public/**'
       - 'src/**'
+      - '.env*'
       - 'package.json'
       - 'yarn.lock'
 
@@ -32,6 +33,11 @@ jobs:
           ${{ runner.os }}-yarn-
 
     - run: yarn install
+
+    - name: Generate env file
+      env:
+        FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG_DEV }}
+      run: echo $FIREBASE_CONFIG | base64 --decode > .env
 
     - run: yarn build --if-present
 
