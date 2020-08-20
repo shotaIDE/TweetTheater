@@ -1,0 +1,33 @@
+name: API development deploy
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'api/**'
+      - 'twitterclient/**'
+      - 'app-dev.yaml'
+      - 'requirements.txt'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Google application credentials file
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_DEV }}
+        run: echo $GOOGLE_APPLICATION_CREDENTIALS | base64 --decode > serviceAccountKey.json
+
+      - name: Generate Django env file
+        env:
+          TWITTER_CLIENT_CONFIG: ${{ secrets.TWITTER_CLIENT_CONFIG_DEV }}
+        run: echo $TWITTER_CLIENT_CONFIG | base64 --decode > .env
+
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID_DEV }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_DEV }}
+        with:
+          args: app deploy app-dev.yaml
