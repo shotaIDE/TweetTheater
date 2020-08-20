@@ -13,19 +13,25 @@ ACCESS_TOKEN_KEY = 'access_token'
 ACCESS_SECRET_KEY = 'secret'
 
 
+def _get_uid(request) -> dict:
+    id_token = request.POST.get('idToken')
+
+    decoded_token = auth.verify_id_token(id_token)
+    uid = decoded_token['uid']
+
+    print(f'uid: {uid}')
+
+    return uid
+
+
 def _get_user_secret(request) -> dict:
-    uid = request.POST.get('uid')
+    uid = _get_uid(request=request)
+
     access_token = request.POST.get('accessToken')
     secret = request.POST.get('secret')
 
-    if (uid is None or access_token is None or secret is None):
-        id_token = request.POST.get('idToken')
-
-        decoded_token = auth.verify_id_token(id_token)
-        uid = decoded_token['uid']
-
-        print(f'uid: {uid}')
-
+    if (access_token is None or secret is None):
+        # リクエストに含まれていない場合は、DBから秘匿情報を取得する
         user_credential = UserCredential.objects.get(uid=uid)
         access_token = user_credential.access_token
         secret = user_credential.secret
@@ -60,7 +66,8 @@ def search_2hDTM(request):
 
 @csrf_exempt
 def create_user(request):
-    uid = request.POST.get('uid')
+    uid = _get_uid(request=request)
+
     access_token = request.POST.get('accessToken')
     secret = request.POST.get('secret')
 

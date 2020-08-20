@@ -40,9 +40,11 @@ export const Player = (props: Props) => {
 
   const authParamerters = useMemo(() => {
     const params =
-      props.uid != null && props.accessToken != null && props.secret != null
+      props.idToken == null
+        ? null
+        : props.accessToken != null && props.secret != null
         ? {
-            uid: props.uid,
+            idToken: props.idToken,
             accessToken: props.accessToken,
             secret: props.secret,
           }
@@ -51,13 +53,10 @@ export const Player = (props: Props) => {
           };
 
     return params;
-  }, [props.accessToken, props.idToken, props.secret, props.uid]);
+  }, [props.accessToken, props.idToken, props.secret]);
 
   useEffect(() => {
-    if (
-      props.idToken == null &&
-      (props.uid == null || props.accessToken == null || props.secret == null)
-    ) {
+    if (authParamerters == null) {
       return;
     }
 
@@ -94,14 +93,7 @@ export const Player = (props: Props) => {
         setFetchError(true);
         setErrorSnackbarOpen(true);
       });
-  }, [
-    fetchRequested,
-    authParamerters,
-    props.idToken,
-    props.uid,
-    props.accessToken,
-    props.secret,
-  ]);
+  }, [fetchRequested, authParamerters]);
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {

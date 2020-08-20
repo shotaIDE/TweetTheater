@@ -75,28 +75,34 @@ const App = () => {
             `AccessToken=${accessToken.substring(0, 5)}... ` +
             `Secret=${secret.substring(0, 5)}`
         );
-
-        const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/user/create`;
-        const params = {
-          uid: uid,
-          accessToken: accessToken,
-          secret: secret,
-        };
-
-        fetch(fetchUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: Object.keys(params)
-            .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-            .join("&"),
-        });
       })
       .catch((_) => {
         console.log("Not redirected");
       });
   }, []);
+
+  useEffect(() => {
+    if (idToken == null || accessToken == null || secret == null) {
+      return;
+    }
+
+    const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/user/create`;
+    const params = {
+      idToken: idToken,
+      accessToken: accessToken,
+      secret: secret,
+    };
+
+    fetch(fetchUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: Object.keys(params)
+        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+        .join("&"),
+    });
+  }, [accessToken, idToken, secret]);
 
   const handleSignin = () => {
     const provider = new firebase.auth.TwitterAuthProvider();
