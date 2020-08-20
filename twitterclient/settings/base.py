@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+import firebase_admin
 from dotenv import load_dotenv
+from firebase_admin import credentials
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,6 +24,17 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
 DOT_ENV_PATH = str(BASE_DIR / '.env')
 load_dotenv(DOT_ENV_PATH)
+
+
+os.environ.setdefault(
+    'GOOGLE_APPLICATION_CREDENTIALS',
+    str(BASE_DIR / 'serviceAccountKey.json'))
+
+firebase_admin_credential_path = \
+    os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+firebase_admin_credentials = credentials.Certificate(
+    firebase_admin_credential_path)
+firebase_admin.initialize_app(firebase_admin_credentials)
 
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
