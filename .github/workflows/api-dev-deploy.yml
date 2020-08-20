@@ -15,10 +15,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Generate Google application credentials file
+      - name: Generate Firebase admin credentials file
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_DEV }}
-        run: echo $GOOGLE_APPLICATION_CREDENTIALS | base64 --decode > serviceAccountKey.json
+          FIREBASE_ADMIN_CREDENTIALS: ${{ secrets.FIREBASE_ADMIN_CREDENTIALS_DEV }}
+        run: echo $FIREBASE_ADMIN_CREDENTIALS | base64 --decode > serviceAccountKey.json
 
       - name: Generate Django env file
         env:
