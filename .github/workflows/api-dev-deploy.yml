@@ -1,4 +1,4 @@
-name: API development deploy
+name: API deploy for development
 on:
   push:
     branches: [ master ]
