@@ -13,7 +13,7 @@ import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
 
-const favoriteEnabled = true;
+const favoriteEnabled = process.env.NODE_ENV === "development";
 
 interface Props {
   signinStatus: SigninStatus;
