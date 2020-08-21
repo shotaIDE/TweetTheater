@@ -1,0 +1,29 @@
+name: API deploy for production
+on:
+  create:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate Firebase admin credentials file
+        env:
+          FIREBASE_ADMIN_CREDENTIALS: ${{ secrets.FIREBASE_ADMIN_CREDENTIALS_PROD }}
+        run: echo $FIREBASE_ADMIN_CREDENTIALS | base64 --decode > serviceAccountKey.json
+
+      - name: Generate Django env file
+        env:
+          TWITTER_CLIENT_CONFIG: ${{ secrets.TWITTER_CLIENT_CONFIG_PROD }}
+        run: echo $TWITTER_CLIENT_CONFIG | base64 --decode > .env
+
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID_DEV }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_PROD }}
+        with:
+          args: app deploy app-prod.yaml
