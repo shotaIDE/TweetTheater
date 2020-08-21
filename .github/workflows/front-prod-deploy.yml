@@ -1,0 +1,43 @@
+name: Front deploy for production
+on:
+  create:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+
+    - uses: actions/cache@v1
+      id: yarn-cache
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - run: yarn install
+
+    - name: Generate env file
+      env:
+        FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG_PROD }}
+      run: echo $FIREBASE_CONFIG | base64 --decode > .env
+
+    - run: yarn build --if-present
+
+    - name: Deploy to Firebase
+      uses: w9jds/firebase-action@master
+      with:
+        args: deploy --project=dev
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
