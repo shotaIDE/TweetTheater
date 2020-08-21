@@ -31,7 +31,7 @@ jobs:
     - name: Generate env file
       env:
         FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG_PROD }}
-      run: echo $FIREBASE_CONFIG | base64 --decode > .env
+      run: echo $FIREBASE_CONFIG | base64 --decode > .env.production.local
 
     - run: yarn build --if-present
 
