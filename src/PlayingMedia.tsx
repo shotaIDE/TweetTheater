@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
       width: "100%",
       marginTop: theme.spacing(1),
+      marginBottom: theme.spacing(1),
       justifyContent: "flex-end",
     },
   })
@@ -62,6 +63,7 @@ export const PlayingMedia = (props: Props) => {
             <Box className={classes.listButtonBox}>
               <Button
                 variant="outlined"
+                size="large"
                 endIcon={<LibraryBooksIcon />}
                 onClick={props.onOpenList}
               >
