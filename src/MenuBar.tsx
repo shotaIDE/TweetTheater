@@ -23,12 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
-    title: {
-      flexGrow: 1,
-    },
     titleLink: {
       color: theme.palette.text.primary,
       cursor: "pointer",
+    },
+    title: {
+      marginLeft: theme.spacing(1),
+      flexGrow: 1,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -149,8 +150,8 @@ export const MenuBar = withRouter((props: Props) => {
   );
 
   const suffix = props.isPC
-    ? ` - ${process.env.REACT_APP_SEARCH_TEXT} - ${props.titleSuffix}`
-    : `${process.env.REACT_APP_SEARCH_TEXT} - ${props.titleSuffix}`;
+    ? `${process.env.REACT_APP_SEARCH_TEXT} - [ ${props.titleSuffix} ]`
+    : `${props.titleSuffix} - ${process.env.REACT_APP_SEARCH_TEXT}`;
 
   return (
     <AppBar position="sticky">
@@ -162,7 +163,7 @@ export const MenuBar = withRouter((props: Props) => {
         >
           {logoField}
         </Link>
-        <Typography variant="h6" className={classes.title}>
+        <Typography variant="h6" noWrap={true} className={classes.title}>
           {suffix}
         </Typography>
         {menu}

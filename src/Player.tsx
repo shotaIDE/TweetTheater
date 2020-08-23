@@ -195,9 +195,9 @@ export const Player = (props: Props) => {
     : false;
 
   useEffect(() => {
-    const currentPosition = `[ ${isPlayingVideo ? currentVideoId + 1 : "-"} / ${
+    const currentPosition = `${isPlayingVideo ? currentVideoId + 1 : "-"} / ${
       tweetList.length
-    } ]`;
+    }`;
     props.titleSuffixDidChange(currentPosition);
   }, [currentVideoId, isPlayingVideo, props, tweetList.length]);
 
