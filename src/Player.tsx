@@ -1,6 +1,7 @@
 import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -15,6 +16,24 @@ import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
 
 const favoriteEnabled = process.env.NODE_ENV === "development";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    fixedContainer: {
+      position: "fixed",
+      left: "51%",
+      top: "12%",
+      display: "flex",
+      justifyContent: "center",
+      [theme.breakpoints.up("md")]: {
+        width: 450,
+      },
+      [theme.breakpoints.up("lg")]: {
+        width: 600,
+      },
+    },
+  })
+);
 
 interface Props {
   isPC: boolean;
@@ -97,6 +116,8 @@ export const Player = (props: Props) => {
         setErrorSnackbarOpen(true);
       });
   }, [fetchRequested, authParamerters]);
+
+  const classes = useStyles(props);
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {
@@ -204,7 +225,7 @@ export const Player = (props: Props) => {
   const mainContainer =
     props.signinStatus === "signined" ? (
       props.isPC ? (
-        <Container>
+        <Container fixed={true}>
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <TweetCardList
@@ -215,16 +236,7 @@ export const Player = (props: Props) => {
               />
             </Grid>
             <Grid item xs={6}></Grid>
-            <div
-              style={{
-                position: "fixed",
-                left: "51%",
-                width: 600,
-                height: "90%",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+            <div className={classes.fixedContainer}>
               <PlayingMedia
                 isPC={props.isPC}
                 tweet={currentTweet}
