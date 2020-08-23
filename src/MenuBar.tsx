@@ -23,6 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       flexGrow: 1,
     },
+    logoImage: {
+      marginTop: theme.spacing(0.5),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: 20,
+      height: 20,
+    },
     titleLink: {
       color: theme.palette.text.primary,
       cursor: "pointer",
@@ -146,7 +153,7 @@ export const MenuBar = withRouter((props: Props) => {
       {process.env.REACT_APP_SITE_TITLE}
     </Typography>
   ) : (
-    <img src="logo.svg" alt="ロゴ画像" width="24" height="24" />
+    <img src="logo.svg" alt="ロゴ" className={classes.logoImage} />
   );
 
   const suffix = props.isPC
