@@ -1,4 +1,5 @@
 import AppBar from "@material-ui/core/AppBar";
+import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import Slide from "@material-ui/core/Slide";
@@ -20,6 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       marginLeft: theme.spacing(2),
       flex: 1,
+    },
+    root: {
+      display: "flex",
+      justifyContent: "center",
+      backgroundColor: theme.palette.background.default,
     },
   })
 );
@@ -71,12 +77,14 @@ export const ListDialog = (props: Props) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <TweetCardList
-        tweetList={props.tweetList}
-        statusList={props.statusList}
-        fetchError={props.fetchError}
-        onClick={onClick}
-      />
+      <Container className={classes.root}>
+        <TweetCardList
+          tweetList={props.tweetList}
+          statusList={props.statusList}
+          fetchError={props.fetchError}
+          onClick={onClick}
+        />
+      </Container>
     </Dialog>
   );
 };
