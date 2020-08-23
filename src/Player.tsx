@@ -2,6 +2,7 @@ import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -246,11 +247,13 @@ export const Player = (props: Props) => {
             onFavorited={onFavorited}
           />
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
+            size="large"
+            endIcon={<LibraryBooksIcon />}
             onClick={handleListDialogClickOpen}
           >
-            Open full-screen dialog
+            ツイート一覧を開く
           </Button>
           <ListDialog
             open={open}

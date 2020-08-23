@@ -140,6 +140,7 @@ const App = () => {
             path="/"
             render={(props) => (
               <Player
+                isPC={isPC}
                 signinStatus={signinStatus}
                 userName={userName}
                 idToken={idToken}
