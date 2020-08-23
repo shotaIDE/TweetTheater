@@ -1,6 +1,7 @@
 import AppBar from "@material-ui/core/AppBar";
 import Container from "@material-ui/core/Container";
 import Dialog from "@material-ui/core/Dialog";
+import Fab from "@material-ui/core/Fab";
 import IconButton from "@material-ui/core/IconButton";
 import Slide from "@material-ui/core/Slide";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -8,15 +9,17 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { TransitionProps } from "@material-ui/core/transitions";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import React from "react";
 
+import { ScrollTop } from "./ScrollTop";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
-      position: "relative",
+      // position: "relative",
     },
     title: {
       marginLeft: theme.spacing(2),
@@ -62,7 +65,7 @@ export const ListDialog = (props: Props) => {
       onClose={props.handleClose}
       TransitionComponent={Transition}
     >
-      <AppBar className={classes.appBar}>
+      <AppBar>
         <Toolbar>
           <IconButton
             edge="start"
@@ -77,6 +80,7 @@ export const ListDialog = (props: Props) => {
           </Typography>
         </Toolbar>
       </AppBar>
+      <Toolbar id="back-to-top-anchor" />
       <Container className={classes.root}>
         <TweetCardList
           tweetList={props.tweetList}
@@ -84,6 +88,11 @@ export const ListDialog = (props: Props) => {
           fetchError={props.fetchError}
           onClick={onClick}
         />
+        <ScrollTop {...props}>
+          <Fab color="secondary" size="small" aria-label="scroll back to top">
+            <KeyboardArrowUpIcon />
+          </Fab>
+        </ScrollTop>
       </Container>
     </Dialog>
   );
