@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  isPC: boolean;
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
@@ -51,6 +52,19 @@ export const PlayingMedia = (props: Props) => {
     <TweetDetailEmptyCard />
   );
 
+  const openListButton = props.isPC ? null : (
+    <Box className={classes.listButtonBox}>
+      <Button
+        variant="outlined"
+        size="large"
+        endIcon={<LibraryBooksIcon />}
+        onClick={props.onOpenList}
+      >
+        ツイート一覧を開く
+      </Button>
+    </Box>
+  );
+
   return (
     <Grid container spacing={1} direction="row">
       <Grid item xs={12}>
@@ -60,16 +74,7 @@ export const PlayingMedia = (props: Props) => {
         <Box className={classes.tweetBox}>
           <Box>
             {tweetDetailCard}
-            <Box className={classes.listButtonBox}>
-              <Button
-                variant="outlined"
-                size="large"
-                endIcon={<LibraryBooksIcon />}
-                onClick={props.onOpenList}
-              >
-                ツイート一覧を開く
-              </Button>
-            </Box>
+            {openListButton}
           </Box>
         </Box>
       </Grid>

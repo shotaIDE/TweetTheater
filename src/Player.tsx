@@ -226,6 +226,7 @@ export const Player = (props: Props) => {
               }}
             >
               <PlayingMedia
+                isPC={props.isPC}
                 tweet={currentTweet}
                 favoriteEnabled={favoriteEnabled}
                 favorited={currentFavorited}
@@ -239,6 +240,7 @@ export const Player = (props: Props) => {
       ) : (
         <Container>
           <PlayingMedia
+            isPC={props.isPC}
             tweet={currentTweet}
             favoriteEnabled={favoriteEnabled}
             favorited={currentFavorited}
