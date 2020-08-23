@@ -2,6 +2,8 @@ import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -97,6 +99,9 @@ export const Player = (props: Props) => {
         setErrorSnackbarOpen(true);
       });
   }, [fetchRequested, authParamerters]);
+
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {
@@ -203,49 +208,65 @@ export const Player = (props: Props) => {
 
   const mainContainer =
     props.signinStatus === "signined" ? (
-      <Container>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            <TweetCardList
-              tweetList={tweetList}
-              statusList={tweetCardInfoList}
-              fetchError={fetchError}
-              onClick={onClick}
-            />
-          </Grid>
-          <Grid item xs={6}></Grid>
-          <div
-            style={{
-              position: "fixed",
-              left: "51%",
-              width: 600,
-              height: "90%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <PlayingMedia
-              tweet={currentTweet}
-              favoriteEnabled={favoriteEnabled}
-              favorited={currentFavorited}
-              onEnded={onEnded}
-              onFavorited={onFavorited}
-            />
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={handleListDialogClickOpen}
+      matches ? (
+        <Container>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <TweetCardList
+                tweetList={tweetList}
+                statusList={tweetCardInfoList}
+                fetchError={fetchError}
+                onClick={onClick}
+              />
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <div
+              style={{
+                position: "fixed",
+                left: "51%",
+                width: 600,
+                height: "90%",
+                display: "flex",
+                justifyContent: "center",
+              }}
             >
-              Open full-screen dialog
-            </Button>
-            <ListDialog
-              open={open}
-              handleClickOpen={handleListDialogClickOpen}
-              handleClose={handleListDialogClose}
-            />
-          </div>
-        </Grid>
-      </Container>
+              <PlayingMedia
+                tweet={currentTweet}
+                favoriteEnabled={favoriteEnabled}
+                favorited={currentFavorited}
+                onEnded={onEnded}
+                onFavorited={onFavorited}
+              />
+            </div>
+          </Grid>
+        </Container>
+      ) : (
+        <Container>
+          <PlayingMedia
+            tweet={currentTweet}
+            favoriteEnabled={favoriteEnabled}
+            favorited={currentFavorited}
+            onEnded={onEnded}
+            onFavorited={onFavorited}
+          />
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleListDialogClickOpen}
+          >
+            Open full-screen dialog
+          </Button>
+          <ListDialog
+            open={open}
+            tweetList={tweetList}
+            statusList={tweetCardInfoList}
+            fetchError={fetchError}
+            handleClickOpen={handleListDialogClickOpen}
+            handleClose={handleListDialogClose}
+            onClick={onClick}
+          />
+        </Container>
+      )
     ) : props.signinStatus === "notSignined" ? (
       <NeedSignin
         favoriteEnabled={favoriteEnabled}

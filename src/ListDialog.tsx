@@ -1,11 +1,6 @@
 import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
-import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Slide from "@material-ui/core/Slide";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -13,6 +8,9 @@ import { TransitionProps } from "@material-ui/core/transitions";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import React from "react";
+
+import { TweetStatus } from "./TweetCard";
+import { Tweet, TweetCardList } from "./TweetCardList";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,11 +33,21 @@ const Transition = React.forwardRef(function Transition(
 
 interface Props {
   open: boolean;
+  tweetList: Tweet[];
+  statusList: TweetStatus[];
+  fetchError: boolean;
   handleClickOpen: () => void;
   handleClose: () => void;
+  onClick: (_: number) => void;
 }
+
 export const ListDialog = (props: Props) => {
   const classes = useStyles(props);
+
+  const onClick = (id: number) => {
+    props.handleClose();
+    props.onClick(id);
+  };
 
   return (
     <Dialog
@@ -59,25 +67,16 @@ export const ListDialog = (props: Props) => {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Sound
+            ツイート一覧
           </Typography>
-          <Button autoFocus color="inherit" onClick={props.handleClose}>
-            save
-          </Button>
         </Toolbar>
       </AppBar>
-      <List>
-        <ListItem button>
-          <ListItemText primary="Phone ringtone" secondary="Titania" />
-        </ListItem>
-        <Divider />
-        <ListItem button>
-          <ListItemText
-            primary="Default notification ringtone"
-            secondary="Tethys"
-          />
-        </ListItem>
-      </List>
+      <TweetCardList
+        tweetList={props.tweetList}
+        statusList={props.statusList}
+        fetchError={props.fetchError}
+        onClick={onClick}
+      />
     </Dialog>
   );
 };
