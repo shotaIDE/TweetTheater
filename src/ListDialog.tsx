@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: "flex",
       justifyContent: "center",
-      backgroundColor: theme.palette.background.default,
     },
   })
 );
