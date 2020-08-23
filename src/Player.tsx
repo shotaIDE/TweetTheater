@@ -2,8 +2,6 @@ import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
-import { useTheme } from "@material-ui/core/styles";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -20,6 +18,7 @@ import { getTweetList } from "./TweetList";
 const favoriteEnabled = process.env.NODE_ENV === "development";
 
 interface Props {
+  isPC: boolean;
   signinStatus: SigninStatus;
   userName: string;
   idToken: string;
@@ -99,9 +98,6 @@ export const Player = (props: Props) => {
         setErrorSnackbarOpen(true);
       });
   }, [fetchRequested, authParamerters]);
-
-  const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up("sm"));
 
   // 一つの動画の再生が完了した場合
   const onEnded = () => {
@@ -200,15 +196,15 @@ export const Player = (props: Props) => {
     : false;
 
   useEffect(() => {
-    const currentPosition = ` - [ ${
-      isPlayingVideo ? currentVideoId + 1 : "-"
-    } / ${tweetList.length} ]`;
+    const currentPosition = `[ ${isPlayingVideo ? currentVideoId + 1 : "-"} / ${
+      tweetList.length
+    } ]`;
     props.titleSuffixDidChange(currentPosition);
   }, [currentVideoId, isPlayingVideo, props, tweetList.length]);
 
   const mainContainer =
     props.signinStatus === "signined" ? (
-      matches ? (
+      props.isPC ? (
         <Container>
           <Grid container spacing={1}>
             <Grid item xs={6}>

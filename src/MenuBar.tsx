@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
+  isPC: boolean;
   titleSuffix: string;
   signinStatus: SigninStatus;
   userName: string;
@@ -139,18 +140,30 @@ export const MenuBar = withRouter((props: Props) => {
     </div>
   );
 
+  const logoField = props.isPC ? (
+    <Typography variant="h6" className={classes.title}>
+      {process.env.REACT_APP_SITE_TITLE}
+    </Typography>
+  ) : (
+    <img src="logo.svg" alt="ロゴ画像" width="24" height="24" />
+  );
+
+  const suffix = props.isPC
+    ? ` - ${process.env.REACT_APP_SEARCH_TEXT} - ${props.titleSuffix}`
+    : `${process.env.REACT_APP_SEARCH_TEXT} - ${props.titleSuffix}`;
+
   return (
     <AppBar position="sticky">
       <Toolbar>
+        <Link
+          className={classes.titleLink}
+          underline="none"
+          onClick={handlePlayerPage}
+        >
+          {logoField}
+        </Link>
         <Typography variant="h6" className={classes.title}>
-          <Link
-            className={classes.titleLink}
-            underline="none"
-            onClick={handlePlayerPage}
-          >
-            {process.env.REACT_APP_SITE_TITLE}
-          </Link>
-          {props.titleSuffix}
+          {suffix}
         </Typography>
         {menu}
       </Toolbar>

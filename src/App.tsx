@@ -3,6 +3,8 @@ import "firebase/analytics";
 import "./App.css";
 
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
@@ -117,12 +119,16 @@ const App = () => {
     setTitleSuffix(title);
   };
 
+  const theme = useTheme();
+  const isPC = useMediaQuery(theme.breakpoints.up("md"));
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
         <GoogleAnalytics />
         <MenuBar
+          isPC={isPC}
           titleSuffix={titleSuffix}
           signinStatus={signinStatus}
           userName={userName}
