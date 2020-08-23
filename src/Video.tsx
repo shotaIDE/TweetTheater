@@ -10,6 +10,7 @@ export const Video = (props: Props) => {
     <video
       key={props.src}
       autoPlay
+      playsInline={true}
       controls
       onEnded={props.onEnded}
       style={{ width: "100%", maxHeight: 500 }}
