@@ -1,8 +1,6 @@
 import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -233,6 +231,7 @@ export const Player = (props: Props) => {
                 favorited={currentFavorited}
                 onEnded={onEnded}
                 onFavorited={onFavorited}
+                onOpenList={handleListDialogClickOpen}
               />
             </div>
           </Grid>
@@ -245,16 +244,8 @@ export const Player = (props: Props) => {
             favorited={currentFavorited}
             onEnded={onEnded}
             onFavorited={onFavorited}
+            onOpenList={handleListDialogClickOpen}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            endIcon={<LibraryBooksIcon />}
-            onClick={handleListDialogClickOpen}
-          >
-            ツイート一覧を開く
-          </Button>
           <ListDialog
             open={open}
             tweetList={tweetList}
