@@ -1,11 +1,13 @@
 import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
 import { ErrorSnackbar } from "./ErrorSnackbar";
 import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
+import { ListDialog } from "./ListDialog";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMedia } from "./PlayingMedia";
@@ -37,6 +39,7 @@ export const Player = (props: Props) => {
   const [favoriteSnackbarOpen, setFavoriteSnackbarOpen] = useState<
     FavoriteResult
   >(null);
+  const [open, setOpen] = useState(false);
 
   const authParamerters = useMemo(() => {
     const params =
@@ -171,6 +174,14 @@ export const Player = (props: Props) => {
     setCurrentVideoId(id);
   };
 
+  const handleListDialogClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleListDialogClose = () => {
+    setOpen(false);
+  };
+
   const tweetCardInfoList = tweetList.map(
     (_, id): TweetStatus =>
       id === currentVideoId ? "playing" : playedList[id] ? "played" : "none"
@@ -219,6 +230,18 @@ export const Player = (props: Props) => {
               favorited={currentFavorited}
               onEnded={onEnded}
               onFavorited={onFavorited}
+            />
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleListDialogClickOpen}
+            >
+              Open full-screen dialog
+            </Button>
+            <ListDialog
+              open={open}
+              handleClickOpen={handleListDialogClickOpen}
+              handleClose={handleListDialogClose}
             />
           </div>
         </Grid>
