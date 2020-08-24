@@ -31,7 +31,7 @@ export type TweetStatus = "none" | "playing" | "played";
 interface Props {
   tweet: Tweet;
   status: TweetStatus;
-  onClick: () => void;
+  handleClick: () => void;
 }
 
 export const TweetCard = (props: Props) => {
@@ -54,7 +54,11 @@ export const TweetCard = (props: Props) => {
   );
 
   return (
-    <Card key={tweet.detailUrl} className={rootStyle} onClick={props.onClick}>
+    <Card
+      key={tweet.detailUrl}
+      className={rootStyle}
+      onClick={props.handleClick}
+    >
       <CardHeader
         align="left"
         avatar={profileImage}

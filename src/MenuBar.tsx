@@ -20,24 +20,20 @@ import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    title: {
-      flexGrow: 1,
-    },
     titleLink: {
       color: theme.palette.text.primary,
       cursor: "pointer",
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
+    title: {
+      marginLeft: theme.spacing(1),
+      flexGrow: 1,
     },
   })
 );
 
 interface Props {
-  titleSuffix: string;
+  children: React.ReactElement;
+  playerPositionLabel: string;
   signinStatus: SigninStatus;
   userName: string;
   history: History.history;
@@ -142,15 +138,15 @@ export const MenuBar = withRouter((props: Props) => {
   return (
     <AppBar position="sticky">
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          <Link
-            className={classes.titleLink}
-            underline="none"
-            onClick={handlePlayerPage}
-          >
-            {process.env.REACT_APP_SITE_TITLE}
-          </Link>
-          {props.titleSuffix}
+        <Link
+          className={classes.titleLink}
+          underline="none"
+          onClick={handlePlayerPage}
+        >
+          {props.children}
+        </Link>
+        <Typography variant="h6" noWrap={true} className={classes.title}>
+          {props.playerPositionLabel}
         </Typography>
         {menu}
       </Toolbar>

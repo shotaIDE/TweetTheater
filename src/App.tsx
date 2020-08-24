@@ -3,6 +3,8 @@ import "firebase/analytics";
 import "./App.css";
 
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import * as firebase from "firebase/app";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
@@ -10,7 +12,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { darkTheme } from "./DarkTheme";
 import { firebaseConfig } from "./FirebaseConfig";
 import { GoogleAnalytics } from "./GoogleAnalytics";
-import { MenuBar } from "./MenuBar";
+import { MenuBarDesktop } from "./MenuBarDesktop";
+import { MenuBarMobile } from "./MenuBarMobile";
 import { NotFound } from "./NotFound";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
@@ -27,7 +30,7 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
-  const [titleSuffix, setTitleSuffix] = useState("");
+  const [playerPosition, setPlayerPosition] = useState("");
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -113,27 +116,42 @@ const App = () => {
     firebase.auth().signOut();
   };
 
-  const titleSuffixDidChange = (title: string) => {
-    setTitleSuffix(title);
+  const handleChangePlayerPosition = (title: string) => {
+    setPlayerPosition(title);
   };
+
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
+
+  const menuBar = isDesktop ? (
+    <MenuBarDesktop
+      playerPosition={playerPosition}
+      signinStatus={signinStatus}
+      userName={userName}
+      handleSignout={handleSignout}
+    />
+  ) : (
+    <MenuBarMobile
+      playerPosition={playerPosition}
+      signinStatus={signinStatus}
+      userName={userName}
+      handleSignout={handleSignout}
+    />
+  );
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
         <GoogleAnalytics />
-        <MenuBar
-          titleSuffix={titleSuffix}
-          signinStatus={signinStatus}
-          userName={userName}
-          handleSignout={handleSignout}
-        />
+        {menuBar}
         <Switch>
           <Route
             exact
             path="/"
             render={(props) => (
               <Player
+                isDesktop={isDesktop}
                 signinStatus={signinStatus}
                 userName={userName}
                 idToken={idToken}
@@ -141,7 +159,7 @@ const App = () => {
                 accessToken={accessToken}
                 secret={secret}
                 handleSignin={handleSignin}
-                titleSuffixDidChange={titleSuffixDidChange}
+                handleChangePosition={handleChangePlayerPosition}
                 {...props}
               />
             )}

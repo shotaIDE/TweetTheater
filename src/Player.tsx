@@ -1,6 +1,7 @@
 import "./App.css";
 
 import { Container, Grid } from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useEffect, useMemo, useState } from "react";
 
 import { SigninStatus } from "./App";
@@ -8,14 +9,34 @@ import { ErrorSnackbar } from "./ErrorSnackbar";
 import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
-import { PlayingMedia } from "./PlayingMedia";
+import { PlayingMediaDesktop, PlayingMediaMobile } from "./PlayingMedia";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
+import { TweetListDialog } from "./TweetListDialog";
 
 const favoriteEnabled = process.env.NODE_ENV === "development";
 
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    fixedContainer: {
+      position: "fixed",
+      left: "51%",
+      top: "12%",
+      display: "flex",
+      justifyContent: "center",
+      [theme.breakpoints.up("md")]: {
+        width: 450,
+      },
+      [theme.breakpoints.up("lg")]: {
+        width: 600,
+      },
+    },
+  })
+);
+
 interface Props {
+  isDesktop: boolean;
   signinStatus: SigninStatus;
   userName: string;
   idToken: string;
@@ -23,7 +44,7 @@ interface Props {
   accessToken: string;
   secret: string;
   handleSignin: () => void;
-  titleSuffixDidChange: (title: string) => void;
+  handleChangePosition: (title: string) => void;
 }
 
 export const Player = (props: Props) => {
@@ -37,6 +58,7 @@ export const Player = (props: Props) => {
   const [favoriteSnackbarOpen, setFavoriteSnackbarOpen] = useState<
     FavoriteResult
   >(null);
+  const [listOpen, setListOpen] = useState(false);
 
   const authParamerters = useMemo(() => {
     const params =
@@ -95,8 +117,10 @@ export const Player = (props: Props) => {
       });
   }, [fetchRequested, authParamerters]);
 
+  const classes = useStyles(props);
+
   // 一つの動画の再生が完了した場合
-  const onEnded = () => {
+  const onVideoEnded = () => {
     let updatedPlayedList = playedList;
     updatedPlayedList[currentVideoId] = true;
     setPlayedList(updatedPlayedList);
@@ -110,15 +134,15 @@ export const Player = (props: Props) => {
     setCurrentVideoId(nextVideoId);
   };
 
-  const handleErrorSnackbarClose = () => {
+  const handleCloseErrorSnackbar = () => {
     setErrorSnackbarOpen(false);
   };
 
-  const handleFavoriteSnackbarsClose = () => {
+  const handleCloseFavoriteSnackbars = () => {
     setFavoriteSnackbarOpen(null);
   };
 
-  const onFavorited = () => {
+  const handleAddFavorite = () => {
     const targetId = tweetList[currentVideoId].id;
 
     const postUrl = `${process.env.REACT_APP_API_ORIGIN}/api/favorite/create`;
@@ -167,8 +191,20 @@ export const Player = (props: Props) => {
       });
   };
 
-  const onClick = (id: number) => {
+  const handleSelectTweet = (id: number) => {
+    if (listOpen) {
+      handleCloseList();
+    }
+
     setCurrentVideoId(id);
+  };
+
+  const handleOpenList = () => {
+    setListOpen(true);
+  };
+
+  const handleCloseList = () => {
+    setListOpen(false);
   };
 
   const tweetCardInfoList = tweetList.map(
@@ -184,45 +220,57 @@ export const Player = (props: Props) => {
     : false;
 
   useEffect(() => {
-    const currentPosition = ` - [ ${
-      isPlayingVideo ? currentVideoId + 1 : "-"
-    } / ${tweetList.length} ]`;
-    props.titleSuffixDidChange(currentPosition);
+    const position = `${isPlayingVideo ? currentVideoId + 1 : "-"} / ${
+      tweetList.length
+    }`;
+    props.handleChangePosition(position);
   }, [currentVideoId, isPlayingVideo, props, tweetList.length]);
 
   const mainContainer =
     props.signinStatus === "signined" ? (
-      <Container>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            <TweetCardList
-              tweetList={tweetList}
-              statusList={tweetCardInfoList}
-              fetchError={fetchError}
-              onClick={onClick}
-            />
+      props.isDesktop ? (
+        <Container fixed={true}>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <TweetCardList
+                tweetList={tweetList}
+                statusList={tweetCardInfoList}
+                fetchError={fetchError}
+                handleSelectTweet={handleSelectTweet}
+              />
+            </Grid>
+            <Grid item xs={6}></Grid>
+            <div className={classes.fixedContainer}>
+              <PlayingMediaDesktop
+                tweet={currentTweet}
+                favoriteEnabled={favoriteEnabled}
+                favorited={currentFavorited}
+                onVideoEnded={onVideoEnded}
+                handleAddFavorite={handleAddFavorite}
+              />
+            </div>
           </Grid>
-          <Grid item xs={6}></Grid>
-          <div
-            style={{
-              position: "fixed",
-              left: "51%",
-              width: 600,
-              height: "90%",
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
-            <PlayingMedia
-              tweet={currentTweet}
-              favoriteEnabled={favoriteEnabled}
-              favorited={currentFavorited}
-              onEnded={onEnded}
-              onFavorited={onFavorited}
-            />
-          </div>
-        </Grid>
-      </Container>
+        </Container>
+      ) : (
+        <Container>
+          <PlayingMediaMobile
+            tweet={currentTweet}
+            favoriteEnabled={favoriteEnabled}
+            favorited={currentFavorited}
+            onVideoEnded={onVideoEnded}
+            handleAddFavorite={handleAddFavorite}
+            handleOpenList={handleOpenList}
+          />
+          <TweetListDialog
+            open={listOpen}
+            tweetList={tweetList}
+            statusList={tweetCardInfoList}
+            fetchError={fetchError}
+            handleClose={handleCloseList}
+            handleSelectTweet={handleSelectTweet}
+          />
+        </Container>
+      )
     ) : props.signinStatus === "notSignined" ? (
       <NeedSignin
         favoriteEnabled={favoriteEnabled}
@@ -237,11 +285,11 @@ export const Player = (props: Props) => {
       {mainContainer}
       <ErrorSnackbar
         open={errorSnackbarOpen}
-        handleClose={handleErrorSnackbarClose}
+        handleClose={handleCloseErrorSnackbar}
       />
       <FavoriteSnackbars
         open={favoriteSnackbarOpen}
-        handleClose={handleFavoriteSnackbarsClose}
+        handleClose={handleCloseFavoriteSnackbars}
       />
     </div>
   );
