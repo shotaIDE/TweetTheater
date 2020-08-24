@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(2),
       flex: 1,
     },
-    root: {
+    container: {
       display: "flex",
       justifyContent: "center",
     },
@@ -77,7 +77,7 @@ export const ListDialog = (props: Props) => {
         </Toolbar>
       </AppBar>
       <Toolbar id="back-to-top-anchor" />
-      <Container className={classes.root}>
+      <Container className={classes.container}>
         <TweetCardList
           tweetList={props.tweetList}
           statusList={props.statusList}
