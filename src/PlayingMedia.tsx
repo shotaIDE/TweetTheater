@@ -11,6 +11,9 @@ import { Video } from "./Video";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginTop: theme.spacing(2),
+    },
     tweetBox: {
       display: "flex",
       width: "100%",
@@ -106,7 +109,7 @@ const PlayingMedia = (props: PlayingMediaProps) => {
   ) : null;
 
   return (
-    <Grid container spacing={1} direction="row">
+    <Grid className={classes.root} container spacing={1} direction="row">
       <Grid item xs={12}>
         <Video src={videoUrl} onEnded={props.onVideoEnded} />
       </Grid>
