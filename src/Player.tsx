@@ -58,7 +58,7 @@ export const Player = (props: Props) => {
   const [favoriteSnackbarOpen, setFavoriteSnackbarOpen] = useState<
     FavoriteResult
   >(null);
-  const [open, setOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(false);
 
   const authParamerters = useMemo(() => {
     const params =
@@ -134,11 +134,11 @@ export const Player = (props: Props) => {
     setCurrentVideoId(nextVideoId);
   };
 
-  const handleErrorSnackbarClose = () => {
+  const handleCloseErrorSnackbar = () => {
     setErrorSnackbarOpen(false);
   };
 
-  const handleFavoriteSnackbarsClose = () => {
+  const handleCloseFavoriteSnackbars = () => {
     setFavoriteSnackbarOpen(null);
   };
 
@@ -192,19 +192,19 @@ export const Player = (props: Props) => {
   };
 
   const handleSelectTweet = (id: number) => {
-    if (open) {
-      handleListDialogClose();
+    if (listOpen) {
+      handleCloseList();
     }
 
     setCurrentVideoId(id);
   };
 
-  const handleListDialogClickOpen = () => {
-    setOpen(true);
+  const handleOpenList = () => {
+    setListOpen(true);
   };
 
-  const handleListDialogClose = () => {
-    setOpen(false);
+  const handleCloseList = () => {
+    setListOpen(false);
   };
 
   const tweetCardInfoList = tweetList.map(
@@ -259,15 +259,14 @@ export const Player = (props: Props) => {
             favorited={currentFavorited}
             onVideoEnded={onVideoEnded}
             handleAddFavorite={handleAddFavorite}
-            handleOpenList={handleListDialogClickOpen}
+            handleOpenList={handleOpenList}
           />
           <TweetListDialog
-            open={open}
+            open={listOpen}
             tweetList={tweetList}
             statusList={tweetCardInfoList}
             fetchError={fetchError}
-            handleClickOpen={handleListDialogClickOpen}
-            handleClose={handleListDialogClose}
+            handleClose={handleCloseList}
             handleSelectTweet={handleSelectTweet}
           />
         </Container>
@@ -286,11 +285,11 @@ export const Player = (props: Props) => {
       {mainContainer}
       <ErrorSnackbar
         open={errorSnackbarOpen}
-        handleClose={handleErrorSnackbarClose}
+        handleClose={handleCloseErrorSnackbar}
       />
       <FavoriteSnackbars
         open={favoriteSnackbarOpen}
-        handleClose={handleFavoriteSnackbarsClose}
+        handleClose={handleCloseFavoriteSnackbars}
       />
     </div>
   );
