@@ -4,7 +4,7 @@ import { Card, Container, Link, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 
-import { officialTwitterAccountDidClick } from "./GoogleAnalyticsEvents";
+import { registerOfficialTwitterAccountClickEvent } from "./GoogleAnalyticsEvents";
 import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,7 +29,7 @@ export const PrivacyPolicy = (props: Props) => {
   const classes = useStyles(props);
 
   const handleTwitterAccount = () => {
-    officialTwitterAccountDidClick();
+    registerOfficialTwitterAccountClickEvent();
   };
 
   return (
