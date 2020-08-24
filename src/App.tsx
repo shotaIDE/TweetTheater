@@ -30,7 +30,7 @@ const App = () => {
   const [uid, setUid] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [secret, setSecret] = useState(null);
-  const [titleSuffix, setTitleSuffix] = useState("");
+  const [playerPosition, setPlayerPosition] = useState("");
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -116,8 +116,8 @@ const App = () => {
     firebase.auth().signOut();
   };
 
-  const titleSuffixDidChange = (title: string) => {
-    setTitleSuffix(title);
+  const handleChangePlayerPosition = (title: string) => {
+    setPlayerPosition(title);
   };
 
   const theme = useTheme();
@@ -125,14 +125,14 @@ const App = () => {
 
   const menuBar = isDesktop ? (
     <MenuBarDesktop
-      playerPosition={titleSuffix}
+      playerPosition={playerPosition}
       signinStatus={signinStatus}
       userName={userName}
       handleSignout={handleSignout}
     />
   ) : (
     <MenuBarMobile
-      playerPosition={titleSuffix}
+      playerPosition={playerPosition}
       signinStatus={signinStatus}
       userName={userName}
       handleSignout={handleSignout}
@@ -159,7 +159,7 @@ const App = () => {
                 accessToken={accessToken}
                 secret={secret}
                 handleSignin={handleSignin}
-                titleSuffixDidChange={titleSuffixDidChange}
+                handleChangePosition={handleChangePlayerPosition}
                 {...props}
               />
             )}

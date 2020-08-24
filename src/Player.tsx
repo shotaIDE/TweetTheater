@@ -44,7 +44,7 @@ interface Props {
   accessToken: string;
   secret: string;
   handleSignin: () => void;
-  titleSuffixDidChange: (title: string) => void;
+  handleChangePosition: (title: string) => void;
 }
 
 export const Player = (props: Props) => {
@@ -220,10 +220,10 @@ export const Player = (props: Props) => {
     : false;
 
   useEffect(() => {
-    const currentPosition = `${isPlayingVideo ? currentVideoId + 1 : "-"} / ${
+    const position = `${isPlayingVideo ? currentVideoId + 1 : "-"} / ${
       tweetList.length
     }`;
-    props.titleSuffixDidChange(currentPosition);
+    props.handleChangePosition(position);
   }, [currentVideoId, isPlayingVideo, props, tweetList.length]);
 
   const mainContainer =
