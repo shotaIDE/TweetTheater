@@ -33,7 +33,7 @@ interface Props {
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
-  onClick: () => void;
+  handleAddFavorite: () => void;
 }
 
 export const TweetDetailCard = (props: Props) => {
@@ -56,7 +56,7 @@ export const TweetDetailCard = (props: Props) => {
         </IconButton>
       </CardActions>
     ) : (
-      <CardActions disableSpacing onClick={props.onClick}>
+      <CardActions disableSpacing onClick={props.handleAddFavorite}>
         <IconButton aria-label="add to favorites">
           <FavoriteBorderIcon />
         </IconButton>

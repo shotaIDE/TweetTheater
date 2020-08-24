@@ -28,7 +28,7 @@ interface Props {
   tweetList: Tweet[];
   statusList: TweetStatus[];
   fetchError: boolean;
-  onClick: (_: number) => void;
+  handleSelectTweet: (_: number) => void;
 }
 
 export const TweetCardList = (props: Props) => {
@@ -46,7 +46,7 @@ export const TweetCardList = (props: Props) => {
               <TweetCard
                 tweet={tweet}
                 status={props.statusList[id]}
-                onClick={() => props.onClick(id)}
+                handleClick={() => props.handleSelectTweet(id)}
               />
             </Grid>
           );

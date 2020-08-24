@@ -43,16 +43,11 @@ interface Props {
   fetchError: boolean;
   handleClickOpen: () => void;
   handleClose: () => void;
-  onClick: (_: number) => void;
+  handleSelectTweet: (_: number) => void;
 }
 
 export const TweetListDialog = (props: Props) => {
   const classes = useStyles(props);
-
-  const onClick = (id: number) => {
-    props.handleClose();
-    props.onClick(id);
-  };
 
   return (
     <Dialog
@@ -82,7 +77,7 @@ export const TweetListDialog = (props: Props) => {
           tweetList={props.tweetList}
           statusList={props.statusList}
           fetchError={props.fetchError}
-          onClick={onClick}
+          handleSelectTweet={props.handleSelectTweet}
         />
         <ScrollTop {...props}>
           <Fab color="default" size="small" aria-label="scroll back to top">

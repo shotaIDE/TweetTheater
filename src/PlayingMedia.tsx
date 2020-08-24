@@ -31,8 +31,8 @@ interface PlayingMediaDesktopProps {
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
-  onEnded: () => void;
-  onFavorited: () => void;
+  onVideoEnded: () => void;
+  handleAddFavorite: () => void;
 }
 
 export const PlayingMediaDesktop = (props: PlayingMediaDesktopProps) => (
@@ -40,9 +40,9 @@ export const PlayingMediaDesktop = (props: PlayingMediaDesktopProps) => (
     tweet={props.tweet}
     favoriteEnabled={props.favoriteEnabled}
     favorited={props.favorited}
-    onEnded={props.onEnded}
-    onFavorited={props.onFavorited}
-    onOpenList={null}
+    onVideoEnded={props.onVideoEnded}
+    handleAddFavorite={props.handleAddFavorite}
+    handleOpenList={null}
   />
 );
 
@@ -50,9 +50,9 @@ interface PlayingMediaMobileProps {
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
-  onEnded: () => void;
-  onFavorited: () => void;
-  onOpenList: () => void;
+  onVideoEnded: () => void;
+  handleAddFavorite: () => void;
+  handleOpenList: () => void;
 }
 
 export const PlayingMediaMobile = (props: PlayingMediaMobileProps) => (
@@ -60,9 +60,9 @@ export const PlayingMediaMobile = (props: PlayingMediaMobileProps) => (
     tweet={props.tweet}
     favoriteEnabled={props.favoriteEnabled}
     favorited={props.favorited}
-    onEnded={props.onEnded}
-    onFavorited={props.onFavorited}
-    onOpenList={props.onOpenList}
+    onVideoEnded={props.onVideoEnded}
+    handleAddFavorite={props.handleAddFavorite}
+    handleOpenList={props.handleOpenList}
   />
 );
 
@@ -70,9 +70,9 @@ interface PlayingMediaProps {
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
-  onEnded: () => void;
-  onFavorited: () => void;
-  onOpenList?: () => void;
+  onVideoEnded: () => void;
+  handleAddFavorite: () => void;
+  handleOpenList?: () => void;
 }
 
 const PlayingMedia = (props: PlayingMediaProps) => {
@@ -84,13 +84,13 @@ const PlayingMedia = (props: PlayingMediaProps) => {
       tweet={props.tweet}
       favoriteEnabled={props.favoriteEnabled}
       favorited={props.favorited}
-      onClick={props.onFavorited}
+      handleAddFavorite={props.handleAddFavorite}
     />
   ) : (
     <TweetDetailEmptyCard />
   );
 
-  const hasOpenListAction = props.onOpenList != null;
+  const hasOpenListAction = props.handleOpenList != null;
 
   const openListButton = hasOpenListAction ? (
     <Box className={classes.listButtonBox}>
@@ -98,7 +98,7 @@ const PlayingMedia = (props: PlayingMediaProps) => {
         variant="outlined"
         size="large"
         endIcon={<LibraryBooksIcon />}
-        onClick={props.onOpenList}
+        onClick={props.handleOpenList}
       >
         ツイート一覧を開く
       </Button>
@@ -108,7 +108,7 @@ const PlayingMedia = (props: PlayingMediaProps) => {
   return (
     <Grid container spacing={1} direction="row">
       <Grid item xs={12}>
-        <Video src={videoUrl} onEnded={props.onEnded} />
+        <Video src={videoUrl} onEnded={props.onVideoEnded} />
       </Grid>
       <Grid item xs={12}>
         <Box className={classes.tweetBox}>

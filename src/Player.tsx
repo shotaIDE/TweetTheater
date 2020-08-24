@@ -120,7 +120,7 @@ export const Player = (props: Props) => {
   const classes = useStyles(props);
 
   // 一つの動画の再生が完了した場合
-  const onEnded = () => {
+  const onVideoEnded = () => {
     let updatedPlayedList = playedList;
     updatedPlayedList[currentVideoId] = true;
     setPlayedList(updatedPlayedList);
@@ -142,7 +142,7 @@ export const Player = (props: Props) => {
     setFavoriteSnackbarOpen(null);
   };
 
-  const onFavorited = () => {
+  const handleAddFavorite = () => {
     const targetId = tweetList[currentVideoId].id;
 
     const postUrl = `${process.env.REACT_APP_API_ORIGIN}/api/favorite/create`;
@@ -191,7 +191,11 @@ export const Player = (props: Props) => {
       });
   };
 
-  const onClick = (id: number) => {
+  const handleSelectTweet = (id: number) => {
+    if (open) {
+      handleListDialogClose();
+    }
+
     setCurrentVideoId(id);
   };
 
@@ -232,7 +236,7 @@ export const Player = (props: Props) => {
                 tweetList={tweetList}
                 statusList={tweetCardInfoList}
                 fetchError={fetchError}
-                onClick={onClick}
+                handleSelectTweet={handleSelectTweet}
               />
             </Grid>
             <Grid item xs={6}></Grid>
@@ -241,8 +245,8 @@ export const Player = (props: Props) => {
                 tweet={currentTweet}
                 favoriteEnabled={favoriteEnabled}
                 favorited={currentFavorited}
-                onEnded={onEnded}
-                onFavorited={onFavorited}
+                onVideoEnded={onVideoEnded}
+                handleAddFavorite={handleAddFavorite}
               />
             </div>
           </Grid>
@@ -253,9 +257,9 @@ export const Player = (props: Props) => {
             tweet={currentTweet}
             favoriteEnabled={favoriteEnabled}
             favorited={currentFavorited}
-            onEnded={onEnded}
-            onFavorited={onFavorited}
-            onOpenList={handleListDialogClickOpen}
+            onVideoEnded={onVideoEnded}
+            handleAddFavorite={handleAddFavorite}
+            handleOpenList={handleListDialogClickOpen}
           />
           <TweetListDialog
             open={open}
@@ -264,7 +268,7 @@ export const Player = (props: Props) => {
             fetchError={fetchError}
             handleClickOpen={handleListDialogClickOpen}
             handleClose={handleListDialogClose}
-            onClick={onClick}
+            handleSelectTweet={handleSelectTweet}
           />
         </Container>
       )
