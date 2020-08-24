@@ -85,7 +85,7 @@ export const ListDialog = (props: Props) => {
           onClick={onClick}
         />
         <ScrollTop {...props}>
-          <Fab color="secondary" size="small" aria-label="scroll back to top">
+          <Fab color="default" size="small" aria-label="scroll back to top">
             <KeyboardArrowUpIcon />
           </Fab>
         </ScrollTop>
