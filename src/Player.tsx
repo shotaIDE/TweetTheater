@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  isPC: boolean;
+  isDesktop: boolean;
   signinStatus: SigninStatus;
   userName: string;
   idToken: string;
@@ -224,7 +224,7 @@ export const Player = (props: Props) => {
 
   const mainContainer =
     props.signinStatus === "signined" ? (
-      props.isPC ? (
+      props.isDesktop ? (
         <Container fixed={true}>
           <Grid container spacing={1}>
             <Grid item xs={6}>
@@ -238,7 +238,7 @@ export const Player = (props: Props) => {
             <Grid item xs={6}></Grid>
             <div className={classes.fixedContainer}>
               <PlayingMedia
-                isPC={props.isPC}
+                isDesktop={props.isDesktop}
                 tweet={currentTweet}
                 favoriteEnabled={favoriteEnabled}
                 favorited={currentFavorited}
@@ -252,7 +252,7 @@ export const Player = (props: Props) => {
       ) : (
         <Container>
           <PlayingMedia
-            isPC={props.isPC}
+            isDesktop={props.isDesktop}
             tweet={currentTweet}
             favoriteEnabled={favoriteEnabled}
             favorited={currentFavorited}

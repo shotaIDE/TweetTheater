@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  isPC: boolean;
+  isDesktop: boolean;
   titleSuffix: string;
   signinStatus: SigninStatus;
   userName: string;
@@ -148,7 +148,7 @@ export const MenuBar = withRouter((props: Props) => {
     </div>
   );
 
-  const logoField = props.isPC ? (
+  const logoField = props.isDesktop ? (
     <Typography variant="h6" className={classes.title}>
       {process.env.REACT_APP_SITE_TITLE}
     </Typography>
@@ -156,7 +156,7 @@ export const MenuBar = withRouter((props: Props) => {
     <img src="logo.svg" alt="ロゴ" className={classes.logoImage} />
   );
 
-  const suffix = props.isPC
+  const suffix = props.isDesktop
     ? `${process.env.REACT_APP_SEARCH_TEXT} - [ ${props.titleSuffix} ]`
     : `${props.titleSuffix} - ${process.env.REACT_APP_SEARCH_TEXT}`;
 

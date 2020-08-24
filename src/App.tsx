@@ -120,7 +120,7 @@ const App = () => {
   };
 
   const theme = useTheme();
-  const isPC = useMediaQuery(theme.breakpoints.up("md"));
+  const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -128,7 +128,7 @@ const App = () => {
       <BrowserRouter>
         <GoogleAnalytics />
         <MenuBar
-          isPC={isPC}
+          isDesktop={isDesktop}
           titleSuffix={titleSuffix}
           signinStatus={signinStatus}
           userName={userName}
@@ -140,7 +140,7 @@ const App = () => {
             path="/"
             render={(props) => (
               <Player
-                isPC={isPC}
+                isDesktop={isDesktop}
                 signinStatus={signinStatus}
                 userName={userName}
                 idToken={idToken}

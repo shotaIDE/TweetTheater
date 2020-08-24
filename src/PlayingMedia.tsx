@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  isPC: boolean;
+  isDesktop: boolean;
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
@@ -52,7 +52,7 @@ export const PlayingMedia = (props: Props) => {
     <TweetDetailEmptyCard />
   );
 
-  const openListButton = props.isPC ? null : (
+  const openListButton = props.isDesktop ? null : (
     <Box className={classes.listButtonBox}>
       <Button
         variant="outlined"
