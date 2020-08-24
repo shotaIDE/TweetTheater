@@ -41,7 +41,6 @@ interface Props {
   tweetList: Tweet[];
   statusList: TweetStatus[];
   fetchError: boolean;
-  handleClickOpen: () => void;
   handleClose: () => void;
   handleSelectTweet: (_: number) => void;
 }
