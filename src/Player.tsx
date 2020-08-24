@@ -7,13 +7,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import { SigninStatus } from "./App";
 import { ErrorSnackbar } from "./ErrorSnackbar";
 import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
-import { ListDialog } from "./ListDialog";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMedia } from "./PlayingMedia";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
+import { TweetListDialog } from "./TweetListDialog";
 
 const favoriteEnabled = process.env.NODE_ENV === "development";
 
@@ -260,7 +260,7 @@ export const Player = (props: Props) => {
             onFavorited={onFavorited}
             onOpenList={handleListDialogClickOpen}
           />
-          <ListDialog
+          <TweetListDialog
             open={open}
             tweetList={tweetList}
             statusList={tweetCardInfoList}

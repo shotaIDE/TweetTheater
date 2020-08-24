@@ -46,7 +46,7 @@ interface Props {
   onClick: (_: number) => void;
 }
 
-export const ListDialog = (props: Props) => {
+export const TweetListDialog = (props: Props) => {
   const classes = useStyles(props);
 
   const onClick = (id: number) => {
