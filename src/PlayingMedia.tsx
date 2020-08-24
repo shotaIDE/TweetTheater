@@ -27,8 +27,26 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-interface Props {
-  isDesktop: boolean;
+interface PlayingMediaDesktopProps {
+  tweet: Tweet;
+  favoriteEnabled: boolean;
+  favorited: boolean;
+  onEnded: () => void;
+  onFavorited: () => void;
+}
+
+export const PlayingMediaDesktop = (props: PlayingMediaDesktopProps) => (
+  <PlayingMedia
+    tweet={props.tweet}
+    favoriteEnabled={props.favoriteEnabled}
+    favorited={props.favorited}
+    onEnded={props.onEnded}
+    onFavorited={props.onFavorited}
+    onOpenList={null}
+  />
+);
+
+interface PlayingMediaMobileProps {
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
@@ -37,7 +55,27 @@ interface Props {
   onOpenList: () => void;
 }
 
-export const PlayingMedia = (props: Props) => {
+export const PlayingMediaMobile = (props: PlayingMediaMobileProps) => (
+  <PlayingMedia
+    tweet={props.tweet}
+    favoriteEnabled={props.favoriteEnabled}
+    favorited={props.favorited}
+    onEnded={props.onEnded}
+    onFavorited={props.onFavorited}
+    onOpenList={props.onOpenList}
+  />
+);
+
+interface PlayingMediaProps {
+  tweet: Tweet;
+  favoriteEnabled: boolean;
+  favorited: boolean;
+  onEnded: () => void;
+  onFavorited: () => void;
+  onOpenList?: () => void;
+}
+
+const PlayingMedia = (props: PlayingMediaProps) => {
   const classes = useStyles(props);
 
   const videoUrl = props.tweet ? props.tweet.videoUrl : "";
@@ -52,7 +90,9 @@ export const PlayingMedia = (props: Props) => {
     <TweetDetailEmptyCard />
   );
 
-  const openListButton = props.isDesktop ? null : (
+  const hasOpenListAction = props.onOpenList != null;
+
+  const openListButton = hasOpenListAction ? (
     <Box className={classes.listButtonBox}>
       <Button
         variant="outlined"
@@ -63,7 +103,7 @@ export const PlayingMedia = (props: Props) => {
         ツイート一覧を開く
       </Button>
     </Box>
-  );
+  ) : null;
 
   return (
     <Grid container spacing={1} direction="row">

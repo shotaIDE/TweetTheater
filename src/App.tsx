@@ -12,7 +12,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { darkTheme } from "./DarkTheme";
 import { firebaseConfig } from "./FirebaseConfig";
 import { GoogleAnalytics } from "./GoogleAnalytics";
-import { MenuBar } from "./MenuBar";
+import { MenuBarDesktop } from "./MenuBarDesktop";
+import { MenuBarMobile } from "./MenuBarMobile";
 import { NotFound } from "./NotFound";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
@@ -122,18 +123,28 @@ const App = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
 
+  const menuBar = isDesktop ? (
+    <MenuBarDesktop
+      playerPosition={titleSuffix}
+      signinStatus={signinStatus}
+      userName={userName}
+      handleSignout={handleSignout}
+    />
+  ) : (
+    <MenuBarMobile
+      playerPosition={titleSuffix}
+      signinStatus={signinStatus}
+      userName={userName}
+      handleSignout={handleSignout}
+    />
+  );
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <BrowserRouter>
         <GoogleAnalytics />
-        <MenuBar
-          isDesktop={isDesktop}
-          titleSuffix={titleSuffix}
-          signinStatus={signinStatus}
-          userName={userName}
-          handleSignout={handleSignout}
-        />
+        {menuBar}
         <Switch>
           <Route
             exact

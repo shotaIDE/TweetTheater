@@ -9,7 +9,7 @@ import { ErrorSnackbar } from "./ErrorSnackbar";
 import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
-import { PlayingMedia } from "./PlayingMedia";
+import { PlayingMediaDesktop, PlayingMediaMobile } from "./PlayingMedia";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
@@ -237,22 +237,19 @@ export const Player = (props: Props) => {
             </Grid>
             <Grid item xs={6}></Grid>
             <div className={classes.fixedContainer}>
-              <PlayingMedia
-                isDesktop={props.isDesktop}
+              <PlayingMediaDesktop
                 tweet={currentTweet}
                 favoriteEnabled={favoriteEnabled}
                 favorited={currentFavorited}
                 onEnded={onEnded}
                 onFavorited={onFavorited}
-                onOpenList={handleListDialogClickOpen}
               />
             </div>
           </Grid>
         </Container>
       ) : (
         <Container>
-          <PlayingMedia
-            isDesktop={props.isDesktop}
+          <PlayingMediaMobile
             tweet={currentTweet}
             favoriteEnabled={favoriteEnabled}
             favorited={currentFavorited}

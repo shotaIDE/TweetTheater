@@ -20,16 +20,6 @@ import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    logoImage: {
-      marginTop: theme.spacing(0.5),
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 20,
-      height: 20,
-    },
     titleLink: {
       color: theme.palette.text.primary,
       cursor: "pointer",
@@ -38,15 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
       flexGrow: 1,
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
   })
 );
 
 interface Props {
-  isDesktop: boolean;
-  titleSuffix: string;
+  children: React.ReactElement;
+  playerPositionLabel: string;
   signinStatus: SigninStatus;
   userName: string;
   history: History.history;
@@ -148,18 +135,6 @@ export const MenuBar = withRouter((props: Props) => {
     </div>
   );
 
-  const logoField = props.isDesktop ? (
-    <Typography variant="h6" className={classes.title}>
-      {process.env.REACT_APP_SITE_TITLE}
-    </Typography>
-  ) : (
-    <img src="logo.svg" alt="ロゴ" className={classes.logoImage} />
-  );
-
-  const suffix = props.isDesktop
-    ? `${process.env.REACT_APP_SEARCH_TEXT} - [ ${props.titleSuffix} ]`
-    : `${props.titleSuffix} - ${process.env.REACT_APP_SEARCH_TEXT}`;
-
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -168,10 +143,10 @@ export const MenuBar = withRouter((props: Props) => {
           underline="none"
           onClick={handlePlayerPage}
         >
-          {logoField}
+          {props.children}
         </Link>
         <Typography variant="h6" noWrap={true} className={classes.title}>
-          {suffix}
+          {props.playerPositionLabel}
         </Typography>
         {menu}
       </Toolbar>
