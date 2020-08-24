@@ -15,7 +15,7 @@ import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
 import { TweetListDialog } from "./TweetListDialog";
 
-const favoriteEnabled = process.env.NODE_ENV === "development";
+const favoriteEnabled = process.env.REACT_APP_FAVORITE === "enabled";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
