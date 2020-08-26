@@ -1,5 +1,4 @@
 import "firebase/auth";
-import "firebase/analytics";
 import "./App.css";
 
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
@@ -12,6 +11,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { darkTheme } from "./DarkTheme";
 import { firebaseConfig } from "./FirebaseConfig";
 import { GoogleAnalytics } from "./GoogleAnalytics";
+import { registerSigninEvent } from "./GoogleAnalyticsEvents";
 import { MenuBarDesktop } from "./MenuBarDesktop";
 import { MenuBarMobile } from "./MenuBarMobile";
 import { NotFound } from "./NotFound";
@@ -21,10 +21,30 @@ import { TermsOfUse } from "./TermsOfUse";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
+export type SigninAdditionalExplanation =
+  | "unknown"
+  | "none"
+  | "show_not_to_do"
+  | "show_twitter_restriction";
+
 firebase.initializeApp(firebaseConfig);
+
+declare global {
+  interface Window {
+    dataLayer: any;
+    gtag: any;
+    google_optimize: any;
+  }
+}
+
+let intervalId;
 
 const App = () => {
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
+  const [
+    signinAdditionalExplanation,
+    setSigninAdditionalExplanation,
+  ] = useState<SigninAdditionalExplanation>("unknown");
   const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
@@ -68,10 +88,7 @@ const App = () => {
         setAccessToken(accessToken);
         setSecret(secret);
 
-        if (process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled") {
-          // 推奨イベントとしてパラメータの指定が強制されているので、固定値だが指定
-          firebase.analytics().logEvent("login", { method: "Twitter" });
-        }
+        registerSigninEvent();
 
         console.log(
           `Signined: UID=${uid.substring(0, 5)}... ` +
@@ -82,6 +99,29 @@ const App = () => {
       .catch((_) => {
         console.log("Not redirected");
       });
+
+    if (process.env.REACT_APP_GOOGLE_OPTIMIZE_CONTAINER_ID) {
+      window.dataLayer.push({ event: "optimize.activate" });
+
+      intervalId = setInterval(() => {
+        if (window.google_optimize !== undefined) {
+          const variant = window.google_optimize.get(
+            process.env.REACT_APP_GOOGLE_OPTIMIZE_EXPERIENCE_ID
+          );
+          console.log(variant);
+          if (variant === "1") {
+            setSigninAdditionalExplanation("show_not_to_do");
+          } else if (variant === "2") {
+            setSigninAdditionalExplanation("show_twitter_restriction");
+          } else {
+            setSigninAdditionalExplanation("none");
+          }
+          clearInterval(intervalId);
+        }
+      }, 100);
+    } else {
+      setSigninAdditionalExplanation("none");
+    }
   }, []);
 
   useEffect(() => {
@@ -152,6 +192,7 @@ const App = () => {
             render={(props) => (
               <Player
                 isDesktop={isDesktop}
+                signinAdditionalExplanation={signinAdditionalExplanation}
                 signinStatus={signinStatus}
                 userName={userName}
                 idToken={idToken}

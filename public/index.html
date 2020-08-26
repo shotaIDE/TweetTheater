@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://www.googleoptimize.com/optimize.js?id=%REACT_APP_GOOGLE_OPTIMIZE_CONTAINER_ID%"></script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
@@ -29,6 +31,15 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192_margined.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>深夜の2時間DTMの自動再生サイト - Tweet Theater</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%REACT_APP_GOOGLE_ANALYTICS_TRACKING_ID%"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    </script>
+
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

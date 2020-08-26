@@ -1,5 +1,3 @@
-import "firebase/analytics";
-
 import { Divider, Link } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
@@ -15,7 +13,7 @@ import React from "react";
 import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
-import { officialTwitterAccountDidClick } from "./GoogleAnalyticsEvents";
+import { registerOfficialTwitterAccountClickEvent } from "./GoogleAnalyticsEvents";
 import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -73,7 +71,7 @@ export const MenuBar = withRouter((props: Props) => {
 
     window.open(officialTwitterAccountUrl, "_blank", "noopener");
 
-    officialTwitterAccountDidClick();
+    registerOfficialTwitterAccountClickEvent();
   };
 
   const handleClose = () => {
