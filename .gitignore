@@ -3,6 +3,7 @@
 /static
 
 /serviceAccountKey*.json
+/GitHubSecret*.env
 
 /cache.json
 
