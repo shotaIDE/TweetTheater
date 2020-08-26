@@ -10,11 +10,11 @@ interface Props {
 
 export const GoogleAnalytics = withRouter((props: Props) => {
   useEffect(() => {
-    // ページ初回読み込みの際の初期化
+    // ページ初回読み込み時の閲覧イベント登録
     registerPageViewEvent(window.location.pathname);
 
     props.history.listen((location, _) => {
-      // ページ切り替え時のイベント登録
+      // ページ切り替え時の閲覧イベント登録
       registerPageViewEvent(location.pathname);
     });
   }, [props.history]);
