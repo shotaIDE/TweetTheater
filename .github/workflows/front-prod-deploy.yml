@@ -1,8 +1,8 @@
 name: Front deploy for production
 on:
-  create:
-    tags:
-      - 'v*'
+  release:
+    types:
+      - created
 
 jobs:
   deploy:
