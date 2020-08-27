@@ -17,6 +17,8 @@ import { TweetListDialog } from "./TweetListDialog";
 
 const favoriteEnabled = process.env.REACT_APP_FAVORITE === "enabled";
 
+type FetchStatus = "notStarted" | "inProcess" | "done";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     fixedContainer: {
@@ -52,7 +54,7 @@ export const Player = (props: Props) => {
   const [tweetList, setTweetList] = useState<Tweet[]>([]);
   const [favoritedList, setFavoritedList] = useState<boolean[]>([]);
   const [currentVideoId, setCurrentVideoId] = useState(0);
-  const [fetchRequested, setFetchRequested] = useState(false);
+  const [fetchStatus, setFetchStatus] = useState<FetchStatus>("notStarted");
   const [fetchError, setFetchError] = useState(false);
   const [playedList, setPlayedList] = useState([]);
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false);
@@ -83,13 +85,13 @@ export const Player = (props: Props) => {
       return;
     }
 
-    if (fetchRequested) {
+    if (fetchStatus !== "notStarted") {
       // サインインのリダイレクト後に、idToken と accessToken 等が別々に更新されるため、
       // その際に二重にフェッチが実行されることを防止する
       return;
     }
 
-    setFetchRequested(true);
+    setFetchStatus("inProcess");
 
     const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
 
@@ -108,15 +110,17 @@ export const Player = (props: Props) => {
       .then((json) => {
         const fetchedTweetList = getTweetList(json);
 
+        setFetchStatus("done");
         setPlayedList(Array(fetchedTweetList.length).fill(false));
         setTweetList(fetchedTweetList);
         setFavoritedList(Array(fetchedTweetList.length).fill(false));
       })
       .catch((_) => {
+        setFetchStatus("done");
         setFetchError(true);
         setErrorSnackbarOpen(true);
       });
-  }, [fetchRequested, authParamerters]);
+  }, [fetchStatus, authParamerters]);
 
   const classes = useStyles(props);
 
@@ -227,6 +231,8 @@ export const Player = (props: Props) => {
     props.handleChangePosition(position);
   }, [currentVideoId, isPlayingVideo, props, tweetList.length]);
 
+  const fetching = fetchStatus === "inProcess";
+
   const mainContainer =
     props.signinStatus === "signined" ? (
       props.isDesktop ? (
@@ -243,6 +249,7 @@ export const Player = (props: Props) => {
             <Grid item xs={6}></Grid>
             <div className={classes.fixedContainer}>
               <PlayingMediaDesktop
+                fetching={fetching}
                 tweet={currentTweet}
                 favoriteEnabled={favoriteEnabled}
                 favorited={currentFavorited}
@@ -255,6 +262,7 @@ export const Player = (props: Props) => {
       ) : (
         <Container>
           <PlayingMediaMobile
+            fetching={fetching}
             tweet={currentTweet}
             favoriteEnabled={favoriteEnabled}
             favorited={currentFavorited}

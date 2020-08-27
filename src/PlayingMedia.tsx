@@ -7,6 +7,7 @@ import React from "react";
 import { Tweet } from "./TweetCardList";
 import { TweetDetailCard } from "./TweetDetailCard";
 import { TweetDetailEmptyCard } from "./TweetDetailEmptyCard";
+import { TweetSkeletonCard } from "./TweetSkeletonCard";
 import { Video } from "./Video";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface PlayingMediaDesktopProps {
+  fetching: boolean;
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
@@ -40,6 +42,7 @@ interface PlayingMediaDesktopProps {
 
 export const PlayingMediaDesktop = (props: PlayingMediaDesktopProps) => (
   <PlayingMedia
+    fetching={props.fetching}
     tweet={props.tweet}
     favoriteEnabled={props.favoriteEnabled}
     favorited={props.favorited}
@@ -50,6 +53,7 @@ export const PlayingMediaDesktop = (props: PlayingMediaDesktopProps) => (
 );
 
 interface PlayingMediaMobileProps {
+  fetching: boolean;
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
@@ -60,6 +64,7 @@ interface PlayingMediaMobileProps {
 
 export const PlayingMediaMobile = (props: PlayingMediaMobileProps) => (
   <PlayingMedia
+    fetching={props.fetching}
     tweet={props.tweet}
     favoriteEnabled={props.favoriteEnabled}
     favorited={props.favorited}
@@ -70,6 +75,7 @@ export const PlayingMediaMobile = (props: PlayingMediaMobileProps) => (
 );
 
 interface PlayingMediaProps {
+  fetching: boolean;
   tweet: Tweet;
   favoriteEnabled: boolean;
   favorited: boolean;
@@ -89,6 +95,8 @@ const PlayingMedia = (props: PlayingMediaProps) => {
       favorited={props.favorited}
       handleAddFavorite={props.handleAddFavorite}
     />
+  ) : props.fetching ? (
+    <TweetSkeletonCard />
   ) : (
     <TweetDetailEmptyCard />
   );
