@@ -8,8 +8,14 @@ import React from "react";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: 600,
+      width: 300,
       backgroundColor: theme.palette.background.paper,
+      [theme.breakpoints.up("sm")]: {
+        width: 450,
+      },
+      [theme.breakpoints.up("lg")]: {
+        width: 600,
+      },
     },
   })
 );
