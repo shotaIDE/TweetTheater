@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export type TweetStatus = "none" | "playing" | "played";
 
 interface Props {
+  serialNumber: number;
   tweet: Tweet;
   status: TweetStatus;
   handleClick: () => void;
@@ -68,6 +69,14 @@ export const TweetCard = (props: Props) => {
       <CardContent>
         <Typography align="left" variant="body2" component="p">
           {tweet.text}
+        </Typography>
+        <Typography
+          align="right"
+          variant="body2"
+          component="p"
+          color="textSecondary"
+        >
+          ({props.serialNumber})
         </Typography>
       </CardContent>
     </Card>

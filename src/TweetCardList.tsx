@@ -44,6 +44,7 @@ export const TweetCardList = (props: Props) => {
           return (
             <Grid item key={tweet.detailUrl} sm={12}>
               <TweetCard
+                serialNumber={id + 1}
                 tweet={tweet}
                 status={props.statusList[id]}
                 handleClick={() => props.handleSelectTweet(id)}
