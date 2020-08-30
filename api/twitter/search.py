@@ -71,8 +71,8 @@ def hashtag_2hDTM(consumer_key: str,
 
         text_raw = tweet['text']
         detail_url_matched = detail_url_pattern.search(text_raw)
-        if detail_url_matched is not None and len(
-                detail_url_matched.groups()) > 0:
+        if (detail_url_matched is not None
+                and len(detail_url_matched.groups()) > 0):
             detail_url_suffix = detail_url_matched.group()
             text = text_raw.replace(detail_url_suffix, '')
 
