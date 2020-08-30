@@ -99,6 +99,12 @@ const App = () => {
       .catch((_) => {
         console.log("Not redirected");
       });
+  }, []);
+
+  useEffect(() => {
+    if (signinStatus !== "notSignined") {
+      return;
+    }
 
     if (process.env.REACT_APP_GOOGLE_OPTIMIZE_CONTAINER_ID) {
       window.dataLayer.push({ event: "optimize.activate" });
@@ -122,7 +128,7 @@ const App = () => {
     } else {
       setSigninAdditionalExplanation("none");
     }
-  }, []);
+  }, [signinStatus]);
 
   useEffect(() => {
     if (idToken == null || accessToken == null || secret == null) {
