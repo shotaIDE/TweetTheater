@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import urllib.parse
 
 from . import auth
@@ -47,6 +48,8 @@ def hashtag_2hDTM(consumer_key: str,
 
     video_url_list = []
 
+    detail_url_pattern = re.compile(r' (https://t.co/.+)$')
+
     for tweet in results['statuses']:
         if 'extended_entities' not in tweet:
             # メディアを直接参照できるURLが含まれていないものはスキップする
@@ -54,7 +57,6 @@ def hashtag_2hDTM(consumer_key: str,
 
         tweet_id = tweet['id_str']  # 桁の丸め誤差が生じないように文字列のIDを扱う
         created_at = tweet['created_at']
-        text = tweet['text']
         favorited = tweet['favorited']
 
         user_info = tweet['user']
@@ -67,7 +69,17 @@ def hashtag_2hDTM(consumer_key: str,
 
         media = media_list[0]
 
-        detail_url = media['url']
+        text_raw = tweet['text']
+        detail_url_matched = detail_url_pattern.search(text_raw)
+        if (detail_url_matched is not None
+                and len(detail_url_matched.groups()) > 0):
+            detail_url_suffix = detail_url_matched.group()
+            text = text_raw.replace(detail_url_suffix, '')
+
+            detail_url = detail_url_matched.groups()[0]
+        else:
+            detail_url = media['url']
+
         video_info = media['video_info']
         variants = video_info['variants']
 
