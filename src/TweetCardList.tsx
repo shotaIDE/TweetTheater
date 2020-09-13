@@ -1,14 +1,19 @@
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 
 import { TweetCard, TweetStatus } from "./TweetCard";
 import { TweetSkeletonCard } from "./TweetSkeletonCard";
 
-const useStyles = makeStyles((_: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       maxWidth: 600,
+    },
+    explanation: {
+      marginTop: theme.spacing(1),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -38,8 +43,21 @@ export const TweetCardList = (props: Props) => {
     return null;
   }
 
-  const result =
-    props.tweetList.length > 0
+  const numTweet = props.tweetList.length;
+
+  const explanation =
+    numTweet > 0 ? (
+      <Typography
+        className={classes.explanation}
+        variant="body2"
+        color="textSecondary"
+      >
+        新しく投稿された順に {numTweet}件 のツイートを表示しています。
+      </Typography>
+    ) : null;
+
+  const cardList =
+    numTweet > 0
       ? props.tweetList.map((tweet, id) => {
           return (
             <Grid item key={tweet.detailUrl} sm={12}>
@@ -64,7 +82,8 @@ export const TweetCardList = (props: Props) => {
 
   return (
     <Grid container className={classes.root} spacing={1}>
-      {result}
+      {explanation}
+      {cardList}
     </Grid>
   );
 };
