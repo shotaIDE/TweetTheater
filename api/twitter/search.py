@@ -34,7 +34,7 @@ def hashtag_2hDTM(consumer_key: str,
 
         url = 'https://api.twitter.com/1.1/search/tweets.json?q=' \
             + query \
-            + '&result_type=recent&count=100'
+            + '&result_type=recent&count=100&tweet_mode=extended'
 
         response = oauth.get(url)
         results_text = response.text
@@ -69,7 +69,7 @@ def hashtag_2hDTM(consumer_key: str,
 
         media = media_list[0]
 
-        text_raw = tweet['text']
+        text_raw = tweet['full_text']
         detail_url_matched = detail_url_pattern.search(text_raw)
         if (detail_url_matched is not None
                 and len(detail_url_matched.groups()) > 0):
