@@ -22,23 +22,6 @@
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runserver",
-                "--noreload"
-            ],
-            "django": true,
-            "env": {
-                "IS_DEBUG": "true",
-                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
-                "CACHE_PATH": "${workspaceFolder}/cache.json",
-                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
-            },
-        },
-        {
-            "name": "API: Local-Cache LAN",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "runserver",
                 "0.0.0.0:8000",
                 "--noreload"
             ],
@@ -51,48 +34,14 @@
             },
         },
         {
-            "name": "API: Dev-Twitter",
+            "name": "API: Twitter-Dev",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
             "args": [
                 "runserver",
+                "0.0.0.0:8000",
                 "--noreload"
-            ],
-            "django": true,
-            "env": {
-                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
-                "CACHE_PATH": "${workspaceFolder}/cache.json",
-                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
-            },
-        }
-        {
-            "name": "API: Dev-CloudSQL",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "runserver",
-                "--noreload",
-                "--settings=twitterclient.settings.development"
-            ],
-            "django": true,
-            "env": {
-                "IS_DEBUG": "true",
-                "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceFolder}/serviceAccountKey-Dev.json",
-                "CACHE_PATH": "${workspaceFolder}/cache.json",
-                "VIDEO_LIST_PATH": "${workspaceFolder}/src/video_list.json"
-            },
-        },
-        {
-            "name": "API: Dev-CloudSQL Dev-Twitter",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "runserver",
-                "--noreload",
-                "--settings=twitterclient.settings.development"
             ],
             "django": true,
             "env": {
