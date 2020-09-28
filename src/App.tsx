@@ -21,12 +21,6 @@ import { TermsOfUse } from "./TermsOfUse";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
-export type SigninAdditionalExplanation =
-  | "unknown"
-  | "none"
-  | "show_not_to_do"
-  | "show_twitter_restriction";
-
 firebase.initializeApp(firebaseConfig);
 
 declare global {
@@ -37,14 +31,8 @@ declare global {
   }
 }
 
-let intervalId;
-
 const App = () => {
   const [signinStatus, setSigninStatus] = useState<SigninStatus>("unknown");
-  const [
-    signinAdditionalExplanation,
-    setSigninAdditionalExplanation,
-  ] = useState<SigninAdditionalExplanation>("unknown");
   const [userName, setUserName] = useState(null);
   const [idToken, setIDToken] = useState(null);
   const [uid, setUid] = useState(null);
@@ -100,35 +88,6 @@ const App = () => {
         console.log("Not redirected");
       });
   }, []);
-
-  useEffect(() => {
-    if (signinStatus !== "notSignined") {
-      return;
-    }
-
-    if (process.env.REACT_APP_GOOGLE_OPTIMIZE_CONTAINER_ID) {
-      window.dataLayer.push({ event: "optimize.activate" });
-
-      intervalId = setInterval(() => {
-        if (window.google_optimize !== undefined) {
-          const variant = window.google_optimize.get(
-            process.env.REACT_APP_GOOGLE_OPTIMIZE_EXPERIENCE_ID
-          );
-          console.log(variant);
-          if (variant === "1") {
-            setSigninAdditionalExplanation("show_not_to_do");
-          } else if (variant === "2") {
-            setSigninAdditionalExplanation("show_twitter_restriction");
-          } else {
-            setSigninAdditionalExplanation("none");
-          }
-          clearInterval(intervalId);
-        }
-      }, 100);
-    } else {
-      setSigninAdditionalExplanation("none");
-    }
-  }, [signinStatus]);
 
   useEffect(() => {
     if (idToken == null || accessToken == null || secret == null) {
@@ -198,7 +157,6 @@ const App = () => {
             render={(props) => (
               <Player
                 isDesktop={isDesktop}
-                signinAdditionalExplanation={signinAdditionalExplanation}
                 signinStatus={signinStatus}
                 userName={userName}
                 idToken={idToken}

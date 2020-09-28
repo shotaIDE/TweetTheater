@@ -4,7 +4,7 @@ import { Container, Grid } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { SigninAdditionalExplanation, SigninStatus } from "./App";
+import { SigninStatus } from "./App";
 import { ErrorSnackbar } from "./ErrorSnackbar";
 import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
 import { Loading } from "./Loading";
@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
   isDesktop: boolean;
   signinStatus: SigninStatus;
-  signinAdditionalExplanation: SigninAdditionalExplanation;
   userName: string;
   idToken: string;
   uid: string;
@@ -280,10 +279,8 @@ export const Player = (props: Props) => {
           />
         </Container>
       )
-    ) : props.signinStatus === "notSignined" &&
-      props.signinAdditionalExplanation !== "unknown" ? (
+    ) : props.signinStatus === "notSignined" ? (
       <NeedSignin
-        additionalExplanation={props.signinAdditionalExplanation}
         favoriteEnabled={favoriteEnabled}
         handleSignin={props.handleSignin}
       />
