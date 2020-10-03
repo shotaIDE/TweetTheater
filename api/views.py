@@ -88,7 +88,27 @@ def create_user(request):
     else:
         print('User credential was updated')
 
-    return JsonResponse({})
+    max_age = 60 * 60 * 24 * 1000  # 1000日
+
+    http_response = HttpResponse()
+    http_response.set_cookie(
+        key='accessToken',
+        value=access_token,
+        max_age=max_age,
+        secure=settings.COOKIE_IS_SECURE,
+        httponly=False,
+        samesite='None'
+    )
+    http_response.set_cookie(
+        key='secret',
+        value=secret,
+        max_age=max_age,
+        secure=settings.COOKIE_IS_SECURE,
+        httponly=False,
+        samesite='None'
+    )
+
+    return http_response
 
 
 @csrf_exempt
