@@ -55,19 +55,10 @@ def get_credentials(request) -> dict:
         return credentials
 
     # POSTデータとCookieに含まれていない場合は、DBから秘匿情報を取得する
-    user_credential = settings.USER_CREDENTIALS[uid]
-    access_token = user_credential[_DB_JSON_ACCESS_TOKEN_KEY]
-    access_secret = user_credential[_DB_JSON_ACCESS_SECRET_KEY]
+    credentials = _get_credentials_from_db(uid=uid)
 
-    print(
-        'User credentials from DB: '
-        f'AccessToken={access_token}, AccessSecret={access_secret}')
-
-    return {
-        ACCESS_TOKEN_KEY: access_token,
-        ACCESS_SECRET_KEY: access_secret,
-        CREDENTIALS_SOURCE: CredentialsSource.DB
-    }
+    credentials[CREDENTIALS_SOURCE] = CredentialsSource.DB
+    return credentials
 
 
 def set_credentials(response: HttpResponse,
@@ -110,7 +101,7 @@ def _get_credentials_from_post(request) -> dict:
     if (access_token is not None and access_secret is not None):
         print(
             'User credentials from POST data: '
-            f'AccessToken={access_token}, AccessSecret={access_secret}')
+            f'AccessToken={access_token}, Secret={access_secret}')
 
         return {
             ACCESS_TOKEN_KEY: access_token,
@@ -135,3 +126,18 @@ def _get_credentials_from_cookie(request) -> dict:
         }
 
     return
+
+
+def _get_credentials_from_db(uid: str) -> dict:
+    user_credential = settings.USER_CREDENTIALS[uid]
+    access_token = user_credential[_DB_JSON_ACCESS_TOKEN_KEY]
+    access_secret = user_credential[_DB_JSON_ACCESS_SECRET_KEY]
+
+    print(
+        'User credentials from DB: '
+        f'AccessToken={access_token}, Secret={access_secret}')
+
+    return {
+        ACCESS_TOKEN_KEY: access_token,
+        ACCESS_SECRET_KEY: access_secret,
+    }
