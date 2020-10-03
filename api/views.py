@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from api.twitter import favorite, search, user
 from api.twitter.user import (ACCESS_SECRET_KEY, ACCESS_TOKEN_KEY,
-                              CREDENTIALS_SOURCE, CredentialsSource)
+                              CREDENTIALS_SOURCE, UID_KEY, CredentialsSource)
 
 
 @csrf_exempt
@@ -12,7 +12,7 @@ def search_2hDTM(request):
     consumer_key = settings.TWITTER_CONSUMER_KEY
     consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
-    user_secret = user.get_user_secret(request)
+    user_secret = user.get_credentials(request)
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
     credentials_source = user_secret[CREDENTIALS_SOURCE]
@@ -29,7 +29,7 @@ def search_2hDTM(request):
 
     if credentials_source == CredentialsSource.DB:
         # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のCookieに移植
-        user.set_user_credentials(
+        user.set_credentials(
             response=response,
             access_token=access_token,
             access_secret=access_secret)
@@ -39,17 +39,17 @@ def search_2hDTM(request):
 
 @csrf_exempt
 def create_user(request):
-    uid = user.get_uid(request=request)
-
-    access_token = request.POST.get('accessToken')
-    access_secret = request.POST.get('secret')
+    user_credentials = user.get_credentials_on_create(request=request)
+    uid = user_credentials[UID_KEY]
+    access_token = user_credentials[ACCESS_TOKEN_KEY]
+    access_secret = user_credentials[ACCESS_SECRET_KEY]
 
     print(
         'User accound was received: '
         f'UID={uid}, AccessToken={access_token}, Secret={access_secret}')
 
     http_response = HttpResponse()
-    user.set_user_credentials(
+    user.set_credentials(
         response=http_response,
         access_token=access_token,
         access_secret=access_secret)
@@ -64,7 +64,7 @@ def create_favorite(request):
 
     target_id = request.POST.get('id')
 
-    user_secret = user.get_user_secret(request)
+    user_secret = user.get_credentials(request)
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
 
