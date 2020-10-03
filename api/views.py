@@ -30,13 +30,38 @@ def _get_user_secret(request) -> dict:
     access_token = request.POST.get('accessToken')
     secret = request.POST.get('secret')
 
-    if (access_token is None or secret is None):
-        # リクエストに含まれていない場合は、DBから秘匿情報を取得する
-        user_credential = UserCredential.objects.get(uid=uid)
-        access_token = user_credential.access_token
-        secret = user_credential.secret
+    if (access_token is not None and secret is not None):
+        print(
+            'User credentials from POST data: '
+            f'AccessToken={access_token}, Secret={secret}')
 
-        print(f'User credentials: AccessToken={access_token}, Secret={secret}')
+        return {
+            ACCESS_TOKEN_KEY: access_token,
+            ACCESS_SECRET_KEY: secret
+        }
+
+    # POSTデータに含まれていない場合は、Cookieから秘匿情報を取得する
+    access_token = request.COOKIES.get('accessToken')
+    secret = request.COOKIES.get('secret')
+
+    if (access_token is not None and secret is not None):
+        print(
+            'User credentials from Cookie: '
+            f'AccessToken={access_token}, Secret={secret}')
+
+        return {
+            ACCESS_TOKEN_KEY: access_token,
+            ACCESS_SECRET_KEY: secret
+        }
+
+    # POSTデータとCookieに含まれていない場合は、DBから秘匿情報を取得する
+    user_credential = UserCredential.objects.get(uid=uid)
+    access_token = user_credential.access_token
+    secret = user_credential.secret
+
+    print(
+        'User credentials from DB: '
+        f'AccessToken={access_token}, Secret={secret}')
 
     return {
         ACCESS_TOKEN_KEY: access_token,
