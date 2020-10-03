@@ -2,7 +2,6 @@ from django.conf import settings
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from api.models import UserCredential
 from api.twitter import favorite, search, user
 from api.twitter.user import (ACCESS_SECRET_KEY, ACCESS_TOKEN_KEY,
                               CREDENTIALS_SOURCE, CredentialsSource)
@@ -48,19 +47,6 @@ def create_user(request):
     print(
         'User accound was received: '
         f'UID={uid}, AccessToken={access_token}, Secret={access_secret}')
-
-    defaults_params = {
-        'access_token': access_token,
-        'secret': access_secret,
-    }
-
-    user_credential, created = UserCredential.objects.update_or_create(
-        uid=uid, defaults=defaults_params)
-
-    if created:
-        print('User credential was created')
-    else:
-        print('User credential was updated')
 
     http_response = HttpResponse()
     user.set_user_credentials(
