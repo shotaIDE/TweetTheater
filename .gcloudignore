@@ -1,9 +1,12 @@
 __pycache__/
 
 /*
+
+!/serviceAccountKey*.json
+
 !/twitterclient
 !/api
 !/static
 !/.env
+!/db.json
 !/requirements.txt
-!/serviceAccountKey*.json
