@@ -1,6 +1,5 @@
 from enum import IntEnum, auto
 
-from api.models import UserCredential
 from django.conf import settings
 from django.http.response import HttpResponse
 from firebase_admin import auth
@@ -52,9 +51,9 @@ def get_user_secret(request) -> dict:
         }
 
     # POSTデータとCookieに含まれていない場合は、DBから秘匿情報を取得する
-    user_credential = UserCredential.objects.get(uid=uid)
-    access_token = user_credential.access_token
-    secret = user_credential.secret
+    user_credential = settings.USER_CREDENTIALS[uid]
+    access_token = user_credential['token']
+    secret = user_credential['secret']
 
     print(
         'User credentials from DB: '

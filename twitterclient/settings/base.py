@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import json
 import os
 from pathlib import Path
 
 import firebase_admin
 from dotenv import load_dotenv
 from firebase_admin import credentials
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -44,12 +44,8 @@ TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
 GAE_HOSTING = os.environ.get('GAE_APPLICATION') is not None
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+with open(str(BASE_DIR / 'db.json'), 'r') as f:
+    USER_CREDENTIALS = json.load(f)
 
 
 # Quick-start development settings - unsuitable for production

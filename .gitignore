@@ -6,6 +6,7 @@
 /GitHubSecret*.env
 
 /cache.json
+/db.json
 
 /src/video_list.json
 
