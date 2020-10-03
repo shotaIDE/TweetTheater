@@ -95,6 +95,8 @@ export const Player = (props: Props) => {
     const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
 
     fetch(fetchUrl, {
+      mode: "cors",
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -160,6 +162,8 @@ export const Player = (props: Props) => {
     setFavoritedList(updatedFavoriteList);
 
     fetch(postUrl, {
+      mode: "cors",
+      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

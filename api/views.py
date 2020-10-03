@@ -1,47 +1,10 @@
-import os
-
 from django.conf import settings
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from firebase_admin import auth
 
-from api.twitter import favorite, search
-from api.models import UserCredential
-
-
-ACCESS_TOKEN_KEY = 'access_token'
-ACCESS_SECRET_KEY = 'secret'
-
-
-def _get_uid(request) -> dict:
-    id_token = request.POST.get('idToken')
-
-    decoded_token = auth.verify_id_token(id_token)
-    uid = decoded_token['uid']
-
-    print(f'UID: {uid}')
-
-    return uid
-
-
-def _get_user_secret(request) -> dict:
-    uid = _get_uid(request=request)
-
-    access_token = request.POST.get('accessToken')
-    secret = request.POST.get('secret')
-
-    if (access_token is None or secret is None):
-        # リクエストに含まれていない場合は、DBから秘匿情報を取得する
-        user_credential = UserCredential.objects.get(uid=uid)
-        access_token = user_credential.access_token
-        secret = user_credential.secret
-
-        print(f'User credentials: AccessToken={access_token}, Secret={secret}')
-
-    return {
-        ACCESS_TOKEN_KEY: access_token,
-        ACCESS_SECRET_KEY: secret
-    }
+from api.twitter import favorite, search, user
+from api.twitter.user import (ACCESS_SECRET_KEY, ACCESS_TOKEN_KEY,
+                              CREDENTIALS_SOURCE, UID_KEY, CredentialsSource)
 
 
 @csrf_exempt
@@ -49,9 +12,10 @@ def search_2hDTM(request):
     consumer_key = settings.TWITTER_CONSUMER_KEY
     consumer_secret = settings.TWITTER_CONSUMER_SECRET
 
-    user_secret = _get_user_secret(request)
+    user_secret = user.get_credentials(request)
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
+    credentials_source = user_secret[CREDENTIALS_SOURCE]
 
     result = search.hashtag_2hDTM(
         consumer_key=consumer_key,
@@ -61,34 +25,36 @@ def search_2hDTM(request):
         gae_hosting=settings.GAE_HOSTING)
 
     # 配列をJSONに変換するために、safe を False にしておく
-    return JsonResponse(result, safe=False)
+    response = JsonResponse(result, safe=False)
+
+    if credentials_source == CredentialsSource.DB:
+        # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のCookieに移植
+        user.set_credentials(
+            response=response,
+            access_token=access_token,
+            access_secret=access_secret)
+
+    return response
 
 
 @csrf_exempt
 def create_user(request):
-    uid = _get_uid(request=request)
-
-    access_token = request.POST.get('accessToken')
-    secret = request.POST.get('secret')
+    user_credentials = user.get_credentials_on_create(request=request)
+    uid = user_credentials[UID_KEY]
+    access_token = user_credentials[ACCESS_TOKEN_KEY]
+    access_secret = user_credentials[ACCESS_SECRET_KEY]
 
     print(
         'User accound was received: '
-        f'UID={uid}, AccessToken={access_token}, Secret={secret}')
+        f'UID={uid}, AccessToken={access_token}, Secret={access_secret}')
 
-    defaults_params = {
-        'access_token': access_token,
-        'secret': secret,
-    }
+    http_response = HttpResponse()
+    user.set_credentials(
+        response=http_response,
+        access_token=access_token,
+        access_secret=access_secret)
 
-    user_credential, created = UserCredential.objects.update_or_create(
-        uid=uid, defaults=defaults_params)
-
-    if created:
-        print('User credential was created')
-    else:
-        print('User credential was updated')
-
-    return JsonResponse({})
+    return http_response
 
 
 @csrf_exempt
@@ -98,7 +64,7 @@ def create_favorite(request):
 
     target_id = request.POST.get('id')
 
-    user_secret = _get_user_secret(request)
+    user_secret = user.get_credentials(request)
     access_token = user_secret[ACCESS_TOKEN_KEY]
     access_secret = user_secret[ACCESS_SECRET_KEY]
 

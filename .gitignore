@@ -3,9 +3,10 @@
 /static
 
 /serviceAccountKey*.json
-/GitHubSecret*.env
+/GitHubSecret*
 
 /cache.json
+/db.json
 
 /src/video_list.json
 
