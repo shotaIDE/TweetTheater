@@ -25,6 +25,11 @@ jobs:
           TWITTER_CLIENT_CONFIG: ${{ secrets.TWITTER_CLIENT_CONFIG_DEV }}
         run: echo $TWITTER_CLIENT_CONFIG | base64 --decode > .env
 
+      - name: Generate Django DB JSON file
+        env:
+          TWITTER_CLIENT_DB_JSON: ${{ secrets.TWITTER_CLIENT_DB_JSON_DEV }}
+        run: echo $TWITTER_CLIENT_DB_JSON | base64 --decode > db.json
+
       - uses: actions-hub/gcloud@master
         env:
           PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID_DEV }}
