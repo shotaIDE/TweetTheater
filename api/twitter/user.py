@@ -47,14 +47,14 @@ def get_credentials(request) -> dict:
         credentials[CREDENTIALS_SOURCE] = CredentialsSource.POST
         return credentials
 
-    # POSTデータに含まれていない場合は、Cookieから秘匿情報を取得する
-    credentials = _get_credentials_from_cookie(request=request)
+    # POSTに直接含まれていない場合は、POSTから復号化して秘匿情報を取得する
+    credentials = _get_decrypted_credentials_from_post(request=request)
 
     if credentials is not None:
         credentials[CREDENTIALS_SOURCE] = CredentialsSource.COOKIE
         return credentials
 
-    # POSTデータとCookieに含まれていない場合は、DBから秘匿情報を取得する
+    # POSTに含まれていない場合は、DBから秘匿情報を取得する(レガシー)
     credentials = _get_credentials_from_db(uid=uid)
 
     credentials[CREDENTIALS_SOURCE] = CredentialsSource.DB
@@ -64,11 +64,11 @@ def get_credentials(request) -> dict:
 def get_encrypted_credentials(access_token: str, access_secret: str) -> dict:
     cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
 
-    store_text = f'{access_token}\n{access_secret}'
-    store_text_encrypted = cipher.encrypt(text=store_text)
+    credentials_str = f'{access_token}\n{access_secret}'
+    encrypted_credentials = cipher.encrypt(text=credentials_str)
 
     results = {
-        _ENCRYPTED_CREDENTIALS_KEY: store_text_encrypted
+        _ENCRYPTED_CREDENTIALS_KEY: encrypted_credentials
     }
 
     return results
@@ -102,7 +102,7 @@ def _get_credentials_from_post(request) -> dict:
     return
 
 
-def _get_credentials_from_cookie(request) -> dict:
+def _get_decrypted_credentials_from_post(request) -> dict:
     encrypted_credentials = request.POST.get(_ENCRYPTED_CREDENTIALS_KEY)
 
     if encrypted_credentials is None:
@@ -110,8 +110,8 @@ def _get_credentials_from_cookie(request) -> dict:
 
     cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
 
-    credentials_raw = cipher.decrypt(text=encrypted_credentials)
-    parsed_credentials = credentials_raw.split('\n')
+    credentials_str = cipher.decrypt(text=encrypted_credentials)
+    parsed_credentials = credentials_str.split('\n')
     access_token = parsed_credentials[0]
     access_secret = parsed_credentials[1]
 
