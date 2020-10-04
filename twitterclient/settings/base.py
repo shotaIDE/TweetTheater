@@ -48,7 +48,7 @@ with open(str(BASE_DIR / 'db.json'), 'r') as f:
     USER_CREDENTIALS = json.load(f)
 
 
-CREDENTIALS_SECRET_KEY = os.environ.get('DJANGO_CREDENTIALS_SECRET_KEY')
+CREDENTIALS_SECRET_KEY = os.environ.get('DJANGO_CREDENTIALS_ENCRYPTION_KEY')
 
 
 # Quick-start development settings - unsuitable for production
