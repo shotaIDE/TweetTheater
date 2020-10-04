@@ -16,6 +16,10 @@ export const storeEncryptedCredentials = (json) => {
 
 export const getEncryptedCredentialsParam = (): {} | null => {
   const encryptedCredentials = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (encryptedCredentials == null) {
+    return;
+  }
+
   return {
     [POST_KEY]: encryptedCredentials,
   };
