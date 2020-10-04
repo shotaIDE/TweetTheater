@@ -14,6 +14,10 @@ import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
 import { TweetListDialog } from "./TweetListDialog";
+import {
+  getEncryptedCredentialsParam,
+  storeEncryptedCredentials,
+} from "./UserCredentials";
 
 const favoriteEnabled = process.env.REACT_APP_FAVORITE === "enabled";
 
@@ -94,14 +98,10 @@ export const Player = (props: Props) => {
 
     const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
 
-    const encryptedCredentials = localStorage.getItem(
-      "tweettheater.encryptedCredentials"
-    );
+    const encryptedCredentialsParameters = getEncryptedCredentialsParam();
     const parameters =
-      encryptedCredentials != null
-        ? Object.assign(authParamerters, {
-            encryptedCredentials: encryptedCredentials,
-          })
+      encryptedCredentialsParameters != null
+        ? Object.assign(authParamerters, encryptedCredentialsParameters)
         : authParamerters;
 
     fetch(fetchUrl, {
@@ -117,20 +117,9 @@ export const Player = (props: Props) => {
         return response.json();
       })
       .then((json) => {
-        const searchResults = json["search"];
-        const fetchedTweetList = getTweetList(searchResults);
+        storeEncryptedCredentials(json);
 
-        if ("encryptedCredentials" in json) {
-          const encryptedCredentials = json["encryptedCredentials"];
-          localStorage.setItem(
-            "tweettheater.encryptedCredentials",
-            encryptedCredentials
-          );
-
-          console.log(
-            `Encrypted credentials: ${encryptedCredentials.substring(0, 10)}...`
-          );
-        }
+        const fetchedTweetList = getTweetList(json);
 
         setFetchStatus("done");
         setPlayedList(Array(fetchedTweetList.length).fill(false));
@@ -174,8 +163,13 @@ export const Player = (props: Props) => {
 
     const postUrl = `${process.env.REACT_APP_API_ORIGIN}/api/favorite/create`;
 
-    const params = authParamerters;
-    params["id"] = targetId;
+    const parameters = authParamerters;
+    parameters["id"] = targetId;
+
+    const encryptedCredentialsParameters = getEncryptedCredentialsParam();
+    if (encryptedCredentialsParameters != null) {
+      Object.assign(parameters, encryptedCredentialsParameters);
+    }
 
     // いいねボタンを無効化し、多重にリクエストするのを防ぐ
     let updatedFavoriteList = favoritedList.slice(); // コピー
@@ -187,8 +181,8 @@ export const Player = (props: Props) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: Object.keys(params)
-        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      body: Object.keys(parameters)
+        .map((key) => `${key}=${encodeURIComponent(parameters[key])}`)
         .join("&"),
     })
       .then((response) => {

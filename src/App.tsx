@@ -18,6 +18,7 @@ import { NotFound } from "./NotFound";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
 import { TermsOfUse } from "./TermsOfUse";
+import { storeEncryptedCredentials } from "./UserCredentials";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
@@ -114,15 +115,7 @@ const App = () => {
         return response.json();
       })
       .then((json) => {
-        const encryptedCredentials = json["encryptedCredentials"];
-        localStorage.setItem(
-          "tweettheater.encryptedCredentials",
-          encryptedCredentials
-        );
-
-        console.log(
-          `Encrypted credentials: ${encryptedCredentials.substring(0, 10)}...`
-        );
+        storeEncryptedCredentials(json);
       });
   }, [accessToken, idToken, secret]);
 
