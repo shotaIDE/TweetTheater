@@ -1,8 +1,9 @@
 from enum import IntEnum, auto
 
 from django.conf import settings
-from django.http.response import HttpResponse
 from firebase_admin import auth
+
+from . import crypto
 
 UID_KEY = 'uid'
 ACCESS_TOKEN_KEY = 'access_token'
@@ -61,26 +62,13 @@ def get_credentials(request) -> dict:
     return credentials
 
 
-def set_credentials(response: HttpResponse,
-                    access_token: str,
-                    access_secret: str):
-    response.set_cookie(
-        key=_COOKIE_ACCESS_TOKEN_KEY,
-        value=access_token,
-        max_age=_COOKIE_MAX_AGE,
-        secure=settings.COOKIE_IS_SECURE,
-        httponly=False,
-        samesite='None'
-    )
-    response.set_cookie(
-        key=_COOKIE_ACCESS_SECRET_KEY,
-        value=access_secret,
-        max_age=_COOKIE_MAX_AGE,
-        secure=settings.COOKIE_IS_SECURE,
-        httponly=False,
-        samesite='None'
-    )
-    return
+def get_encrypted_credentials(access_token: str, access_secret: str) -> str:
+    cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
+
+    store_text = f'{access_token}\n{access_secret}'
+    store_text_encrypted = cipher.encrypt(text=store_text)
+
+    return store_text_encrypted
 
 
 def _get_uid(request) -> dict:
@@ -112,8 +100,14 @@ def _get_credentials_from_post(request) -> dict:
 
 
 def _get_credentials_from_cookie(request) -> dict:
-    access_token = request.COOKIES.get(_COOKIE_ACCESS_TOKEN_KEY)
-    access_secret = request.COOKIES.get(_COOKIE_ACCESS_SECRET_KEY)
+    encrypted_credentials = request.POST.get('encryptedCredentials')
+
+    cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
+
+    credentials_raw = cipher.decrypt(text=encrypted_credentials)
+    parsed_credentials = credentials_raw.split('\n')
+    access_token = parsed_credentials[0]
+    access_secret = parsed_credentials[1]
 
     if (access_token is not None and access_secret is not None):
         print(

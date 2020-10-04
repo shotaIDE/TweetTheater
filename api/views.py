@@ -17,22 +17,26 @@ def search_2hDTM(request):
     access_secret = user_secret[ACCESS_SECRET_KEY]
     credentials_source = user_secret[CREDENTIALS_SOURCE]
 
-    result = search.hashtag_2hDTM(
+    search_results = search.hashtag_2hDTM(
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
         access_token=access_token,
         access_secret=access_secret,
         gae_hosting=settings.GAE_HOSTING)
 
-    # 配列をJSONに変換するために、safe を False にしておく
-    response = JsonResponse(result, safe=False)
+    results = {
+        "search": search_results,
+    }
 
     if credentials_source == CredentialsSource.DB:
         # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のCookieに移植
-        user.set_credentials(
-            response=response,
+        encrypted_credentials = user.get_encrypted_credentials(
             access_token=access_token,
             access_secret=access_secret)
+
+        results['encryptedCredentials'] = encrypted_credentials
+
+    response = JsonResponse(results)
 
     return response
 

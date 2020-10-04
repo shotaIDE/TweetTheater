@@ -94,6 +94,14 @@ export const Player = (props: Props) => {
 
     const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
 
+    const encryptedCredentials = localStorage.getItem("encryptedCredentials");
+    const parameters =
+      encryptedCredentials != null
+        ? Object.assign(authParamerters, {
+            encryptedCredentials: encryptedCredentials,
+          })
+        : authParamerters;
+
     fetch(fetchUrl, {
       mode: "cors",
       credentials: "include",
@@ -101,7 +109,7 @@ export const Player = (props: Props) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: Object.keys(authParamerters)
+      body: Object.keys(parameters)
         .map((key) => `${key}=${encodeURIComponent(authParamerters[key])}`)
         .join("&"),
     })
@@ -109,7 +117,13 @@ export const Player = (props: Props) => {
         return response.json();
       })
       .then((json) => {
-        const fetchedTweetList = getTweetList(json);
+        const searchResults = json["search"];
+        const fetchedTweetList = getTweetList(searchResults);
+
+        if ("encryptedCredentials" in json) {
+          const encryptedCredentials = json["encryptedCredentials"];
+          localStorage.setItem("encryptedCredentials", encryptedCredentials);
+        }
 
         setFetchStatus("done");
         setPlayedList(Array(fetchedTweetList.length).fill(false));
