@@ -14,6 +14,10 @@ import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
 import { TweetListDialog } from "./TweetListDialog";
+import {
+  getEncryptedCredentialsParam,
+  storeEncryptedCredentials,
+} from "./UserCredentials";
 
 const favoriteEnabled = process.env.REACT_APP_FAVORITE === "enabled";
 
@@ -94,14 +98,18 @@ export const Player = (props: Props) => {
 
     const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
 
+    const encryptedCredentialsParameters = getEncryptedCredentialsParam();
+    const parameters =
+      encryptedCredentialsParameters != null
+        ? Object.assign(authParamerters, encryptedCredentialsParameters)
+        : authParamerters;
+
     fetch(fetchUrl, {
-      mode: "cors",
-      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: Object.keys(authParamerters)
+      body: Object.keys(parameters)
         .map((key) => `${key}=${encodeURIComponent(authParamerters[key])}`)
         .join("&"),
     })
@@ -109,6 +117,8 @@ export const Player = (props: Props) => {
         return response.json();
       })
       .then((json) => {
+        storeEncryptedCredentials(json);
+
         const fetchedTweetList = getTweetList(json);
 
         setFetchStatus("done");
@@ -153,8 +163,13 @@ export const Player = (props: Props) => {
 
     const postUrl = `${process.env.REACT_APP_API_ORIGIN}/api/favorite/create`;
 
-    const params = authParamerters;
-    params["id"] = targetId;
+    const parameters = authParamerters;
+    parameters["id"] = targetId;
+
+    const encryptedCredentialsParameters = getEncryptedCredentialsParam();
+    if (encryptedCredentialsParameters != null) {
+      Object.assign(parameters, encryptedCredentialsParameters);
+    }
 
     // いいねボタンを無効化し、多重にリクエストするのを防ぐ
     let updatedFavoriteList = favoritedList.slice(); // コピー
@@ -162,14 +177,12 @@ export const Player = (props: Props) => {
     setFavoritedList(updatedFavoriteList);
 
     fetch(postUrl, {
-      mode: "cors",
-      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: Object.keys(params)
-        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      body: Object.keys(parameters)
+        .map((key) => `${key}=${encodeURIComponent(parameters[key])}`)
         .join("&"),
     })
       .then((response) => {

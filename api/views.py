@@ -17,23 +17,26 @@ def search_2hDTM(request):
     access_secret = user_secret[ACCESS_SECRET_KEY]
     credentials_source = user_secret[CREDENTIALS_SOURCE]
 
-    result = search.hashtag_2hDTM(
+    search_results = search.hashtag_2hDTM(
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
         access_token=access_token,
         access_secret=access_secret,
         gae_hosting=settings.GAE_HOSTING)
 
-    # 配列をJSONに変換するために、safe を False にしておく
-    response = JsonResponse(result, safe=False)
+    results = {
+        "search": search_results,
+    }
 
     if credentials_source == CredentialsSource.DB:
-        # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のCookieに移植
-        user.set_credentials(
-            response=response,
+        # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のLocalStorageに移植
+        encrypted_credentials = user.get_encrypted_credentials(
             access_token=access_token,
             access_secret=access_secret)
 
+        results.update(encrypted_credentials)
+
+    response = JsonResponse(results)
     return response
 
 
@@ -48,13 +51,12 @@ def create_user(request):
         'User accound was received: '
         f'UID={uid}, AccessToken={access_token}, Secret={access_secret}')
 
-    http_response = HttpResponse()
-    user.set_credentials(
-        response=http_response,
+    encrypted_credentials = user.get_encrypted_credentials(
         access_token=access_token,
         access_secret=access_secret)
 
-    return http_response
+    response = JsonResponse(encrypted_credentials)
+    return response
 
 
 @csrf_exempt

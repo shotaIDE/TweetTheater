@@ -1,7 +1,9 @@
 import { Tweet } from "./TweetCardList";
 
-export const getTweetList = (fetchedList): Tweet[] => {
-  return fetchedList.map(
+export const getTweetList = (json): Tweet[] => {
+  const searchResults = json["search"];
+
+  return searchResults.map(
     (video): Tweet => {
       const tweet: Tweet = {
         id: video.id,

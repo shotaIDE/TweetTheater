@@ -1,8 +1,9 @@
 from enum import IntEnum, auto
 
 from django.conf import settings
-from django.http.response import HttpResponse
 from firebase_admin import auth
+
+from . import crypto
 
 UID_KEY = 'uid'
 ACCESS_TOKEN_KEY = 'access_token'
@@ -21,11 +22,10 @@ _COOKIE_MAX_AGE = 60 * 60 * 24 * 1000  # 1000日
 _POST_ACCESS_TOKEN_KEY = 'accessToken'
 _POST_ACCESS_SECRET_KEY = 'secret'
 
-_COOKIE_ACCESS_TOKEN_KEY = 'accessToken'
-_COOKIE_ACCESS_SECRET_KEY = 'secret'
-
 _DB_JSON_ACCESS_TOKEN_KEY = 'token'
 _DB_JSON_ACCESS_SECRET_KEY = 'secret'
+
+_ENCRYPTED_CREDENTIALS_KEY = 'encryptedCredentials'
 
 
 def get_credentials_on_create(request) -> dict:
@@ -47,40 +47,31 @@ def get_credentials(request) -> dict:
         credentials[CREDENTIALS_SOURCE] = CredentialsSource.POST
         return credentials
 
-    # POSTデータに含まれていない場合は、Cookieから秘匿情報を取得する
-    credentials = _get_credentials_from_cookie(request=request)
+    # POSTに直接含まれていない場合は、POSTから復号化して秘匿情報を取得する
+    credentials = _get_decrypted_credentials_from_post(request=request)
 
     if credentials is not None:
         credentials[CREDENTIALS_SOURCE] = CredentialsSource.COOKIE
         return credentials
 
-    # POSTデータとCookieに含まれていない場合は、DBから秘匿情報を取得する
+    # POSTに含まれていない場合は、DBから秘匿情報を取得する(レガシー)
     credentials = _get_credentials_from_db(uid=uid)
 
     credentials[CREDENTIALS_SOURCE] = CredentialsSource.DB
     return credentials
 
 
-def set_credentials(response: HttpResponse,
-                    access_token: str,
-                    access_secret: str):
-    response.set_cookie(
-        key=_COOKIE_ACCESS_TOKEN_KEY,
-        value=access_token,
-        max_age=_COOKIE_MAX_AGE,
-        secure=settings.COOKIE_IS_SECURE,
-        httponly=False,
-        samesite='None'
-    )
-    response.set_cookie(
-        key=_COOKIE_ACCESS_SECRET_KEY,
-        value=access_secret,
-        max_age=_COOKIE_MAX_AGE,
-        secure=settings.COOKIE_IS_SECURE,
-        httponly=False,
-        samesite='None'
-    )
-    return
+def get_encrypted_credentials(access_token: str, access_secret: str) -> dict:
+    cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
+
+    credentials_str = f'{access_token}\n{access_secret}'
+    encrypted_credentials = cipher.encrypt(text=credentials_str)
+
+    results = {
+        _ENCRYPTED_CREDENTIALS_KEY: encrypted_credentials
+    }
+
+    return results
 
 
 def _get_uid(request) -> dict:
@@ -100,7 +91,7 @@ def _get_credentials_from_post(request) -> dict:
 
     if (access_token is not None and access_secret is not None):
         print(
-            'User credentials from POST data: '
+            'User credentials (raw) from POST data: '
             f'AccessToken={access_token}, Secret={access_secret}')
 
         return {
@@ -111,13 +102,22 @@ def _get_credentials_from_post(request) -> dict:
     return
 
 
-def _get_credentials_from_cookie(request) -> dict:
-    access_token = request.COOKIES.get(_COOKIE_ACCESS_TOKEN_KEY)
-    access_secret = request.COOKIES.get(_COOKIE_ACCESS_SECRET_KEY)
+def _get_decrypted_credentials_from_post(request) -> dict:
+    encrypted_credentials = request.POST.get(_ENCRYPTED_CREDENTIALS_KEY)
+
+    if encrypted_credentials is None:
+        return
+
+    cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
+
+    credentials_str = cipher.decrypt(text=encrypted_credentials)
+    parsed_credentials = credentials_str.split('\n')
+    access_token = parsed_credentials[0]
+    access_secret = parsed_credentials[1]
 
     if (access_token is not None and access_secret is not None):
         print(
-            'User credentials from Cookie: '
+            'User credentials (encrypted) from POST: '
             f'AccessToken={access_token}, Secret={access_secret}')
 
         return {

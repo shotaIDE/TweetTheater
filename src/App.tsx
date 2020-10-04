@@ -18,6 +18,7 @@ import { NotFound } from "./NotFound";
 import { Player } from "./Player";
 import { PrivacyPolicy } from "./PrivacyPolicy";
 import { TermsOfUse } from "./TermsOfUse";
+import { storeEncryptedCredentials } from "./UserCredentials";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
 
@@ -102,8 +103,6 @@ const App = () => {
     };
 
     fetch(fetchUrl, {
-      mode: "cors",
-      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -111,7 +110,13 @@ const App = () => {
       body: Object.keys(params)
         .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join("&"),
-    });
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        storeEncryptedCredentials(json);
+      });
   }, [accessToken, idToken, secret]);
 
   const handleSignin = () => {
