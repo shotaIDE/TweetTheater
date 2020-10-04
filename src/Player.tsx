@@ -94,7 +94,9 @@ export const Player = (props: Props) => {
 
     const fetchUrl = `${process.env.REACT_APP_API_ORIGIN}/api/search/`;
 
-    const encryptedCredentials = localStorage.getItem("encryptedCredentials");
+    const encryptedCredentials = localStorage.getItem(
+      "tweettheater.encryptedCredentials"
+    );
     const parameters =
       encryptedCredentials != null
         ? Object.assign(authParamerters, {
@@ -122,7 +124,14 @@ export const Player = (props: Props) => {
 
         if ("encryptedCredentials" in json) {
           const encryptedCredentials = json["encryptedCredentials"];
-          localStorage.setItem("encryptedCredentials", encryptedCredentials);
+          localStorage.setItem(
+            "tweettheater.encryptedCredentials",
+            encryptedCredentials
+          );
+
+          console.log(
+            `Encrypted credentials: ${encryptedCredentials.substring(0, 10)}...`
+          );
         }
 
         setFetchStatus("done");

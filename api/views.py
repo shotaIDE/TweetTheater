@@ -29,15 +29,14 @@ def search_2hDTM(request):
     }
 
     if credentials_source == CredentialsSource.DB:
-        # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のCookieに移植
+        # 旧方式のDBによる秘匿情報の取得を実施した場合は、新方式のLocalStorageに移植
         encrypted_credentials = user.get_encrypted_credentials(
             access_token=access_token,
             access_secret=access_secret)
 
-        results['encryptedCredentials'] = encrypted_credentials
+        results.update(encrypted_credentials)
 
     response = JsonResponse(results)
-
     return response
 
 
@@ -52,13 +51,12 @@ def create_user(request):
         'User accound was received: '
         f'UID={uid}, AccessToken={access_token}, Secret={access_secret}')
 
-    http_response = HttpResponse()
-    user.set_credentials(
-        response=http_response,
+    encrypted_credentials = user.get_encrypted_credentials(
         access_token=access_token,
         access_secret=access_secret)
 
-    return http_response
+    response = JsonResponse(encrypted_credentials)
+    return response
 
 
 @csrf_exempt

@@ -22,11 +22,10 @@ _COOKIE_MAX_AGE = 60 * 60 * 24 * 1000  # 1000日
 _POST_ACCESS_TOKEN_KEY = 'accessToken'
 _POST_ACCESS_SECRET_KEY = 'secret'
 
-_COOKIE_ACCESS_TOKEN_KEY = 'accessToken'
-_COOKIE_ACCESS_SECRET_KEY = 'secret'
-
 _DB_JSON_ACCESS_TOKEN_KEY = 'token'
 _DB_JSON_ACCESS_SECRET_KEY = 'secret'
+
+_ENCRYPTED_CREDENTIALS_KEY = 'encryptedCredentials'
 
 
 def get_credentials_on_create(request) -> dict:
@@ -62,13 +61,17 @@ def get_credentials(request) -> dict:
     return credentials
 
 
-def get_encrypted_credentials(access_token: str, access_secret: str) -> str:
+def get_encrypted_credentials(access_token: str, access_secret: str) -> dict:
     cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
 
     store_text = f'{access_token}\n{access_secret}'
     store_text_encrypted = cipher.encrypt(text=store_text)
 
-    return store_text_encrypted
+    results = {
+        _ENCRYPTED_CREDENTIALS_KEY: store_text_encrypted
+    }
+
+    return results
 
 
 def _get_uid(request) -> dict:
@@ -88,7 +91,7 @@ def _get_credentials_from_post(request) -> dict:
 
     if (access_token is not None and access_secret is not None):
         print(
-            'User credentials from POST data: '
+            'User credentials (raw) from POST data: '
             f'AccessToken={access_token}, Secret={access_secret}')
 
         return {
@@ -100,7 +103,10 @@ def _get_credentials_from_post(request) -> dict:
 
 
 def _get_credentials_from_cookie(request) -> dict:
-    encrypted_credentials = request.POST.get('encryptedCredentials')
+    encrypted_credentials = request.POST.get(_ENCRYPTED_CREDENTIALS_KEY)
+
+    if encrypted_credentials is None:
+        return
 
     cipher = crypto.AESCipher(key=settings.CREDENTIALS_SECRET_KEY)
 
@@ -111,7 +117,7 @@ def _get_credentials_from_cookie(request) -> dict:
 
     if (access_token is not None and access_secret is not None):
         print(
-            'User credentials from Cookie: '
+            'User credentials (encrypted) from POST: '
             f'AccessToken={access_token}, Secret={access_secret}')
 
         return {

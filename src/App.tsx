@@ -111,7 +111,21 @@ const App = () => {
       body: Object.keys(params)
         .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join("&"),
-    });
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((json) => {
+        const encryptedCredentials = json["encryptedCredentials"];
+        localStorage.setItem(
+          "tweettheater.encryptedCredentials",
+          encryptedCredentials
+        );
+
+        console.log(
+          `Encrypted credentials: ${encryptedCredentials.substring(0, 10)}...`
+        );
+      });
   }, [accessToken, idToken, secret]);
 
   const handleSignin = () => {
