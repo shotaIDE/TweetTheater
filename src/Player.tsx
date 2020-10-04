@@ -105,8 +105,6 @@ export const Player = (props: Props) => {
         : authParamerters;
 
     fetch(fetchUrl, {
-      mode: "cors",
-      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -185,8 +183,6 @@ export const Player = (props: Props) => {
     setFavoritedList(updatedFavoriteList);
 
     fetch(postUrl, {
-      mode: "cors",
-      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

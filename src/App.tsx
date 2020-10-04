@@ -102,8 +102,6 @@ const App = () => {
     };
 
     fetch(fetchUrl, {
-      mode: "cors",
-      credentials: "include",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
