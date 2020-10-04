@@ -1,4 +1,4 @@
-const LOCAL_STORAGE_KEY = "tweettheater.encryptedCredentials";
+const LOCAL_STORAGE_KEY = "encryptedCredentials";
 const POST_KEY = "encryptedCredentials";
 
 export const storeEncryptedCredentials = (json) => {
