@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import React from "react";
 
@@ -45,17 +45,6 @@ export const TweetCardList = (props: Props) => {
 
   const numTweet = props.tweetList.length;
 
-  const explanation =
-    numTweet > 0 ? (
-      <Typography
-        className={classes.explanation}
-        variant="body2"
-        color="textSecondary"
-      >
-        新しく投稿された順に {numTweet}件 のツイートを表示しています。
-      </Typography>
-    ) : null;
-
   const cardList =
     numTweet > 0
       ? props.tweetList.map((tweet, id) => {
@@ -82,7 +71,6 @@ export const TweetCardList = (props: Props) => {
 
   return (
     <Grid container className={classes.root} spacing={1}>
-      {explanation}
       {cardList}
     </Grid>
   );

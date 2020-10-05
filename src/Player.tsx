@@ -10,6 +10,7 @@ import { FavoriteResult, FavoriteSnackbars } from "./FavoriteSnackbars";
 import { Loading } from "./Loading";
 import { NeedSignin } from "./NeedSignin";
 import { PlayingMediaDesktop, PlayingMediaMobile } from "./PlayingMedia";
+import { SearchOrderSelect } from "./SearchOrderSelect";
 import { TweetStatus } from "./TweetCard";
 import { Tweet, TweetCardList } from "./TweetCardList";
 import { getTweetList } from "./TweetList";
@@ -22,6 +23,12 @@ import {
 const favoriteEnabled = process.env.REACT_APP_FAVORITE === "enabled";
 
 type FetchStatus = "notStarted" | "inProcess" | "done";
+
+export type SearchSort =
+  | "descend of datetime"
+  | "ascend of datetime from 21:00 at 1day before"
+  | "ascend of datetime from 21:00 at 2days before"
+  | "customized";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -65,6 +72,9 @@ export const Player = (props: Props) => {
     FavoriteResult
   >(null);
   const [listOpen, setListOpen] = useState(false);
+  const [searchOrder, setSearchOrder] = useState<SearchSort>(
+    "descend of datetime"
+  );
 
   const authParamerters = useMemo(() => {
     const params =
@@ -148,6 +158,10 @@ export const Player = (props: Props) => {
     }
 
     setCurrentVideoId(nextVideoId);
+  };
+
+  const handleSearchSort = (sort: SearchSort) => {
+    setSearchOrder(sort);
   };
 
   const handleCloseErrorSnackbar = () => {
@@ -255,6 +269,10 @@ export const Player = (props: Props) => {
         <Container fixed={true}>
           <Grid container spacing={1}>
             <Grid item xs={6}>
+              <SearchOrderSelect
+                searchOrder={searchOrder}
+                handleSelectSearchOrder={handleSearchSort}
+              />
               <TweetCardList
                 tweetList={tweetList}
                 statusList={tweetCardInfoList}
