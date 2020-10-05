@@ -76,6 +76,8 @@ export const Player = (props: Props) => {
     "descend of datetime"
   );
 
+  // FIXME: localStorageから設定取得
+
   const authParamerters = useMemo(() => {
     const params =
       props.idToken == null
@@ -141,7 +143,7 @@ export const Player = (props: Props) => {
         setFetchError(true);
         setErrorSnackbarOpen(true);
       });
-  }, [fetchStatus, authParamerters]);
+  }, [fetchStatus, authParamerters, searchOrder]);
 
   const classes = useStyles(props);
 
@@ -161,7 +163,10 @@ export const Player = (props: Props) => {
   };
 
   const handleSearchSort = (sort: SearchSort) => {
+    setTweetList([]);
+    setFavoritedList([]);
     setSearchOrder(sort);
+    setFetchStatus("notStarted");
   };
 
   const handleCloseErrorSnackbar = () => {
