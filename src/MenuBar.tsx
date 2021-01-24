@@ -14,7 +14,11 @@ import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
 import { registerOfficialTwitterAccountClickEvent } from "./GoogleAnalyticsEvents";
-import { officialTwitterAccountUrl } from "./OfficialAccountInfo";
+import {
+  officialTwitterAccountUrl,
+  privacyPolicyUrl,
+  termsOfUseUrl,
+} from "./OfficialAccountInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,13 +61,13 @@ export const MenuBar = withRouter((props: Props) => {
   const handleTermsOfUse = () => {
     handleClose();
 
-    props.history.push("/termsofuse/");
+    window.open(termsOfUseUrl, "_blank", "noopener");
   };
 
   const handlePrivacyPolicy = () => {
     handleClose();
 
-    props.history.push("/privacypolicy/");
+    window.open(privacyPolicyUrl, "_blank", "noopener");
   };
 
   const handleTwitterAccount = () => {
