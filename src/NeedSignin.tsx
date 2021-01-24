@@ -11,6 +11,8 @@ import * as History from "history";
 import React, { useState } from "react";
 import { withRouter } from "react-router";
 
+import { privacyPolicyUrl, termsOfUseUrl } from "./OfficialAccountInfo";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -67,11 +69,11 @@ export const NeedSignin = withRouter((props: Props) => {
   };
 
   const handleTermsOfUse = () => {
-    props.history.push("/termsofuse/");
+    window.open(termsOfUseUrl, "_blank", "noopener");
   };
 
   const handlePrivacyPolicy = () => {
-    props.history.push("/privacypolicy/");
+    window.open(privacyPolicyUrl, "_blank", "noopener");
   };
 
   return (

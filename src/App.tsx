@@ -16,8 +16,6 @@ import { MenuBarDesktop } from "./MenuBarDesktop";
 import { MenuBarMobile } from "./MenuBarMobile";
 import { NotFound } from "./NotFound";
 import { Player } from "./Player";
-import { PrivacyPolicy } from "./PrivacyPolicy";
-import { TermsOfUse } from "./TermsOfUse";
 import { storeEncryptedCredentials } from "./UserCredentials";
 
 export type SigninStatus = "unknown" | "signined" | "notSignined";
@@ -176,8 +174,6 @@ const App = () => {
               />
             )}
           />
-          <Route exact path="/privacypolicy/" component={PrivacyPolicy} />
-          <Route exact path="/termsofuse/" component={TermsOfUse} />
           <Route component={NotFound} />
         </Switch>
       </BrowserRouter>
