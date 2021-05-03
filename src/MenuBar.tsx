@@ -107,7 +107,7 @@ export const MenuBar = withRouter((props: Props) => {
   };
 
   const handleSignout = () => {
-    handleClose();
+    handleGeneralMenuClose();
     props.handleSignout();
   };
 
@@ -116,19 +116,19 @@ export const MenuBar = withRouter((props: Props) => {
   };
 
   const handleTermsOfUse = () => {
-    handleClose();
+    handleGeneralMenuClose();
 
     window.open(termsOfUseUrl, "_blank", "noopener");
   };
 
   const handlePrivacyPolicy = () => {
-    handleClose();
+    handleGeneralMenuClose();
 
     window.open(privacyPolicyUrl, "_blank", "noopener");
   };
 
   const handleTwitterAccount = () => {
-    handleClose();
+    handleGeneralMenuClose();
 
     window.open(officialTwitterAccountUrl, "_blank", "noopener");
 
@@ -139,7 +139,7 @@ export const MenuBar = withRouter((props: Props) => {
     setNotificationMenuAnchorEl(null);
   };
 
-  const handleClose = () => {
+  const handleGeneralMenuClose = () => {
     setGeneralMenuAnchorEl(null);
   };
 
@@ -228,7 +228,7 @@ export const MenuBar = withRouter((props: Props) => {
           horizontal: "right",
         }}
         open={generalMenuOpen}
-        onClose={handleClose}
+        onClose={handleGeneralMenuClose}
       >
         {userMenuItems}
         {generalMenuItems}
