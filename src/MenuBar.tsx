@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: theme.spacing(1),
       flexGrow: 1,
     },
+    notificationMenuItem: {
+      padding: theme.spacing(1),
+    },
   })
 );
 
@@ -124,7 +127,11 @@ export const MenuBar = withRouter((props: Props) => {
   const notificationMenuItems = (
     <div>
       {notifications.map((notification) => {
-        return notification.body;
+        return (
+          <MenuItem className={classes.notificationMenuItem}>
+            {notification.body}
+          </MenuItem>
+        );
       })}
     </div>
   );

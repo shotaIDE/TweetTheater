@@ -22,9 +22,15 @@ export const getNotifications = (): Notification[] => {
     new Notification(
       "001",
       (
-        <Typography variant="h6" noWrap={true}>
-          アプリ版がご利用可能になりました！
-        </Typography>
+        <div>
+          <Typography variant="body1">
+            スマホアプリ版がリリースされました！
+          </Typography>
+          <Typography variant="body2">
+            アプリ版がご利用可能になりました！
+          </Typography>
+          <Typography variant="caption">2021年5月3日 19:00</Typography>
+        </div>
       )
     ),
   ];
