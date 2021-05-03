@@ -20,6 +20,7 @@ import {
   privacyPolicyUrl,
   termsOfUseUrl,
 } from "./OfficialAccountInfo";
+import { getReadNotificationIdList } from "./repotiroy/NotificationsRepository";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +46,11 @@ interface Props {
 
 export const MenuBar = withRouter((props: Props) => {
   const classes = useStyles(props);
+
+  const handleOpenNotifications = () => {
+    const userNotifications = getReadNotificationIdList();
+    console.log(userNotifications);
+  };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -86,12 +92,6 @@ export const MenuBar = withRouter((props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  const notificationItems = (
-    <div>
-      <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
-    </div>
-  );
-
   const generalMenuItems = (
     <div>
       <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
@@ -118,7 +118,7 @@ export const MenuBar = withRouter((props: Props) => {
         aria-label="account of current user"
         aria-controls="menu-appbar"
         aria-haspopup="true"
-        onClick={handleMenu}
+        onClick={handleOpenNotifications}
         color="inherit"
       >
         <Badge badgeContent={11} color="secondary">

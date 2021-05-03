@@ -1,7 +1,7 @@
 const USER_NOTIFICATIONS_STORAGE_KEY = "userNotifications";
 
 class UserNotificationsInfo {
-  read: string[];
+  read: string[] = [];
 }
 
 export const storeReadNotification = (key: string) => {
@@ -30,7 +30,7 @@ const getUserNotifications = (): UserNotificationsInfo => {
     USER_NOTIFICATIONS_STORAGE_KEY
   );
 
-  if (userNotificationsString == null) {
+  if (userNotificationsString === undefined) {
     return new UserNotificationsInfo();
   }
 
