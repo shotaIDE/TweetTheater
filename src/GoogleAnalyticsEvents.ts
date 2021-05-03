@@ -21,4 +21,25 @@ export const registerOfficialTwitterAccountClickEvent = () => {
   window.gtag("event", "open_official_twitter");
 };
 
+export const registerOpenNotificationEvent = () => {
+  if (!analyticsEnabled) {
+    return;
+  }
+  window.gtag("event", "open_notification");
+};
+
+export const registerOpenAppStoreEvent = () => {
+  if (!analyticsEnabled) {
+    return;
+  }
+  window.gtag("event", "open_app_store");
+};
+
+export const registerOpenGooglePlayEvent = () => {
+  if (!analyticsEnabled) {
+    return;
+  }
+  window.gtag("event", "open_google_play");
+};
+
 const analyticsEnabled = process.env.REACT_APP_GOOGLE_ANALYTICS === "enabled";

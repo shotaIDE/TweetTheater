@@ -14,7 +14,10 @@ import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
-import { registerOfficialTwitterAccountClickEvent } from "./GoogleAnalyticsEvents";
+import {
+  registerOfficialTwitterAccountClickEvent,
+  registerOpenNotificationEvent,
+} from "./GoogleAnalyticsEvents";
 import {
   officialTwitterAccountUrl,
   privacyPolicyUrl,
@@ -96,6 +99,8 @@ export const MenuBar = withRouter((props: Props) => {
     storeReadNotificationIdList(readNotificationIdList);
 
     setReadNotificationIdList(getReadNotificationIdList());
+
+    registerOpenNotificationEvent();
   };
 
   const handleOpenGeneralMenu = (event: React.MouseEvent<HTMLElement>) => {

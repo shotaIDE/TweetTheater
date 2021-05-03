@@ -2,6 +2,11 @@ import { Card, CardContent, Grid, Link } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import React from "react";
 
+import {
+  registerOpenAppStoreEvent,
+  registerOpenGooglePlayEvent,
+} from "../GoogleAnalyticsEvents";
+
 const USER_NOTIFICATIONS_STORAGE_KEY = "userNotifications";
 
 export class Notification {
@@ -21,6 +26,13 @@ class UserNotificationsInfo {
 export const getNotifications = (): Notification[] => {
   return [
     new Notification("001", (read: boolean) => {
+      const handleOpenAppStore = () => {
+        registerOpenAppStoreEvent();
+      };
+      const handleOpenGooglePlay = () => {
+        registerOpenGooglePlayEvent();
+      };
+
       return (
         <Card variant="outlined">
           <CardContent>
@@ -52,6 +64,7 @@ export const getNotifications = (): Notification[] => {
                 href="https://apps.apple.com/jp/app/tweet-theater/id1545902971"
                 target="_blank"
                 rel="noopener"
+                onClick={handleOpenAppStore}
               >
                 <img
                   height={48}
@@ -64,6 +77,7 @@ export const getNotifications = (): Notification[] => {
                 href="https://play.google.com/store/apps/details?id=ide.shota.colomney.tweet_theater"
                 target="_blank"
                 rel="noopener"
+                onClick={handleOpenGooglePlay}
               >
                 <img
                   height={70}
