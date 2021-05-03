@@ -83,10 +83,9 @@ export const MenuBar = withRouter((props: Props) => {
   }, []);
 
   useEffect(() => {
-    const unreadNotifications = notifications.filter((notification) => {
-      const id = notification.id;
-      return !readNotificationIdList.includes(id);
-    });
+    const unreadNotifications = notifications.filter(
+      (notification) => !readNotificationIdList.includes(notification.id)
+    );
     setNumUnreadNotifications(unreadNotifications.length);
   }, [notifications, readNotificationIdList]);
 
