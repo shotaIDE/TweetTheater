@@ -10,7 +10,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Notifications from "@material-ui/icons/Notifications";
 import * as History from "history";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
@@ -23,6 +23,8 @@ import {
 import {
   getNotifications,
   getReadNotificationIdList,
+  Notification,
+  storeReadNotificationIdList,
 } from "./repotiroy/NotificationsRepository";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -53,6 +55,12 @@ interface Props {
 export const MenuBar = withRouter((props: Props) => {
   const classes = useStyles(props);
 
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [readNotificationIdList, setReadNotificationIdList] = useState<
+    string[]
+  >([]);
+  const [numUnreadNotifications, setNumUnreadNotifications] = useState(0);
+
   const [
     generalMenuAnchorEl,
     setGeneralMenuAnchorEl,
@@ -65,22 +73,28 @@ export const MenuBar = withRouter((props: Props) => {
   ] = React.useState<null | HTMLElement>(null);
   const notificationMenuOpen = Boolean(notificationMenuAnchorEl);
 
-  const notifications = getNotifications();
-  notifications.forEach((notification) => {
-    console.log(`id = ${notification.id}, body = ${notification.body}`);
-  });
-  const readNotificationIdList = getReadNotificationIdList();
-  const unreadNotifications = notifications.filter((notification) => {
-    const id = notification.id;
-    return !(id in readNotificationIdList);
-  });
+  useEffect(() => {
+    setNotifications(getNotifications());
+  }, []);
 
-  const [numUnreadNotifications, setNumUnreadNotifications] = useState(
-    unreadNotifications.length
-  );
+  useEffect(() => {
+    console.log(`Read notification id list: ${readNotificationIdList}`);
+    const unreadNotifications = notifications.filter((notification) => {
+      const id = notification.id;
+      return !readNotificationIdList.includes(id);
+    });
+    setNumUnreadNotifications(unreadNotifications.length);
+  }, [notifications, readNotificationIdList]);
 
   const handleOpenNotificationMenu = (event: React.MouseEvent<HTMLElement>) => {
     setNotificationMenuAnchorEl(event.currentTarget);
+
+    const readNotificationIdList = notifications.map(
+      (notification) => notification.id
+    );
+    storeReadNotificationIdList(readNotificationIdList);
+
+    setReadNotificationIdList(getReadNotificationIdList());
   };
 
   const handleOpenGeneralMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -127,9 +141,9 @@ export const MenuBar = withRouter((props: Props) => {
   const notificationMenuItems = (
     <div>
       {notifications.map((notification) => {
-        const read = notification.id in readNotificationIdList;
+        const read = readNotificationIdList.includes(notification.id);
         return (
-          <div className={classes.notificationMenuItem}>
+          <div key={notification.id} className={classes.notificationMenuItem}>
             {notification.body(read)}
           </div>
         );
