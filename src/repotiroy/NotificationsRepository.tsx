@@ -87,7 +87,8 @@ export const getNotifications = (): Notification[] => {
               color={read ? "textSecondary" : "textPrimary"}
             >
               スマホアプリ版では、Web版よりも多くのことができます <br />
-              ・"#深夜の2時間DTM" 以外の好きなキーワードで検索する <br />
+              ・&quot;#深夜の2時間DTM&quot; 以外の好きなキーワードで検索する
+              <br />
               ・最後に聴いていたツイートから再生する <br />
               ・最新のものだけではなく、過去のツイートを検索する(最大7日前)
               <br />
