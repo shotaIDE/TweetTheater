@@ -1,4 +1,4 @@
-import { Divider, Link } from "@material-ui/core";
+import { Badge, Divider, Link } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
@@ -8,6 +8,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Notifications from "@material-ui/icons/Notifications";
 import * as History from "history";
 import React from "react";
 import { withRouter } from "react-router";
@@ -85,6 +86,12 @@ export const MenuBar = withRouter((props: Props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
+  const notificationItems = (
+    <div>
+      <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
+    </div>
+  );
+
   const generalMenuItems = (
     <div>
       <MenuItem onClick={handleTermsOfUse}>利用規約</MenuItem>
@@ -107,6 +114,17 @@ export const MenuBar = withRouter((props: Props) => {
 
   const menu = (
     <div>
+      <IconButton
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleMenu}
+        color="inherit"
+      >
+        <Badge badgeContent={11} color="secondary">
+          <Notifications />
+        </Badge>
+      </IconButton>
       <IconButton
         aria-label="account of current user"
         aria-controls="menu-appbar"
