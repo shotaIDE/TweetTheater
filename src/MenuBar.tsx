@@ -1,4 +1,4 @@
-import { Divider, Link } from "@material-ui/core";
+import { Badge, Divider, Link } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
@@ -8,17 +8,27 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import Notifications from "@material-ui/icons/Notifications";
 import * as History from "history";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
-import { registerOfficialTwitterAccountClickEvent } from "./GoogleAnalyticsEvents";
+import {
+  registerOfficialTwitterAccountClickEvent,
+  registerOpenNotificationEvent,
+} from "./GoogleAnalyticsEvents";
 import {
   officialTwitterAccountUrl,
   privacyPolicyUrl,
   termsOfUseUrl,
 } from "./OfficialAccountInfo";
+import {
+  getNotifications,
+  getReadNotificationIdList,
+  Notification,
+  storeReadNotificationIdList,
+} from "./repotiroy/NotificationsRepository";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       marginLeft: theme.spacing(1),
       flexGrow: 1,
+    },
+    notificationMenuItem: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
   })
 );
@@ -45,12 +59,55 @@ interface Props {
 export const MenuBar = withRouter((props: Props) => {
   const classes = useStyles(props);
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [readNotificationIdList, setReadNotificationIdList] = useState<
+    string[]
+  >([]);
+  const [numUnreadNotifications, setNumUnreadNotifications] = useState(0);
+
+  const [
+    generalMenuAnchorEl,
+    setGeneralMenuAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const generalMenuOpen = Boolean(generalMenuAnchorEl);
+
+  const [
+    notificationMenuAnchorEl,
+    setNotificationMenuAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const notificationMenuOpen = Boolean(notificationMenuAnchorEl);
+
+  useEffect(() => {
+    setNotifications(getNotifications());
+    setReadNotificationIdList(getReadNotificationIdList());
+  }, []);
+
+  useEffect(() => {
+    const unreadNotifications = notifications.filter(
+      (notification) => !readNotificationIdList.includes(notification.id)
+    );
+    setNumUnreadNotifications(unreadNotifications.length);
+  }, [notifications, readNotificationIdList]);
+
+  const handleOpenNotificationMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setNotificationMenuAnchorEl(event.currentTarget);
+
+    const readNotificationIdList = notifications.map(
+      (notification) => notification.id
+    );
+    storeReadNotificationIdList(readNotificationIdList);
+
+    setReadNotificationIdList(getReadNotificationIdList());
+
+    registerOpenNotificationEvent();
+  };
+
+  const handleOpenGeneralMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setGeneralMenuAnchorEl(event.currentTarget);
   };
 
   const handleSignout = () => {
-    handleClose();
+    handleGeneralMenuClose();
     props.handleSignout();
   };
 
@@ -59,31 +116,45 @@ export const MenuBar = withRouter((props: Props) => {
   };
 
   const handleTermsOfUse = () => {
-    handleClose();
+    handleGeneralMenuClose();
 
     window.open(termsOfUseUrl, "_blank", "noopener");
   };
 
   const handlePrivacyPolicy = () => {
-    handleClose();
+    handleGeneralMenuClose();
 
     window.open(privacyPolicyUrl, "_blank", "noopener");
   };
 
   const handleTwitterAccount = () => {
-    handleClose();
+    handleGeneralMenuClose();
 
     window.open(officialTwitterAccountUrl, "_blank", "noopener");
 
     registerOfficialTwitterAccountClickEvent();
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleNotificationMenuClose = () => {
+    setNotificationMenuAnchorEl(null);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const handleGeneralMenuClose = () => {
+    setGeneralMenuAnchorEl(null);
+  };
+
+  const notificationMenuItems = (
+    <div>
+      {notifications.map((notification) => {
+        const read = readNotificationIdList.includes(notification.id);
+        return (
+          <div key={notification.id} className={classes.notificationMenuItem}>
+            {notification.body(read)}
+          </div>
+        );
+      })}
+    </div>
+  );
 
   const generalMenuItems = (
     <div>
@@ -108,17 +179,19 @@ export const MenuBar = withRouter((props: Props) => {
   const menu = (
     <div>
       <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
+        aria-label="通知メニュー"
+        aria-controls="notification-menu"
         aria-haspopup="true"
-        onClick={handleMenu}
+        onClick={handleOpenNotificationMenu}
         color="inherit"
       >
-        {menuIcon}
+        <Badge badgeContent={numUnreadNotifications} color="secondary">
+          <Notifications />
+        </Badge>
       </IconButton>
       <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
+        id="notification-menu"
+        anchorEl={notificationMenuAnchorEl}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -128,8 +201,34 @@ export const MenuBar = withRouter((props: Props) => {
           vertical: "top",
           horizontal: "right",
         }}
-        open={open}
-        onClose={handleClose}
+        open={notificationMenuOpen}
+        onClose={handleNotificationMenuClose}
+      >
+        {notificationMenuItems}
+      </Menu>
+      <IconButton
+        aria-label="メインメニュー"
+        aria-controls="general-menu"
+        aria-haspopup="true"
+        onClick={handleOpenGeneralMenu}
+        color="inherit"
+      >
+        {menuIcon}
+      </IconButton>
+      <Menu
+        id="general-menu"
+        anchorEl={generalMenuAnchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={generalMenuOpen}
+        onClose={handleGeneralMenuClose}
       >
         {userMenuItems}
         {generalMenuItems}
