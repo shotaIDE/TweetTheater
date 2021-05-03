@@ -118,6 +118,8 @@ const getUserNotifications = (): UserNotificationsInfo => {
     USER_NOTIFICATIONS_STORAGE_KEY
   );
 
+  console.log(`User notifications string: ${userNotificationsString}`);
+
   if (userNotificationsString === undefined) {
     return new UserNotificationsInfo();
   }

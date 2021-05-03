@@ -75,6 +75,7 @@ export const MenuBar = withRouter((props: Props) => {
 
   useEffect(() => {
     setNotifications(getNotifications());
+    setReadNotificationIdList(getReadNotificationIdList());
   }, []);
 
   useEffect(() => {
