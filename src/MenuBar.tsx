@@ -10,7 +10,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Notifications from "@material-ui/icons/Notifications";
 import * as History from "history";
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router";
 
 import { SigninStatus } from "./App";
@@ -20,7 +20,10 @@ import {
   privacyPolicyUrl,
   termsOfUseUrl,
 } from "./OfficialAccountInfo";
-import { getReadNotificationIdList } from "./repotiroy/NotificationsRepository";
+import {
+  getNotifications,
+  getReadNotificationIdList,
+} from "./repotiroy/NotificationsRepository";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +49,20 @@ interface Props {
 
 export const MenuBar = withRouter((props: Props) => {
   const classes = useStyles(props);
+
+  const notifications = getNotifications();
+  notifications.forEach((notification) => {
+    console.log(`id = ${notification.id}, body = ${notification.body}`);
+  });
+  const readNotificationIdList = getReadNotificationIdList();
+  const unreadNotifications = notifications.filter((notification) => {
+    const id = notification.id;
+    return !(id in readNotificationIdList);
+  });
+
+  const [numUnreadNotifications, setNumUnreadNotifications] = useState(
+    unreadNotifications.length
+  );
 
   const handleOpenNotifications = () => {
     const userNotifications = getReadNotificationIdList();
@@ -121,7 +138,7 @@ export const MenuBar = withRouter((props: Props) => {
         onClick={handleOpenNotifications}
         color="inherit"
       >
-        <Badge badgeContent={11} color="secondary">
+        <Badge badgeContent={numUnreadNotifications} color="secondary">
           <Notifications />
         </Badge>
       </IconButton>

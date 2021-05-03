@@ -1,8 +1,34 @@
+import Typography from "@material-ui/core/Typography";
+import React from "react";
+
 const USER_NOTIFICATIONS_STORAGE_KEY = "userNotifications";
+
+export class Notification {
+  id: string;
+  body: JSX.Element;
+
+  constructor(id: string, body: JSX.Element) {
+    this.id = id;
+    this.body = body;
+  }
+}
 
 class UserNotificationsInfo {
   read: string[] = [];
 }
+
+export const getNotifications = (): Notification[] => {
+  return [
+    new Notification(
+      "001",
+      (
+        <Typography variant="h6" noWrap={true}>
+          アプリ版がご利用可能になりました！
+        </Typography>
+      )
+    ),
+  ];
+};
 
 export const storeReadNotification = (key: string) => {
   const userNotifications = getUserNotifications();
