@@ -30,7 +30,7 @@ export const getNotifications = (): Notification[] => {
         <Card variant="outlined">
           <CardContent>
             <Typography variant="caption" color="textSecondary">
-              2021年5月3日 19:00
+              2021年5月4日 0:00
             </Typography>
             <Typography
               variant="h6"
