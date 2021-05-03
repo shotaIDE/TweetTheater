@@ -46,6 +46,8 @@ export const getNotifications = (): Notification[] => {
             >
               深夜の2時間DTMの自動再生ツールの、スマホアプリ版がリリースされました！
               <br />
+              無料でログインせずに利用することもできますので、気軽にお試しください。
+              <br />
             </Typography>
             <Grid
               container
@@ -84,13 +86,12 @@ export const getNotifications = (): Notification[] => {
               component="p"
               color={read ? "textSecondary" : "textPrimary"}
             >
-              本サイトのWeb版の機能に加えて、以下の機能が追加されました！
+              スマホアプリ版では、Web版よりも多くのことができます <br />
+              ・"#深夜の2時間DTM" 以外の好きなキーワードで検索する <br />
+              ・最後に聴いていたツイートから再生する <br />
+              ・最新のものだけではなく、過去のツイートを検索する(最大7日前)
               <br />
-              ・深夜の2時間DTM以外の好きなキーワードで検索
-              <br />
-              ・いいねやリプライ <br />
-              ・プレイリスト保存による再生位置の復元
-              <br />
+              ・再生中にいいねやリプライをする <br />
             </Typography>
           </CardContent>
         </Card>
