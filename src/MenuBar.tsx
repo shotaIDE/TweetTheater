@@ -41,7 +41,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     notificationMenuItem: {
-      padding: theme.spacing(1),
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
   })
 );
