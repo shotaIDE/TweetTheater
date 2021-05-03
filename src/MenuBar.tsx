@@ -50,6 +50,18 @@ interface Props {
 export const MenuBar = withRouter((props: Props) => {
   const classes = useStyles(props);
 
+  const [
+    generalMenuAnchorEl,
+    setGeneralMenuAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const generalMenuOpen = Boolean(generalMenuAnchorEl);
+
+  const [
+    notificationMenuAnchorEl,
+    setNotificationMenuAnchorEl,
+  ] = React.useState<null | HTMLElement>(null);
+  const notificationMenuOpen = Boolean(notificationMenuAnchorEl);
+
   const notifications = getNotifications();
   notifications.forEach((notification) => {
     console.log(`id = ${notification.id}, body = ${notification.body}`);
@@ -64,13 +76,12 @@ export const MenuBar = withRouter((props: Props) => {
     unreadNotifications.length
   );
 
-  const handleOpenNotifications = () => {
-    const userNotifications = getReadNotificationIdList();
-    console.log(userNotifications);
+  const handleOpenNotificationMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setNotificationMenuAnchorEl(event.currentTarget);
   };
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleOpenGeneralMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setGeneralMenuAnchorEl(event.currentTarget);
   };
 
   const handleSignout = () => {
@@ -102,12 +113,21 @@ export const MenuBar = withRouter((props: Props) => {
     registerOfficialTwitterAccountClickEvent();
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleNotificationMenuClose = () => {
+    setNotificationMenuAnchorEl(null);
   };
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const handleClose = () => {
+    setGeneralMenuAnchorEl(null);
+  };
+
+  const notificationMenuItems = (
+    <div>
+      {notifications.map((notification) => {
+        return notification.body;
+      })}
+    </div>
+  );
 
   const generalMenuItems = (
     <div>
@@ -135,25 +155,16 @@ export const MenuBar = withRouter((props: Props) => {
         aria-label="account of current user"
         aria-controls="menu-appbar"
         aria-haspopup="true"
-        onClick={handleOpenNotifications}
+        onClick={handleOpenNotificationMenu}
         color="inherit"
       >
         <Badge badgeContent={numUnreadNotifications} color="secondary">
           <Notifications />
         </Badge>
       </IconButton>
-      <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        onClick={handleMenu}
-        color="inherit"
-      >
-        {menuIcon}
-      </IconButton>
       <Menu
         id="menu-appbar"
-        anchorEl={anchorEl}
+        anchorEl={notificationMenuAnchorEl}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -163,7 +174,33 @@ export const MenuBar = withRouter((props: Props) => {
           vertical: "top",
           horizontal: "right",
         }}
-        open={open}
+        open={notificationMenuOpen}
+        onClose={handleNotificationMenuClose}
+      >
+        {notificationMenuItems}
+      </Menu>
+      <IconButton
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleOpenGeneralMenu}
+        color="inherit"
+      >
+        {menuIcon}
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={generalMenuAnchorEl}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={generalMenuOpen}
         onClose={handleClose}
       >
         {userMenuItems}
