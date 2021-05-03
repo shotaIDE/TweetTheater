@@ -62,10 +62,10 @@ export const getNotifications = (): Notification[] => {
                 onClick={registerOpenAppStoreEvent}
               >
                 <img
-                  height={48}
-                  style={{ margin: "10px" }}
+                  height={70}
+                  style={{ padding: "10px" }}
                   src="Download_on_the_App_Store_Badge_JP_RGB_blk_100317.svg"
-                  alt="App Storeで手に入れる"
+                  alt="App Storeで手に入れよう"
                 />
               </Link>
               <Link
