@@ -48,7 +48,11 @@ export const getNotifications = (): Notification[] => {
               justify="center"
               alignItems="center"
             >
-              <Link href="https://apps.apple.com/jp/app/tweet-theater/id1545902971">
+              <Link
+                href="https://apps.apple.com/jp/app/tweet-theater/id1545902971"
+                target="_blank"
+                rel="noopener"
+              >
                 <img
                   height={48}
                   style={{ margin: "10px" }}
@@ -56,7 +60,11 @@ export const getNotifications = (): Notification[] => {
                   alt="App Storeで手に入れる"
                 />
               </Link>
-              <Link href="https://play.google.com/store/apps/details?id=ide.shota.colomney.tweet_theater&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
+              <Link
+                href="https://play.google.com/store/apps/details?id=ide.shota.colomney.tweet_theater"
+                target="_blank"
+                rel="noopener"
+              >
                 <img
                   height={70}
                   alt="Google Play で手に入れよう"
