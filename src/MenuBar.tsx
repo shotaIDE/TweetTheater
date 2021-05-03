@@ -176,66 +176,6 @@ export const MenuBar = withRouter((props: Props) => {
   const menuIcon =
     props.signinStatus === "signined" ? <AccountCircle /> : <MoreVertIcon />;
 
-  const menu = (
-    <div>
-      <IconButton
-        aria-label="通知メニュー"
-        aria-controls="notification-menu"
-        aria-haspopup="true"
-        onClick={handleOpenNotificationMenu}
-        color="inherit"
-      >
-        <Badge badgeContent={numUnreadNotifications} color="secondary">
-          <Notifications />
-        </Badge>
-      </IconButton>
-      <Menu
-        id="notification-menu"
-        anchorEl={notificationMenuAnchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={notificationMenuOpen}
-        onClose={handleNotificationMenuClose}
-      >
-        {notificationMenuItems}
-      </Menu>
-      <IconButton
-        aria-label="メインメニュー"
-        aria-controls="general-menu"
-        aria-haspopup="true"
-        onClick={handleOpenGeneralMenu}
-        color="inherit"
-      >
-        {menuIcon}
-      </IconButton>
-      <Menu
-        id="general-menu"
-        anchorEl={generalMenuAnchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={generalMenuOpen}
-        onClose={handleGeneralMenuClose}
-      >
-        {userMenuItems}
-        {generalMenuItems}
-      </Menu>
-    </div>
-  );
-
   return (
     <AppBar position="sticky">
       <Toolbar>
@@ -249,7 +189,62 @@ export const MenuBar = withRouter((props: Props) => {
         <Typography variant="h6" noWrap={true} className={classes.title}>
           {props.playerPositionLabel}
         </Typography>
-        {menu}
+        <IconButton
+          aria-label="通知メニュー"
+          aria-controls="notification-menu"
+          aria-haspopup="true"
+          onClick={handleOpenNotificationMenu}
+          color="inherit"
+        >
+          <Badge badgeContent={numUnreadNotifications} color="secondary">
+            <Notifications />
+          </Badge>
+        </IconButton>
+        <Menu
+          id="notification-menu"
+          anchorEl={notificationMenuAnchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={notificationMenuOpen}
+          onClose={handleNotificationMenuClose}
+        >
+          {notificationMenuItems}
+        </Menu>
+        <IconButton
+          aria-label="メインメニュー"
+          aria-controls="general-menu"
+          aria-haspopup="true"
+          onClick={handleOpenGeneralMenu}
+          edge="end"
+          color="inherit"
+        >
+          {menuIcon}
+        </IconButton>
+        <Menu
+          id="general-menu"
+          anchorEl={generalMenuAnchorEl}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          open={generalMenuOpen}
+          onClose={handleGeneralMenuClose}
+        >
+          {userMenuItems}
+          {generalMenuItems}
+        </Menu>
       </Toolbar>
     </AppBar>
   );
