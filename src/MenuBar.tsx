@@ -127,9 +127,10 @@ export const MenuBar = withRouter((props: Props) => {
   const notificationMenuItems = (
     <div>
       {notifications.map((notification) => {
+        const read = notification.id in readNotificationIdList;
         return (
           <div className={classes.notificationMenuItem}>
-            {notification.body}
+            {notification.body(read)}
           </div>
         );
       })}
