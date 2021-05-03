@@ -189,7 +189,17 @@ export const MenuBar = withRouter((props: Props) => {
         <Typography variant="h6" noWrap={true} className={classes.title}>
           {props.playerPositionLabel}
         </Typography>
-
+        <IconButton
+          aria-label="通知メニュー"
+          aria-controls="notification-menu"
+          aria-haspopup="true"
+          onClick={handleOpenNotificationMenu}
+          color="inherit"
+        >
+          <Badge badgeContent={numUnreadNotifications} color="secondary">
+            <Notifications />
+          </Badge>
+        </IconButton>
         <Menu
           id="notification-menu"
           anchorEl={notificationMenuAnchorEl}
@@ -207,18 +217,6 @@ export const MenuBar = withRouter((props: Props) => {
         >
           {notificationMenuItems}
         </Menu>
-        <IconButton
-          aria-label="通知メニュー"
-          aria-controls="notification-menu"
-          aria-haspopup="true"
-          onClick={handleOpenNotificationMenu}
-          edge="end"
-          color="inherit"
-        >
-          <Badge badgeContent={numUnreadNotifications} color="secondary">
-            <Notifications />
-          </Badge>
-        </IconButton>
         <IconButton
           aria-label="メインメニュー"
           aria-controls="general-menu"
