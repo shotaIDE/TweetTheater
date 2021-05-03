@@ -65,7 +65,7 @@ export const getNotifications = (): Notification[] => {
                   height={70}
                   style={{ padding: "10px" }}
                   src="Download_on_the_App_Store_Badge_JP_RGB_blk_100317.svg"
-                  alt="App Storeで手に入れよう"
+                  alt="App Store で手に入れよう"
                 />
               </Link>
               <Link
