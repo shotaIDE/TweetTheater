@@ -179,8 +179,8 @@ export const MenuBar = withRouter((props: Props) => {
   const menu = (
     <div>
       <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
+        aria-label="通知メニュー"
+        aria-controls="notification-menu"
         aria-haspopup="true"
         onClick={handleOpenNotificationMenu}
         color="inherit"
@@ -190,7 +190,7 @@ export const MenuBar = withRouter((props: Props) => {
         </Badge>
       </IconButton>
       <Menu
-        id="menu-appbar"
+        id="notification-menu"
         anchorEl={notificationMenuAnchorEl}
         anchorOrigin={{
           vertical: "top",
@@ -207,8 +207,8 @@ export const MenuBar = withRouter((props: Props) => {
         {notificationMenuItems}
       </Menu>
       <IconButton
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
+        aria-label="メインメニュー"
+        aria-controls="general-menu"
         aria-haspopup="true"
         onClick={handleOpenGeneralMenu}
         color="inherit"
@@ -216,7 +216,7 @@ export const MenuBar = withRouter((props: Props) => {
         {menuIcon}
       </IconButton>
       <Menu
-        id="menu-appbar"
+        id="general-menu"
         anchorEl={generalMenuAnchorEl}
         anchorOrigin={{
           vertical: "top",
