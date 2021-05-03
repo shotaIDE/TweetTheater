@@ -112,8 +112,6 @@ export const storeReadNotificationIdList = (keys: string[]) => {
   const userNotificationsString = JSON.stringify(userNotifications);
 
   localStorage.setItem(USER_NOTIFICATIONS_STORAGE_KEY, userNotificationsString);
-
-  console.log(`User notifications: ${userNotificationsString}...`);
 };
 
 export const getReadNotificationIdList = (): string[] => {
@@ -125,8 +123,6 @@ const getUserNotifications = (): UserNotificationsInfo => {
   const userNotificationsString = localStorage.getItem(
     USER_NOTIFICATIONS_STORAGE_KEY
   );
-
-  console.log(`User notifications string: ${userNotificationsString}`);
 
   if (userNotificationsString === undefined) {
     return new UserNotificationsInfo();
